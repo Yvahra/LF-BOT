@@ -1,0 +1,6 @@
+[{
+  "convoy": {"apple": 100,"wood": 200,"water": 0},
+  "convoyer": {"ally": "LF-W1", "player": {"name": "Jekyll","colony": 0}},
+  "convoyed": {"ally": "LF","player": {"name": "Yvahra","colony": 1}},
+  "day": "2024-08-07"
+}]

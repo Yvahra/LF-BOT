@@ -1,0 +1,12 @@
+{
+  "commerce":[
+    {"name": "Pas de pacte", "argument":"", "description":"Pas de pacte commerciale en cours"},
+    {"name": "Location de TdC", "argument":"n_days", "description":"L'autre alliance pourra bénéficier du TdC floodé pour les X prochains jours"},
+    {"name": "Achat de TdC", "argument":"price_for_1M_tdc", "description":"L'autre alliance pourra récupérer du TdC floodé en échange de ressources"},
+    {"name": "Pacte de flood", "argument":"perc_flood", "description":"L'autre alliance pourra récupérer une fraction du TdC floodé"}
+  ],
+  "guerre":[
+    {"name": "Pas de pacte", "description":"Pas de pacte de guerre en cours"},
+    {"name": "Pacte défensif", "description":"La LF s'est engagée à aider l'autre alliance"}
+  ]
+}
