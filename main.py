@@ -88,7 +88,9 @@ donne:
 `!convoisEnCours`: affiche les convois en cours;
 `!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
 `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`: ajoute un convoi;
-`!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;""",
+`!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
+`!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
+`!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
     """### Commandes Floods externes
 `!floodExtR <joueurExtérieur> <C1/C2> <ally> <quantité> <joueurLF> <C1/C2>`: enregistre un flood externe reçu;
 `!floodExtD <joueurExtérieur> <C1/C2> <ally> <quantité> <joueurLF> <C1/C2>`: enregistre un flood externe donné;
@@ -481,6 +483,27 @@ async def donTDC(message):
       for m in f.splitMessage(msg):
         await message.channel.send(m)
 
+# `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
+async def recapRSS(message):
+    channel = bot.get_channel(1276232505116196894)
+    msg = convois.repartitionRessources()
+    if msg.startswith("ERR:"):
+      await error(channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await message.channel.send(m)
+
+# `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
+async def printRecapRSS(message):
+    channel = bot.get_channel(1276232505116196894)
+    msg = convois.printRessourcesPartagees()
+    if msg.startswith("ERR:"):
+      await error(channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await message.channel.send(m)
 
 #__________________________________________________#
 ## PLAYERS ##
@@ -906,6 +929,21 @@ async def on_message(message):
       else:
         await errorRole(message.channel,["bot admin access", "bot writer access", "membre"])
 
+        # `!recapRessources`
+        # calcul le récapitulatif des ressources récoltées de la journée;
+    elif message.content.upper().startswith("!RECAPRESSOURCES"):
+      if admin:
+        await recapRSS(message)
+      else:
+        await errorRole(message.channel,["bot admin access"])
+
+        # `!printRecapRessources`
+        # affiche le récapitulatif des ressources récoltées de la journée;
+    elif message.content.upper().startswith("!PRINTRECAPRESSOURCES"):
+      if admin:
+        await printRecapRSS(message)
+      else:
+        await errorRole(message.channel,["bot admin access"])
     
       ### --------------- ###
       ### Floods externes ###
