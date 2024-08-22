@@ -41,7 +41,6 @@ def readableNumber(number:str):
   L = len(number)
   res = ""
   for i in range(L):
-    print(res)
     if i == L-1:
       res+= number[i]
     elif (L-i-1) % 3 == 0:
@@ -49,8 +48,6 @@ def readableNumber(number:str):
       res+= "'"
     else:
       res+= number[i]
-
-  print(res)
   return res
 
 def getNumber(number:str) -> str:

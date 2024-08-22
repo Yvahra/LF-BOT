@@ -260,22 +260,21 @@ def printRessourcesPartagees() -> str:
   try:
     ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[datetime.date.today().strftime("%Y-%m-%d")]
     msg = "# Récapitulatif des ressources partagées\n\n"
-    print("Salaire:",str(int(ress["salaire"])))
     msg+= "Salaire: " + f.readableNumber(str(int(ress["salaire"]))) +  " ressources\n"
     for player in ress["ressources_detail"]:
       msg+= "``` * "+ player.upper() + ":\n"
-      msg+= "Ressources exploitées :           "+ f.convertNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
-      msg+= "Ressources livrées par le joueur: "+ f.convertNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
-      msg+= "Ressources livrées au joueur:     "+ f.convertNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
-      msg+= "Ressources pillées par le joueur: "+ f.convertNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
+      msg+= "Ressources exploitées :           "+ f.readableNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
+      msg+= "Ressources livrées par le joueur: "+ f.readableNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
+      msg+= "Ressources livrées au joueur:     "+ f.readableNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
+      msg+= "Ressources pillées par le joueur: "+ f.readableNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
       msg+= "```\n"
     msg+= "```\n"
     MSG = ["",""]
     for player in ress["cumul"]:
       if ress["cumul"][player] < 0:
-        MSG[0]+= player + " doit percevoir " + f.convertNumber(str(int(-ress["cumul"][player]))) + " ressources\n"
+        MSG[0]+= player + " doit percevoir " + f.readableNumber(str(int(-ress["cumul"][player]))) + " ressources\n"
       else:
-        MSG[1]+= player + " doit rendre " + f.convertNumber(str(int(ress["cumul"][player]))) + " ressources\n"
+        MSG[1]+= player + " doit rendre " + f.readableNumber(str(int(ress["cumul"][player]))) + " ressources\n"
     msg+= MSG[0]+"\n"+MSG[1]
     msg+= "```"
 
