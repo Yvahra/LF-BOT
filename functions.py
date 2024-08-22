@@ -37,6 +37,17 @@ def convertNumber(number:str):
     number = number[:-3] + "k"
   return number
 
+def readableNumber(number:str):
+  L = len(number)
+  res = ""
+  for i in range(len(number)):
+    if i == L-1:
+      res+= number[i]
+    elif L-i-1 % 3 == 0:
+      res+= number[i]
+      res+= "'"
+  return res
+
 def getNumber(number:str) -> str:
   if "G" in number.upper():
     number = number.upper().replace("G", "000000000")
