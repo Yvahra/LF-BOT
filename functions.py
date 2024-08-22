@@ -44,9 +44,12 @@ def readableNumber(number:str):
     print(res)
     if i == L-1:
       res+= number[i]
-    elif L-i-1 % 3 == 0:
+    elif (L-i-1) % 3 == 0:
       res+= number[i]
       res+= "'"
+    else:
+      res+= number[i]
+
   print(res)
   return res
 
