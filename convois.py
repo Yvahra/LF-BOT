@@ -232,10 +232,11 @@ def repartitionRessources():
   for player in active_players:
     if not player.lower() in cumul :
       cumul[player.lower()] = 0
-    cumul[player.lower()] += ressources_detail[player.lower()]["exploit"]
-    cumul[player.lower()] += ressources_detail[player.lower()]["pillage"]
-    cumul[player.lower()] += ressources_detail[player.lower()]["convois"][0]
-    cumul[player.lower()] -= ressources_detail[player.lower()]["convois"][1]
+    if player.lower() in ressources_detail:
+      cumul[player.lower()] += ressources_detail[player.lower()]["exploit"]
+      cumul[player.lower()] += ressources_detail[player.lower()]["pillage"]
+      cumul[player.lower()] += ressources_detail[player.lower()]["convois"][0]
+      cumul[player.lower()] -= ressources_detail[player.lower()]["convois"][1]
     cumul[player.lower()] -= salaire
 
   recap = {
