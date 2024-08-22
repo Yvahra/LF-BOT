@@ -222,7 +222,7 @@ def setTDCExploité(player:str, colo:str, tdc:str) -> str:
         if "exploitation" in p: old_tdc = p[colo_key]["exploitation"]
         p[colo_key]["exploitation"] = int(tdc)
     f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "TdC exploité de " + player + " modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc)
+    msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
     msg = "ERR: " + str(e) + "\n" + msg
   return msg
@@ -239,7 +239,7 @@ def setTDC(player, colo:str, tdc:str) -> str:
         if "tdc" in p: old_tdc = p[colo_key]["tdc"]
         p[colo_key]["tdc"] = int(tdc)
     f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "TdC de " + player + " modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc)
+    msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
     msg = "ERR: " + str(e) + "\n" + msg
   return msg
