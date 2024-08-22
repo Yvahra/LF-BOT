@@ -213,19 +213,21 @@ def setHero(player:str, bonus:str, level:str) -> str:
 
 def setTDCExploité(player:str, colo:str, tdc:str) -> str:
   msg = ""
-  try:
-    data = f.loadData(S_JOUEUR_FILENAME)
-    old_tdc = ""
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-        if "exploitation" in p[colo_key]: old_tdc = p[colo_key]["exploitation"]
-        p[colo_key]["exploitation"] = int(tdc)
-        if int(tdc) > p[colo_key]["tdc"]: p[colo_key]["tdc"] = int(tdc)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
-  except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+  #try:
+  data = f.loadData(S_JOUEUR_FILENAME)
+  old_tdc = ""
+  for p in data:
+    if p["name"].upper() == player.upper():
+      colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+      if "exploitation" in p[colo_key]:
+        old_tdc = p[colo_key]["exploitation"]
+      p[colo_key]["exploitation"] = int(tdc)
+      if int(tdc) > p[colo_key]["tdc"]:
+        p[colo_key]["tdc"] = int(tdc)
+  f.saveData(data, S_JOUEUR_FILENAME)
+  msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
+  #except Exception as e:
+  #  msg = "ERR: " + str(e) + "\n" + msg
   return msg
 
 
