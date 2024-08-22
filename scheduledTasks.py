@@ -33,19 +33,19 @@ token = str(os.getenv("BOT_TOKEN"))
 async def error(channel, errorMsg: str):
   await channel.send(errorMsg)
 
-async def recapRSS(message):
+async def recapRSS():
     channel = bot.get_channel(1276232505116196894)
     msg = convois.repartitionRessources()
     if msg.startswith("ERR:"):
       await error(channel, msg)
     else:
-      await message.delete()
       for m in f.splitMessage(msg):
         await channel.send(m)
 
 # Login Section
 @bot.event
 async def on_ready():
-  print('Bot is ready.')  # le bot est prêt
+  await recapRSS()  # le bot est prêt
+  return
 
 bot.run(token)
