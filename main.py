@@ -93,7 +93,8 @@ donne:
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
 `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
-`!setTDCExploité <joueur> <tdcExploté>`: modifie le tdc exploité d'un joueur;
+`!setTDCExploité <joueur> <C1/C2> <tdcExploté>`: modifie le tdc exploité d'un joueur;
+`!setTDC <joueur> <C1/C2> <tdcExploté>`: modifie le tdc d'un joueur;
 `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo <joueur> <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
 `!setVassal <joueurVassalisé> <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillage>`: modifie le vassal d'une colonie d'un joueur;
@@ -506,10 +507,25 @@ async def player(message):
   else:
     await error(message.channel,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
-# `!setTDCExploité <joueur> <tdcExploté>`: modifie le tdc exploité d'un joueur;
+# `!setTDCExploité <joueur> <C1/C2> <tdcExploté>`: modifie le tdc exploité d'un joueur;
 async def setTDCExploité(message):
-  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <tdcExploté>"):
-    msg = joueurs.setTDCExploité(message.content.split(" ")[1],f.getNumber(message.content.split(" ")[2]))
+  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <C1/C2> <tdcExploté>"):
+    msg = joueurs.setTDCExploité(message.content.split(" ")[1],
+                                 message.content.split(" ")[2],
+                                 f.getNumber(message.content.split(" ")[3]))
+    if msg.startswith("ERR:"):
+      await error(message.channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await message.channel.send(m)
+
+# `!setTDC <joueur> <C1/C2> <tdcExploté>`: modifie le tdc d'un joueur;
+async def setTDC(message):
+  if await lengthVerificatorWError(message, "!setTDC <joueur> <C1/C2> <tdcExploté>"):
+    msg = joueurs.setTDC(message.content.split(" ")[1],
+                         message.content.split(" ")[2],
+                         f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
       await error(message.channel, msg)
     else:
@@ -968,6 +984,22 @@ async def on_message(message):
         await setRace(message)
       else:
         await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+
+        # `!setTDCExploité <joueur> <C1/C2> <tdcExploté>`:
+        # modifie le tdc exploité d'un joueur;
+    elif message.content.upper().startswith("!SETTDCEXPLOITÉ"):
+        if admin or writer or is_concerned:
+            await setTDCExploité(message)
+        else:
+            await errorRole(message.channel, ["bot admin access", "bot writer access", "joueur concerné"])
+
+        # `!setTDC <joueur> <C1/C2> <tdcExploté>`:
+        # modifie le tdc d'un joueur;
+    elif message.content.upper().startswith("!SETTDC "):
+        if admin or writer or is_concerned:
+            await setTDC(message)
+        else:
+            await errorRole(message.channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsColo <joueur> <colo> <oe> <ov> <tdp>`
       # modifie les stats d'une colonie d'un joueur.
