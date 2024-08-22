@@ -23,7 +23,6 @@ ARMY_CONV = {
 NUMBERS = [str(i) for i in range(0,10)]
 
 def convertNumber(number:str):
-  L = len(number)
   count_last_zeros = 0
   for letter in number:
     if letter == "0":
