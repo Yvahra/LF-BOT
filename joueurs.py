@@ -7,6 +7,7 @@
 #__________________________________________________#
 
 import functions as f
+from functions import convertNumber
 
 #__________________________________________________#
 ## GLOBAL VAR ##
@@ -42,9 +43,11 @@ def printPlayer(joueur:str) -> str:
           msg += "        Armées:\n"
           for unit in data[i][colo]["army"]:
             msg += "            " + unit.upper() + ": " + f.convertNumber(str(data[i][colo]["army"][unit]))+"\n"
-          msg += "        Oe:     " + f.convertNumber(str(data[i][colo]["oe"]))+ "\n"
-          msg += "        Ov:     " + f.convertNumber(str(data[i][colo]["ov"]))+ "\n"
-          msg += "        TdP:    " + str(data[i][colo]["tdp"])+ "\n"
+          msg += "        Oe:           " + f.convertNumber(str(data[i][colo]["oe"]))+ "\n"
+          msg += "        Ov:           " + f.convertNumber(str(data[i][colo]["ov"]))+ "\n"
+          msg += "        TdC:          " + f.convertNumber(str(data[i][colo]["tdc"]))+ "\n"
+          msg += "        TdC Exploité: " + f.convertNumber(str(data[i][colo]["exploitation"]))+ "\n"
+          msg += "        TdP:          " + str(data[i][colo]["tdp"])+ "\n"
           if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
             msg += "        Vassal: " + str(data[i][colo]["vassal"]["name"])+ "("
             if data[i][colo]["vassal"]["colony"] == 1: msg += "C1)"
@@ -72,32 +75,36 @@ def addPlayer(message):
       },
       "oe": int(message.content.split("\n")[17].split(":")[1].split(",")[0].replace(" ", "")),
       "ov": int(message.content.split("\n")[18].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdp": int(message.content.split("\n")[19].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(message.content.split("\n")[19].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(message.content.split("\n")[20].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(message.content.split("\n")[21].split(":")[1].split(",")[0].replace(" ", "")),
       "vassal": {
-        "name": message.content.split("\n")[21].split(":")[1].split(",")[0].replace(" ", ""),
-        "colony": int(message.content.split("\n")[22].split(":")[1].split(",")[0].replace(" ", "")),
-        "pillage": int(message.content.split("\n")[23].split(":")[1].split(",")[0].replace(" ", ""))
+        "name": message.content.split("\n")[23].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(message.content.split("\n")[24].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(message.content.split("\n")[25].split(":")[1].split(",")[0].replace(" ", ""))
       }
    },
     "colo2": {
-      "name": message.content.split("\n")[27].split(":")[1].split(",")[0],
+      "name": message.content.split("\n")[29].split(":")[1].split(",")[0],
       "army": {
 
       },
-      "oe": int(message.content.split("\n")[31].split(":")[1].split(",")[0].replace(" ", "")),
-      "ov": int(message.content.split("\n")[32].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdp": int(message.content.split("\n")[33].split(":")[1].split(",")[0].replace(" ", "")),
+      "oe": int(message.content.split("\n")[33].split(":")[1].split(",")[0].replace(" ", "")),
+      "ov": int(message.content.split("\n")[34].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(message.content.split("\n")[35].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(message.content.split("\n")[36].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(message.content.split("\n")[37].split(":")[1].split(",")[0].replace(" ", "")),
       "vassal": {
-        "name": message.content.split("\n")[35].split(":")[1].split(",")[0].replace(" ", ""),
-        "colony": int(message.content.split("\n")[36].split(":")[1].split(",")[0].replace(" ", "")),
-        "pillage": int(message.content.split("\n")[37].split(":")[1].split(",")[0].replace(" ", ""))
+        "name": message.content.split("\n")[39].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(message.content.split("\n")[40].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(message.content.split("\n")[41].split(":")[1].split(",")[0].replace(" ", ""))
       }
     }
   }
 
   for unite in message.content.split("\n")[15].split(","):
     newData["colo1"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
-  for unite in message.content.split("\n")[29].split(","):
+  for unite in message.content.split("\n")[31].split(","):
     newData["colo2"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
 
   data = f.loadData(S_JOUEUR_FILENAME)
@@ -201,4 +208,38 @@ def setHero(player:str, bonus:str, level:str) -> str:
     msg = "Héros de "+ player + " modifié avec succès."
   except Exception as e:
     msg = "ERR: " + str(e) + "\n"+ msg
+  return msg
+
+
+def setTDCExploité(player:str, colo:str, tdc:str) -> str:
+  msg = ""
+  try:
+    data = f.loadData(S_JOUEUR_FILENAME)
+    old_tdc = ""
+    for p in data:
+      if p["name"].upper() == player.upper():
+        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+        if "exploitation" in p: old_tdc = p[colo_key]["exploitation"]
+        p[colo_key]["exploitation"] = int(tdc)
+    f.saveData(data, S_JOUEUR_FILENAME)
+    msg = "TdC exploité de " + player + " modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc)
+  except Exception as e:
+    msg = "ERR: " + str(e) + "\n" + msg
+  return msg
+
+
+def setTDC(player, colo:str, tdc:str) -> str:
+  msg = ""
+  try:
+    data = f.loadData(S_JOUEUR_FILENAME)
+    old_tdc = ""
+    for p in data:
+      if p["name"].upper() == player.upper():
+        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+        if "tdc" in p: old_tdc = p[colo_key]["tdc"]
+        p[colo_key]["tdc"] = int(tdc)
+    f.saveData(data, S_JOUEUR_FILENAME)
+    msg = "TdC de " + player + " modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc)
+  except Exception as e:
+    msg = "ERR: " + str(e) + "\n" + msg
   return msg

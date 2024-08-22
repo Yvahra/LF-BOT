@@ -98,6 +98,7 @@ donne:
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
 `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
+`!setTDCExploité <joueur> <tdcExploté>`: modifie le tdc exploité d'un joueur;
 `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo <joueur> <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
 `!setVassal <joueurVassalisé> <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillage>`: modifie le vassal d'une colonie d'un joueur;
@@ -510,6 +511,16 @@ async def player(message):
   else:
     await error(message.channel,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
+# `!setTDCExploité <joueur> <tdcExploté>`: modifie le tdc exploité d'un joueur;
+async def setTDCExploité(message):
+  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <tdcExploté>"):
+    msg = joueurs.setTDCExploité(message.content.split(" ")[1],f.getNumber(message.content.split(" ")[2]))
+    if msg.startswith("ERR:"):
+      await error(message.channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await message.channel.send(m)
 
 # `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
 async def setArmy(message):
