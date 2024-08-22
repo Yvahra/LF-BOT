@@ -158,99 +158,99 @@ def demandeConvoi(joueur:str, colo:str, constr:str, level:str, apple:str, wood:s
 
 def repartitionRessources():
   msg = ""
-  try:
-    today = datetime.date.today().strftime("%Y-%m-%d")
-    active_players = f.loadData(S_ACTIVE_PLAYERS)
-    nb_joueurs_actifs = len(active_players)
-    tdc_total_exploit = 0
-    ressources_detail = {}
+  #try:
+  today = datetime.date.today().strftime("%Y-%m-%d")
+  active_players = f.loadData(S_ACTIVE_PLAYERS)
+  nb_joueurs_actifs = len(active_players)
+  tdc_total_exploit = 0
+  ressources_detail = {}
 
-    convois = f.loadData(H_CONVOIS_FILENAME)
-    for convoi in convois:
-      if convoi["day"] == today and convoi["convoyer"]["name"].lower() in active_players and convoi["convoyed"]["name"].lower() in active_players:
-        q = convoi["convoy"]["apple"] + convoi["convoy"]["wood"] + convoi["convoy"]["water"]
-        if not convoi["convoyer"]["name"].lower() in ressources_detail:
-          ressources_detail[convoi["convoyer"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                            "exploit": 0,
-                                                            "pillage": 0}
-        if not convoi["convoyed"]["name"].lower() in ressources_detail:
-          ressources_detail[convoi["convoyed"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                            "exploit": 0,
-                                                            "pillage": 0}
-        ressources_detail[convoi["convoyed"]["name"].lower()]["convois"][0] += q
-        ressources_detail[convoi["convoyer"]["name"].lower()]["convois"][1] += q
+  convois = f.loadData(H_CONVOIS_FILENAME)
+  for convoi in convois:
+    if convoi["day"] == today and convoi["convoyer"]["name"].lower() in active_players and convoi["convoyed"]["name"].lower() in active_players:
+      q = convoi["convoy"]["apple"] + convoi["convoy"]["wood"] + convoi["convoy"]["water"]
+      if not convoi["convoyer"]["name"].lower() in ressources_detail:
+        ressources_detail[convoi["convoyer"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                          "exploit": 0,
+                                                          "pillage": 0}
+      if not convoi["convoyed"]["name"].lower() in ressources_detail:
+        ressources_detail[convoi["convoyed"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                          "exploit": 0,
+                                                          "pillage": 0}
+      ressources_detail[convoi["convoyed"]["name"].lower()]["convois"][0] += q
+      ressources_detail[convoi["convoyer"]["name"].lower()]["convois"][1] += q
 
-    players = f.loadData(S_JOUEUR_FILENAME)
-    for player in players:
-      vass1 = False
-      vass2 = False
-      if not player["name"].lower() in ressources_detail:
-        ressources_detail[player["name"].lower()] = {"convois": [0,0], #reçu, donné
-                                                     "exploit": 0,
-                                                     "pillage": 0}
-      if player["colo1"]["vassal"]["name"].lower() in active_players:
-          vass1 = True
-          if not player["colo1"]["vassal"]["name"].lower() in ressources_detail:
-            ressources_detail[player["colo1"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                                             "exploit": 0,
-                                                                             "pillage": 0}
-      if player["colo2"]["vassal"]["name"].lower() in active_players:
-          vass2 = True
-          if not player["colo2"]["vassal"]["name"].lower() in ressources_detail:
-            ressources_detail[player["colo2"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                                             "exploit": 0,
-                                                                             "pillage": 0}
-      tdc_total_exploit += player["colo1"]["exploitation"] + player["colo2"]["exploitation"]
-      prodC1 = player["colo1"]["exploitation"] * 24
-      prodC2 = player["colo2"]["exploitation"] * 24
-      if vass1:
-        prop_pille = (player["colo1"]["vassal"]["pillage"]+20) / 100
-        ressources_detail[player["name"].lower()]["exploit"] +=  prodC1 * (1 - prop_pille)
-        ressources_detail[player["colo1"]["vassal"]["name"].lower()]["pillage"] += prodC1 * prop_pille
-      else:
-        ressources_detail[player["name"].lower()] +=  prodC1
-      if vass2:
-        prop_pille = (player["colo2"]["vassal"]["pillage"]+20) / 100
-        ressources_detail[player["name"].lower()]["exploit"] +=  prodC2 * (1 - prop_pille)
-        ressources_detail[player["colo2"]["vassal"]["name"].lower()]["pillage"] += prodC2 * prop_pille
-      else:
-        ressources_detail[player["name"].lower()] +=  prodC2
+  players = f.loadData(S_JOUEUR_FILENAME)
+  for player in players:
+    vass1 = False
+    vass2 = False
+    if not player["name"].lower() in ressources_detail:
+      ressources_detail[player["name"].lower()] = {"convois": [0,0], #reçu, donné
+                                                   "exploit": 0,
+                                                   "pillage": 0}
+    if player["colo1"]["vassal"]["name"].lower() in active_players:
+        vass1 = True
+        if not player["colo1"]["vassal"]["name"].lower() in ressources_detail:
+          ressources_detail[player["colo1"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                                           "exploit": 0,
+                                                                           "pillage": 0}
+    if player["colo2"]["vassal"]["name"].lower() in active_players:
+        vass2 = True
+        if not player["colo2"]["vassal"]["name"].lower() in ressources_detail:
+          ressources_detail[player["colo2"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                                           "exploit": 0,
+                                                                           "pillage": 0}
+    tdc_total_exploit += player["colo1"]["exploitation"] + player["colo2"]["exploitation"]
+    prodC1 = player["colo1"]["exploitation"] * 24
+    prodC2 = player["colo2"]["exploitation"] * 24
+    if vass1:
+      prop_pille = (player["colo1"]["vassal"]["pillage"]+20) / 100
+      ressources_detail[player["name"].lower()]["exploit"] +=  prodC1 * (1 - prop_pille)
+      ressources_detail[player["colo1"]["vassal"]["name"].lower()]["pillage"] += prodC1 * prop_pille
+    else:
+      ressources_detail[player["name"].lower()] +=  prodC1
+    if vass2:
+      prop_pille = (player["colo2"]["vassal"]["pillage"]+20) / 100
+      ressources_detail[player["name"].lower()]["exploit"] +=  prodC2 * (1 - prop_pille)
+      ressources_detail[player["colo2"]["vassal"]["name"].lower()]["pillage"] += prodC2 * prop_pille
+    else:
+      ressources_detail[player["name"].lower()] +=  prodC2
 
-    last_recap_found = False
-    nb_jour = 1
-    ress_parta = f.loadData(H_RSS_PARTAGEES_FILENAME)
-    cumul = {}
-    while last_recap_found:
-      if (datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
-        last_recap_found = True
-        cumul = ress_parta[(datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
-      else:
-        nb_jour += 1
+  last_recap_found = False
+  nb_jour = 1
+  ress_parta = f.loadData(H_RSS_PARTAGEES_FILENAME)
+  cumul = {}
+  while last_recap_found:
+    if (datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
+      last_recap_found = True
+      cumul = ress_parta[(datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
+    else:
+      nb_jour += 1
 
-    salaire = int(tdc_total_exploit / nb_joueurs_actifs)
+  salaire = int(tdc_total_exploit / nb_joueurs_actifs)
 
-    for player in active_players:
-      if not player.lower() in cumul :
-        cumul[player.lower()] = 0
-      cumul[player.lower()] += ressources_detail[player.lower()]["exploit"]
-      cumul[player.lower()] += ressources_detail[player.lower()]["pillage"]
-      cumul[player.lower()] += ressources_detail[player.lower()]["convois"][0]
-      cumul[player.lower()] -= ressources_detail[player.lower()]["convois"][1]
-      cumul[player.lower()] -= salaire
+  for player in active_players:
+    if not player.lower() in cumul :
+      cumul[player.lower()] = 0
+    cumul[player.lower()] += ressources_detail[player.lower()]["exploit"]
+    cumul[player.lower()] += ressources_detail[player.lower()]["pillage"]
+    cumul[player.lower()] += ressources_detail[player.lower()]["convois"][0]
+    cumul[player.lower()] -= ressources_detail[player.lower()]["convois"][1]
+    cumul[player.lower()] -= salaire
 
-    recap = {
-      "salaire": salaire,
-      "ressources_detail": ressources_detail,
-      "cumul": cumul
-    }
+  recap = {
+    "salaire": salaire,
+    "ressources_detail": ressources_detail,
+    "cumul": cumul
+  }
 
-    ress_parta[today] = recap
-    f.saveData(ress_parta, H_RSS_PARTAGEES_FILENAME)
+  ress_parta[today] = recap
+  f.saveData(ress_parta, H_RSS_PARTAGEES_FILENAME)
 
-    msg = printRessourcesPartagees()
+  msg = printRessourcesPartagees()
 
-  except Exception as e:
-    msg = "ERR: repartitionRessources() - " + str(e) + "\n" + msg
+  #except Exception as e:
+  #  msg = "ERR: repartitionRessources() - " + str(e) + "\n" + msg
   return msg
 
 def printRessourcesPartagees() -> str:

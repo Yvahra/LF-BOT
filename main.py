@@ -483,7 +483,7 @@ async def donTDC(message):
 
 # `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 async def recapRSS(message):
-    channel = bot.get_channel(1276232505116196894)
+    channel = message.channel #bot.get_channel(1276232505116196894)
     msg = convois.repartitionRessources()
     if msg.startswith("ERR:"):
       await error(channel, msg)
@@ -494,7 +494,7 @@ async def recapRSS(message):
 
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
 async def printRecapRSS(message):
-    channel = bot.get_channel(1276232505116196894)
+    channel = message.channel #bot.get_channel(1276232505116196894)
     msg = convois.printRessourcesPartagees()
     if msg.startswith("ERR:"):
       await error(channel, msg)
