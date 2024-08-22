@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 
 import alliance
 import chasses
-import convois
+import c
 import floods
 import joueurs
 import pactes
@@ -299,7 +299,7 @@ async def chasse(message):
 # `!convoisEnCours`: affiche les convois en cours;
 async def printConvoisEnCours(message):
   if await lengthVerificatorWError(message, "!printConvois"):
-    msg = convois.printConvoisEnCours()
+    msg = c.printConvoisEnCours()
     if msg.startswith("ERR:"):
       await error(message.channel, msg)
     else:
@@ -310,10 +310,8 @@ async def printConvoisEnCours(message):
 
 # `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`: ajoute un convoi;
 async def convoi(message):
-  if await lengthVerificatorWError(
-      message,
-      "!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>"):
-    msg = convois.convoi(
+  if await lengthVerificatorWError(message,"!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>"):
+    msg = c.convoi(
         message.content.split(" ")[1],
         message.content.split(" ")[2],
         f.getNumber(message.content.split(" ")[3]),
@@ -335,7 +333,7 @@ async def demandeConvoi(message):
       message,
       "!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"
   ):
-    msg = convois.demandeConvoi(
+    msg = c.demandeConvoi(
         message.content.split(" ")[1],
         message.content.split(" ")[2],
         message.content.split(" ")[3],
@@ -355,7 +353,7 @@ async def demandeConvoi(message):
 async def autoProd(message):
   if await lengthVerificatorWError(
       message, "!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>"):
-    msg = convois.autoProd(
+    msg = c.autoProd(
         message.content.split(" ")[1],
         message.content.split(" ")[2],
         f.getNumber(message.content.split(" ")[3]),
@@ -486,7 +484,7 @@ async def donTDC(message):
 # `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 async def recapRSS(message):
     channel = bot.get_channel(1276232505116196894)
-    msg = convois.repartitionRessources()
+    msg = c.repartitionRessources()
     if msg.startswith("ERR:"):
       await error(channel, msg)
     else:
@@ -497,7 +495,7 @@ async def recapRSS(message):
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
 async def printRecapRSS(message):
     channel = bot.get_channel(1276232505116196894)
-    msg = convois.printRessourcesPartagees()
+    msg = c.printRessourcesPartagees()
     if msg.startswith("ERR:"):
       await error(channel, msg)
     else:
