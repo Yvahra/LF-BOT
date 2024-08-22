@@ -98,8 +98,8 @@ donne:
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
 `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
-`!setTDCExploité <joueur> <C1/C2> <tdcExploté>`: modifie le tdc exploité d'un joueur;
-`!setTDC <joueur> <C1/C2> <tdcExploté>`: modifie le tdc d'un joueur;
+`!setTDCExploité <joueur> <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
+`!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo <joueur> <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
 `!setVassal <joueurVassalisé> <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillage>`: modifie le vassal d'une colonie d'un joueur;
@@ -512,9 +512,9 @@ async def player(message):
   else:
     await error(message.channel,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
-# `!setTDCExploité <joueur> <C1/C2> <tdcExploté>`: modifie le tdc exploité d'un joueur;
+# `!setTDCExploité <joueur> <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
 async def setTDCExploité(message):
-  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <C1/C2> <tdcExploté>"):
+  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <C1/C2> <tdcExploité>"):
     msg = joueurs.setTDCExploité(message.content.split(" ")[1],
                                  message.content.split(" ")[2],
                                  f.getNumber(message.content.split(" ")[3]))
@@ -525,9 +525,9 @@ async def setTDCExploité(message):
       for m in f.splitMessage(msg):
         await message.channel.send(m)
 
-# `!setTDC <joueur> <C1/C2> <tdcExploté>`: modifie le tdc d'un joueur;
+# `!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 async def setTDC(message):
-  if await lengthVerificatorWError(message, "!setTDC <joueur> <C1/C2> <tdcExploté>"):
+  if await lengthVerificatorWError(message, "!setTDC <joueur> <C1/C2> <tdc>"):
     msg = joueurs.setTDC(message.content.split(" ")[1],
                          message.content.split(" ")[2],
                          f.getNumber(message.content.split(" ")[3]))
