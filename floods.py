@@ -300,5 +300,5 @@ def donTDC(allyD:str, allyR:str, quantity:str, reason:str) -> str:
     f.saveData(data, H_DONSTDC_FILENAME)
     msg = "Don enregistré avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: donTDC() - " + str(e) + "\n" + msg
   return msg

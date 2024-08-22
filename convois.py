@@ -70,12 +70,12 @@ def convoi(convoyed, colo1, apple, wood, water, convoyer, colo2) -> str:
           msg += "Convoi terminé.\n"
         break
     if not found:
-      msg = "ERR: Convoi non trouvé.\n" + msg
+      msg = "ERR: convoi() - Convoi non trouvé.\n" + msg
     f.saveData(data, S_CONVOIS_FILENAME)
     if found:
       msg += printConvoisEnCours()+"\n"
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: convoi() - " + str(e) + "\n" + msg
   return msg
 
 
@@ -112,12 +112,12 @@ def autoProd(convoyed, colo1, apple, wood, water) -> str:
           msg += "Convoi terminé.\n"
         break
     if not found:
-      msg = "ERR: Convoi non trouvé.\n" + msg
+      msg = "ERR: autoProd() - Convoi non trouvé.\n" + msg
     f.saveData(data, S_CONVOIS_FILENAME)
     if found:
       msg += printConvoisEnCours()+"\n"
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: autoProd() - " + str(e) + "\n" + msg
   return msg
 
 
@@ -150,5 +150,5 @@ def demandeConvoi(joueur:str, colo:str, constr:str, level:str, apple:str, wood:s
     f.saveData(data, S_CONVOIS_FILENAME)
     msg = "Demande lancée.\n"
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: demandeConvoi() - " + str(e) + "\n" + msg
   return msg

@@ -44,7 +44,7 @@ def snapshot() -> str:
     f.saveData(data, H_ALLIANCE_FILENAME)
     msg = "Snapshot enregistré avec succès."  
   except Exception as e:
-    msg = "ERR: " + str(e)
+    msg = "ERR: snapshot() - " + str(e)
   return msg
 
 
@@ -59,7 +59,7 @@ def setTDC(tdc:str) -> str:
     msg = "TDC modifié avec succès."
     f.saveData(data, S_ALLIANCE_FILENAME)
   except Exception as e:
-    msg = "ERR: e " + str(e)
+    msg = "ERR: setTDC() - " + str(e)
   return msg
 
 
@@ -76,7 +76,7 @@ def setNBMembre(nbMembre:str) -> str:
     msg = "Nombre de membres modifié avec succès."
     f.saveData(data, S_ALLIANCE_FILENAME)
   except Exception as e:
-    msg = "ERR: " + str(e)
+    msg = "ERR: setNBMembre() - " + str(e)
   return msg
 
 
@@ -97,7 +97,7 @@ def setBonusAlly(health:str, convoi:str, tdp:str, membre:str) -> str:
     msg = "Nombre de membres modifié avec succès."
     f.saveData(data, S_ALLIANCE_FILENAME)
   except Exception as e:
-    msg = "ERR: " + str(e)
+    msg = "ERR: setBonusAlly() - " + str(e)
   return msg
 
 
@@ -120,5 +120,5 @@ def setAlly(tdc:str, nbmembre:str, health:str, convoi:str, tdp:str, membre:str) 
     msg = "Nombre de membres modifié avec succès."
     f.saveData(data, S_ALLIANCE_FILENAME)
   except Exception as e:
-    msg = "ERR: " + str(e)
+    msg = "ERR: setAlly() - " + str(e)
   return msg

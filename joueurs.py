@@ -127,7 +127,7 @@ def setArmy(player:str, colo:str, army:str) -> str:
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "Armée de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setArmy() - " + str(e) + "\n"+ msg
   return msg
 
 def setRace(player:str, race:str) -> str:
@@ -140,7 +140,7 @@ def setRace(player:str, race:str) -> str:
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "Race de "+ player + " modifiée avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setRace() - " + str(e) + "\n"+ msg
   return msg
 
 
@@ -159,7 +159,7 @@ def setStatsColo(player:str, colo:str, oe:str, ov:str, tdp:str) -> str:
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "Stats de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setStatsColo() - " + str(e) + "\n"+ msg
   return msg
 
 def setVassal(player:str, colo:str, vassal:str, coloVassal:str, pillage:str) -> str:
@@ -177,7 +177,7 @@ def setVassal(player:str, colo:str, vassal:str, coloVassal:str, pillage:str) -> 
     colo_name = p[colo]["name"]
     msg = "Vassal de la colo " + colo_name + " de "+ player + " a été modifié avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setVassal() - " + str(e) + "\n"+ msg
   return msg
 
 def setStatsPlayer(player:str, mandi:str, cara:str, phero: str, therm:str) -> str:
@@ -193,7 +193,7 @@ def setStatsPlayer(player:str, mandi:str, cara:str, phero: str, therm:str) -> st
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "Stats générales de "+ player + " modifiées avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setStatsPlayer() - " + str(e) + "\n"+ msg
   return msg
 
 def setHero(player:str, bonus:str, level:str) -> str:
@@ -207,27 +207,27 @@ def setHero(player:str, bonus:str, level:str) -> str:
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "Héros de "+ player + " modifié avec succès."
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n"+ msg
+    msg = "ERR: setHero() - " + str(e) + "\n"+ msg
   return msg
 
 
 def setTDCExploité(player:str, colo:str, tdc:str) -> str:
   msg = ""
-  #try:
-  data = f.loadData(S_JOUEUR_FILENAME)
-  old_tdc = ""
-  for p in data:
-    if p["name"].upper() == player.upper():
-      colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-      if "exploitation" in p[colo_key]:
-        old_tdc = p[colo_key]["exploitation"]
-      p[colo_key]["exploitation"] = int(tdc)
-      if int(tdc) > p[colo_key]["tdc"]:
-        p[colo_key]["tdc"] = int(tdc)
-  f.saveData(data, S_JOUEUR_FILENAME)
-  msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
-  #except Exception as e:
-  #  msg = "ERR: " + str(e) + "\n" + msg
+  try:
+    data = f.loadData(S_JOUEUR_FILENAME)
+    old_tdc = ""
+    for p in data:
+      if p["name"].upper() == player.upper():
+        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+        if "exploitation" in p[colo_key]:
+          old_tdc = p[colo_key]["exploitation"]
+        p[colo_key]["exploitation"] = int(tdc)
+        if int(tdc) > p[colo_key]["tdc"]:
+          p[colo_key]["tdc"] = int(tdc)
+    f.saveData(data, S_JOUEUR_FILENAME)
+    msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
+  except Exception as e:
+    msg = "ERR: setTDCExploité() - " + str(e) + "\n" + msg
   return msg
 
 
@@ -245,5 +245,5 @@ def setTDC(player, colo:str, tdc:str) -> str:
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: setTDC() - " + str(e) + "\n" + msg
   return msg

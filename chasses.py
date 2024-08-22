@@ -52,6 +52,6 @@ def chasse(joueur:str, colony:str, quantity:str):
     f.saveData(data, H_CHASSE_FILENAME)
     msg = "Chasse enregistrée avec succès"
   except Exception as e:
-    msg = "ERR: " + str(e)
+    msg = "ERR: chasse() - " + str(e)
   return msg
   

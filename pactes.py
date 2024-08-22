@@ -41,7 +41,7 @@ def archiveFloods(ally, filename):
     f.saveData(newData,H_FLOODS_FILENAME)
     f.saveData(archivedData,filename)
   except Exception as e:
-    msg += "ERR: " + str(e) + "\n" + msg
+    msg += "ERR: archiveFloods() - " + str(e) + "\n" + msg
   return msg
 
 
@@ -87,7 +87,7 @@ def endPacte(ally) -> str:
         msg = "Pacte " + ally + " clôt."
         break
     if not found: 
-      msg = "ERR: Aucun pacte trouvé pour cette alliance."
+      msg = "ERR: endPacte() - Aucun pacte trouvé pour cette alliance."
     else:
       f.createArchive(ally+"-"+debut+"-"+today+".json")
 
@@ -104,7 +104,7 @@ def endPacte(ally) -> str:
         transactions["perc-tdc"][ally.upper()+"--"+today] = transactions["perc-tdc"][ally.upper()]
         transactions["perc-tdc"].pop(ally.upper(), None)
   except Exception as e:
-    msg = "ERR: " + str(e) + "\n" + msg
+    msg = "ERR: endPacte() - " + str(e) + "\n" + msg
   return "Pacte ajouté avec succès."
 
 
