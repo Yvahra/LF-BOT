@@ -208,13 +208,13 @@ def repartitionRessources():
       ressources_detail[player["name"].lower()]["exploit"] +=  prodC1 * (1 - prop_pille)
       ressources_detail[player["colo1"]["vassal"]["name"].lower()]["pillage"] += prodC1 * prop_pille
     else:
-      ressources_detail[player["name"].lower()] +=  prodC1
+      ressources_detail[player["name"].lower()]["exploit"] +=  prodC1
     if vass2:
       prop_pille = (player["colo2"]["vassal"]["pillage"]+20) / 100
       ressources_detail[player["name"].lower()]["exploit"] +=  prodC2 * (1 - prop_pille)
       ressources_detail[player["colo2"]["vassal"]["name"].lower()]["pillage"] += prodC2 * prop_pille
     else:
-      ressources_detail[player["name"].lower()] +=  prodC2
+      ressources_detail[player["name"].lower()]["exploit"] +=  prodC2
 
   last_recap_found = False
   nb_jour = 1
