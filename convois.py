@@ -8,7 +8,6 @@
 
 import datetime
 import functions as f
-from main import player
 
 #__________________________________________________#
 ## GLOBAL VAR ##
