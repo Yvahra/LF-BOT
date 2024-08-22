@@ -46,6 +46,6 @@ async def recapRSS():
 @bot.event
 async def on_ready():
   await recapRSS()  # le bot est prêt
-  return
+  exit()
 
 bot.run(token)
