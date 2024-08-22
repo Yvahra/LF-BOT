@@ -72,7 +72,7 @@ donne:
 `!templatePacte`: donne la commande à remplir pour enregistrer un pacte;""",
     """### Commandes Alliance
 `!printAlliance`: affiche les données de l'alliance; 
-`!setTDC <tdc>`: modifie la quantité de TDC de l'alliance;
+`!setTDCAlly <tdc>`: modifie la quantité de TDC de l'alliance;
 `!setNbMembre <quantité>`: modifie le nombre de joueurs de l'alliance;
 `!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie le bonus d'alliance;
 `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie les stats de l'alliance;""",
@@ -193,9 +193,9 @@ async def printAlliance(message):
       await message.channel.send(msg)
 
 
-# `!setTDC <tdc>`: modifie la quantité de TDC de l'alliance;
-async def setTDC(message):
-  if await lengthVerificatorWError(message, "!setTDC <tdc>"):
+# `!setTDCAlly <tdc>`: modifie la quantité de TDC de l'alliance;
+async def setTDCAlly(message):
+  if await lengthVerificatorWError(message, "!setTDCAlly <tdc>"):
     msg = alliance.setTDC(f.getNumber(message.content.split(" ")[1]))
     if msg.startswith("ERR:"):
       await error(message.channel, msg)
@@ -810,9 +810,9 @@ async def on_message(message):
 
     # `!setTDC <tdc>`
     # modifie la quantité de TDC de l'alliance;
-    elif message.content.upper().startswith("!SETTDC"):
+    elif message.content.upper().startswith("!SETTDCALLY"):
       if admin or writer:
-        await setTDC(message)
+        await setTDCAlly(message)
       else:
         await errorRole(message.channel,["bot admin access", "bot writer access"])
 
