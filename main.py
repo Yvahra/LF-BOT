@@ -490,7 +490,7 @@ async def recapRSS(message):
     else:
       await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
 async def printRecapRSS(message):
@@ -501,7 +501,7 @@ async def printRecapRSS(message):
     else:
       await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 #__________________________________________________#
 ## PLAYERS ##
