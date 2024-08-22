@@ -16,6 +16,9 @@ from keep_alive import keep_alive
 import db_handler_getters as dbg
 import db_handler_functions as dbf
 import functions as f
+from dotenv import load_dotenv
+
+
 
 import alliance
 import chasses
@@ -42,13 +45,15 @@ CONST_TEMPLATES = "CONST//CONST_Templates.json"
 CONST_DISCORD = "CONST//CONST_Discord.json"
 
 # Params du Bot
+load_dotenv()
 
 intents = discord.Intents.all()
 client = discord.Client(intents=intents)
 prefix = "$"
 bot = commands.Bot(command_prefix=prefix, intents=intents)
 # botId =
-token = str(os.environ['BOT_TOKEN'])
+#token = str(os.environ['BOT_TOKEN'])
+token = str(os.getenv("BOT_TOKEN"))
 
 # IDs
 rolesIDs = f.loadData(CONST_DISCORD)["roles_id"]
