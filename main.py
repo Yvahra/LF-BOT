@@ -22,7 +22,7 @@ from dotenv import load_dotenv
 
 import alliance
 import chasses
-import c
+import convois as c
 import floods
 import joueurs
 import pactes
