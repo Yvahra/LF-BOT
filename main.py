@@ -366,6 +366,28 @@ async def autoProd(message):
       for m in f.splitMessage(msg):
         await message.channel.send(m)
 
+# `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
+async def recapRSS(message):
+    channel = bot.get_channel(1276232505116196894)
+    msg = convois.repartitionRessources()
+    if msg.startswith("ERR:"):
+      await error(channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await channel.send(m)
+
+# `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
+async def printRecapRSS(message):
+    channel = bot.get_channel(1276232505116196894)
+    msg = convois.printRessourcesPartagees()
+    if msg.startswith("ERR:"):
+      await error(channel, msg)
+    else:
+      await message.delete()
+      for m in f.splitMessage(msg):
+        await channel.send(m)
+
 
 #__________________________________________________#
 ## FLOODS EXTERNES ##
@@ -481,27 +503,6 @@ async def donTDC(message):
       for m in f.splitMessage(msg):
         await message.channel.send(m)
 
-# `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
-async def recapRSS(message):
-    channel = bot.get_channel(1276232505116196894)
-    msg = convois.repartitionRessources()
-    if msg.startswith("ERR:"):
-      await error(channel, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await channel.send(m)
-
-# `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
-async def printRecapRSS(message):
-    channel = bot.get_channel(1276232505116196894)
-    msg = convois.printRessourcesPartagees()
-    if msg.startswith("ERR:"):
-      await error(channel, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await channel.send(m)
 
 #__________________________________________________#
 ## PLAYERS ##
@@ -1123,7 +1124,7 @@ async def on_message(message):
 ## Run ##
 #__________________________________________________#
 
-#On va maintenir le bot en acitivité
+#On va maintenir le bot en activité
 keep_alive()
 #On lance le bot
 bot.run(token)
