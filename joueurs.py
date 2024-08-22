@@ -219,8 +219,9 @@ def setTDCExploité(player:str, colo:str, tdc:str) -> str:
     for p in data:
       if p["name"].upper() == player.upper():
         colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-        if "exploitation" in p: old_tdc = p[colo_key]["exploitation"]
+        if "exploitation" in p[colo_key]: old_tdc = p[colo_key]["exploitation"]
         p[colo_key]["exploitation"] = int(tdc)
+        if tdc > p[colo_key]["tdc"]: p[colo_key]["tdc"] = int(tdc)
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
@@ -236,8 +237,9 @@ def setTDC(player, colo:str, tdc:str) -> str:
     for p in data:
       if p["name"].upper() == player.upper():
         colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-        if "tdc" in p: old_tdc = p[colo_key]["tdc"]
+        if "tdc" in p[colo_key]: old_tdc = p[colo_key]["tdc"]
         p[colo_key]["tdc"] = int(tdc)
+        if tdc < p[colo_key]["exploitation"]: p[colo_key]["exploitation"] = int(tdc)
     f.saveData(data, S_JOUEUR_FILENAME)
     msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
