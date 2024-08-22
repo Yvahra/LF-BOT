@@ -40,7 +40,7 @@ def convertNumber(number:str):
 def readableNumber(number:str):
   L = len(number)
   res = ""
-  for i in range(len(number)):
+  for i in range(L):
     if i == L-1:
       res+= number[i]
     elif L-i-1 % 3 == 0:

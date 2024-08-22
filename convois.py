@@ -162,7 +162,7 @@ def repartitionRessources():
     today = datetime.date.today().strftime("%Y-%m-%d")
     active_players = f.loadData(S_ACTIVE_PLAYERS)
     nb_joueurs_actifs = len(active_players)
-    tdc_total_exploit = 0
+    prod_totale = 0
     ressources_detail = {}
 
     convois = f.loadData(H_CONVOIS_FILENAME)
@@ -200,9 +200,10 @@ def repartitionRessources():
             ressources_detail[player["colo2"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
                                                                              "exploit": 0,
                                                                              "pillage": 0}
-      tdc_total_exploit += player["colo1"]["exploitation"] + player["colo2"]["exploitation"]
+
       prodC1 = player["colo1"]["exploitation"] * 24
       prodC2 = player["colo2"]["exploitation"] * 24
+      prod_totale += player["colo1"]["exploitation"] * 24 + player["colo2"]["exploitation"] * 24
       if vass1:
         prop_pille = (player["colo1"]["vassal"]["pillage"]+20) / 100
         ressources_detail[player["name"].lower()]["exploit"] +=  prodC1 * (1 - prop_pille)
@@ -227,7 +228,7 @@ def repartitionRessources():
       else:
         nb_jour += 1
 
-    salaire = int(tdc_total_exploit / nb_joueurs_actifs)
+    salaire = int(prod_totale / nb_joueurs_actifs)
 
     for player in active_players:
       if not player.lower() in cumul :
@@ -259,6 +260,7 @@ def printRessourcesPartagees() -> str:
   try:
     ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[datetime.date.today().strftime("%Y-%m-%d")]
     msg = "# Récapitulatif des ressources partagées\n\n"
+    print("Salaire:",str(int(ress["salaire"])))
     msg+= "Salaire: " + f.readableNumber(str(int(ress["salaire"]))) +  " ressources\n"
     for player in ress["ressources_detail"]:
       msg+= "``` * "+ player.upper() + ":\n"
