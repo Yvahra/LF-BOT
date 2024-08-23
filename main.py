@@ -187,13 +187,13 @@ async def getDbNames(message):
 
   msg = "Available files:\n```"
   print(os.path.dirname(__file__))
-  for f in os.listdir(os.path.dirname(__file__)+"/CONST/"):
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/CONST/"):
       msg+= "    " + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+ "/HIST/"):
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/HIST/"):
       msg+= "    " + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+ "/STATS/"):
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/STATS/"):
       msg+= "    " + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+ "/ARCHIVES/"):
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/ARCHIVES/"):
       msg+= "    " + f + "\n"
   msg+= "```"
   await message.delete()
