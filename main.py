@@ -209,7 +209,7 @@ async def getDB(message):
     if await lengthVerificatorWError(message, "!getDB <path//filename>"):
         if os.path.exists(dirname+"/JSON/"+filename):
             if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
-                file = discord.File(filename)  # an image in the same folder as the main bot file
+                file = discord.File(dirname+"/JSON/"+filename)  # an image in the same folder as the main bot file
                 embed = discord.Embed()  # any kwargs you want here
                 embed.set_image(url="attachment://" + filename.split("//")[-1])
                 # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
