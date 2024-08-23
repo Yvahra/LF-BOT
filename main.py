@@ -721,7 +721,7 @@ async def setHero(message):
 #`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 async def setActivePlayers(message):
     newData = []
-    if len(message.coontent.split(" ")) == 0:
+    if len(message.content.split(" ")) == 0:
         pass
     else:
         for p in message.coontent.split(" ")[1:]:
