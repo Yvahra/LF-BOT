@@ -7,7 +7,6 @@
 #__________________________________________________#
 
 import datetime
-from db_handler_functions import COLONIES, S_JOUEUR_FILENAME
 import functions as f
 
 #__________________________________________________#
