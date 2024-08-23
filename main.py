@@ -69,8 +69,11 @@ donne:
 300 000 Esclaves, 9 717 Jeunes tanks```""",
     """### Commandes Aides
 `!help`: affiche les commandes;
+`!help <aide/alliance/convois/chasse/joueur/pacte>`: affiche les commandes sur un sujet spécifique;
 `!templatePlayer`: donne la fiche à remplir pour enregistrer un joueur;
-`!templatePacte`: donne la commande à remplir pour enregistrer un pacte;""",
+`!templatePacte`: donne la commande à remplir pour enregistrer un pacte;
+`!getDbNames`: donne les noms des bases de données;
+`!getDB <path//filename>`: donne la base de données;""",
     """### Commandes Alliance
 `!printAlliance`: affiche les données de l'alliance; 
 `!setTDCAlly <tdc>`: modifie la quantité de TDC de l'alliance;
@@ -201,20 +204,21 @@ async def getDB(message, filename):
     # Rewrite
     msg = "```!getDB <path//filename>```"
     dirname = os.path.dirname(__file__)
-    if os.path.exists(os.path.join(dirname, filename)):
-        if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
-            file = discord.File(filename)  # an image in the same folder as the main bot file
-            embed = discord.Embed()  # any kwargs you want here
-            embed.set_image(url="attachment://" + filename.split("//")[-1])
-            # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
-            await message.delete()
-            await message.channel.send(embed=embed, file=file, message=msg)
+    if await lengthVerificatorWError(message, "!getDB <path//filename>"):
+        if os.path.exists(os.path.join(dirname, filename)):
+            if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
+                file = discord.File(filename)  # an image in the same folder as the main bot file
+                embed = discord.Embed()  # any kwargs you want here
+                embed.set_image(url="attachment://" + filename.split("//")[-1])
+                # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
+                await message.delete()
+                await message.channel.send(embed=embed, file=file, message=msg)
+            else:
+                msg += "\nNo authorised access to: `" + filename + "`"
+                await message.channel.send(msg)
         else:
-            msg += "\nNo authorised access to: `" + filename + "`"
+            msg += "\nNo file with this path: `" + filename + "`"
             await message.channel.send(msg)
-    else:
-        msg += "\nNo file with this path: `" + filename + "`"
-        await message.channel.send(msg)
 
 
 
@@ -851,6 +855,19 @@ async def on_message(message):
       else:
         await errorRole(message.channel,["bot admin access", "diplo"])
 
+    # `!getDbNames`: donne les noms des bases de données;
+    elif message.content.upper().startswith("!GETDBNAMES"):
+      if admin:
+        await getDbNames(message)
+      else:
+        await errorRole(message.channel,["bot admin access"])
+
+    # `!getDB <path//filename>`: donne la base de données;
+    elif message.content.upper().startswith("!GETDB"):
+      if admin:
+        await getDB(message)
+      else:
+        await errorRole(message.channel,["bot admin access"])
     
     ### -------- ###
     ### Alliance ###
