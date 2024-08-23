@@ -718,25 +718,25 @@ async def setHero(message):
     await error(message.channel,
                 "Erreur dans la commande: `!player \n <templatePlayer>`")
 
-    #`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
-    async def setActivePlayers(message):
-        newData = []
-        if len(message.coontent.split(" ")) == 0:
-            pass
-        else:
-            for p in message.coontent.split(" ")[1:]:
-                newData.append(p.lowercase())
-        f.saveData(newData, S_ACTIVE_PLAYERS)
-        await getActivePlayers(message)
+#`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
+async def setActivePlayers(message):
+    newData = []
+    if len(message.coontent.split(" ")) == 0:
+        pass
+    else:
+        for p in message.coontent.split(" ")[1:]:
+            newData.append(p.lowercase())
+    f.saveData(newData, S_ACTIVE_PLAYERS)
+    await getActivePlayers(message)
 
-    #`!getActivePlayers`: donne les joueurs actifs de la LF;
-    async def getActivePlayers(message):
-        activeP = f.loadData(S_ACTIVE_PLAYERS)
-        msg = "Les joueurs actifs de la LF sont:\n"
-        for p in activeP:
-            msg+="   "+p+"\n"
-        for m in f.splitMessage(msg):
-            await message.channel.send(m)
+#`!getActivePlayers`: donne les joueurs actifs de la LF;
+async def getActivePlayers(message):
+    activeP = f.loadData(S_ACTIVE_PLAYERS)
+    msg = "Les joueurs actifs de la LF sont:\n"
+    for p in activeP:
+        msg+="   "+p+"\n"
+    for m in f.splitMessage(msg):
+        await message.channel.send(m)
 
 
 #__________________________________________________#
