@@ -14,6 +14,7 @@ from functions import convertNumber
 #__________________________________________________#
 
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
+S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
 RACES = ["Abeille", "Araignée", "Fourmi", "Termite"]
 BONUS_HEROS = ["Vie", "FdF - Combat", "FdF - Chasse"]
 
@@ -246,4 +247,17 @@ def setTDC(player, colo:str, tdc:str) -> str:
     msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
     msg = "ERR: setTDC() - " + str(e) + "\n" + msg
+  return msg
+
+def setActivePlayers(messsage):
+  res = []
+  msg = "Joueur(s) enregistré(s): "
+  try:
+    for player in messsage.content.split(" ")[1:]:
+      res.append(player.lower())
+      msg+= player.lower()+", "
+    msg = msg[:-2]+"\n"
+    f.saveData(res,S_ACTIVE_PLAYERS)
+  except Exception as e:
+    msg = "ERR: setActivePlayers() - " + str(e) + "\n" + msg
   return msg

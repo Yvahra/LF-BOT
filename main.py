@@ -6,20 +6,15 @@
 ## import ##
 #__________________________________________________#
 
-from discord.app_commands.transformers import CHANNEL_TO_TYPES
 import os
 import discord
 from discord.ext import commands
 from datetime import datetime
-
-from keep_alive import keep_alive
-import db_handler_getters as dbg
-import db_handler_functions as dbf
-import functions as f
 from dotenv import load_dotenv
 
-
-
+from keep_alive import keep_alive
+import db_rawGetters as dbg
+import functions as f
 import alliance
 import chasses
 import convois
@@ -40,6 +35,7 @@ S_ALLIANCE_FILENAME = "STATS//Stats_Alliance.json"
 S_CONVOIS_FILENAME = "STATS//Stats_ConvoisEnCours.json"
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
 S_FLOODS_FILENAME = "STATS//Stats_FloodsFuturs.json"
+S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
 
 CONST_TEMPLATES = "CONST//CONST_Templates.json"
 CONST_DISCORD = "CONST//CONST_Discord.json"
@@ -182,6 +178,44 @@ async def templatePacte(message):
   msg = f.loadData(CONST_TEMPLATES)["pacte"]
   await message.delete()
   await message.channel.send(msg)
+
+# `!getDbNames`: donne les noms des bases de données;
+async def getDbNames(message):
+
+  msg = "Available files:\n```"
+  for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "CONST//"))):
+      msg+= "    " + f + "\n"
+  for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "HIST//"))):
+      msg+= "    " + f + "\n"
+  for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "STATS//"))):
+      msg+= "    " + f + "\n"
+  for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "ARCHIVES//"))):
+      msg+= "    " + f + "\n"
+  msg+= "```"
+  await message.delete()
+  await message.channel.send(msg)
+
+
+# `!getDB <path//filename>`: donne la base de données;
+async def getDB(message, filename):
+    # Rewrite
+    msg = "```!getDB <path//filename>```"
+    dirname = os.path.dirname(__file__)
+    if os.path.exists(os.path.join(dirname, filename)):
+        if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
+            file = discord.File(filename)  # an image in the same folder as the main bot file
+            embed = discord.Embed()  # any kwargs you want here
+            embed.set_image(url="attachment://" + filename.split("//")[-1])
+            # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
+            await message.delete()
+            await message.channel.send(embed=embed, file=file, message=msg)
+        else:
+            msg += "\nNo authorised access to: `" + filename + "`"
+            await message.channel.send(msg)
+    else:
+        msg += "\nNo file with this path: `" + filename + "`"
+        await message.channel.send(msg)
+
 
 
 #__________________________________________________#
@@ -769,13 +803,9 @@ async def on_message(message):
 
     is_concerned = False
 
-    lf_members = [
-        "antoriax", "bad_broly", "bendowin", "blackpixel", "mystogan",
-        "scarapace", "yvahra"
-    ]
+    lf_members = f.loadData(S_ACTIVE_PLAYERS)
     for m in lf_members:
-      if user.get_role(
-          rolesIDs[m]) is not None and m in message.content.lower():
+      if user.get_role(rolesIDs[m]) is not None and m in message.content.lower():
         is_concerned = True
 
 

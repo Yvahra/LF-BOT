@@ -32,4 +32,3 @@ JOUEUR_DANs_ALLIANCE = f.loadData("CONST//CONST_Association-Player-Ally.json")
 async def printDB(channel, filename):
   data = f.loadData(filename)
   await channel.send("```"+str(data)+"```")
-
