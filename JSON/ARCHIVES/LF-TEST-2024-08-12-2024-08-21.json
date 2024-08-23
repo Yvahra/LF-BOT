@@ -1,4 +1,0 @@
-[
-  {"quantity": 10000, "flooder": {"ally": "LF-TEST", "player": {"name": "YvaEXT", "colony": 0}}, "flooded": {"ally": "LF", "player": {"name": "Yvahra", "colony": 0}}, "day": "2024-08-21"}, 
-  {"quantity": 20000, "flooder": {"ally": "LF", "player": {"name": "Yvahra", "colony": 0}}, "flooded": {"ally": "LF-TEST", "player": {"name": "YvaEXT", "colony": 0}}, "day": "2024-08-21"}, 
-  {"quantity": 5000, "flooder": {"ally": "LF-TEST", "player": {"name": "YvaEXT", "colony": 0}}, "flooded": {"ally": "LF", "player": {"name": "Yvahra", "colony": 0}}, "day": "2024-08-21"}]
