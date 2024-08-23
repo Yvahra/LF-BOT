@@ -186,6 +186,7 @@ async def templatePacte(message):
 async def getDbNames(message):
 
   msg = "Available files:\n```"
+  print(os.path.dirname(__file__))
   for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "CONST//"))):
       msg+= "    " + f + "\n"
   for f in os.listdir(os.path.exists(os.path.join(os.path.dirname(__file__), "HIST//"))):
