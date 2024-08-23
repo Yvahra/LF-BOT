@@ -724,7 +724,7 @@ async def setActivePlayers(message):
     if len(message.content.split(" ")) == 0:
         pass
     else:
-        for p in message.coontent.split(" ")[1:]:
+        for p in message.content.split(" ")[1:]:
             newData.append(p.lowercase())
     f.saveData(newData, S_ACTIVE_PLAYERS)
     await getActivePlayers(message)
