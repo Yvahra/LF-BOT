@@ -188,13 +188,13 @@ async def getDbNames(message):
   msg = "Available files:\n```"
   print(os.path.dirname(__file__))
   for f in os.listdir(os.path.dirname(__file__)+"/JSON/CONST/"):
-      msg+= "    " + f + "\n"
+      msg+= "    CONST/" + f + "\n"
   for f in os.listdir(os.path.dirname(__file__)+"/JSON/HIST/"):
-      msg+= "    " + f + "\n"
+      msg+= "    HIST/" + f + "\n"
   for f in os.listdir(os.path.dirname(__file__)+"/JSON/STATS/"):
-      msg+= "    " + f + "\n"
+      msg+= "    STATS/" + f + "\n"
   for f in os.listdir(os.path.dirname(__file__)+"/JSON/ARCHIVES/"):
-      msg+= "    " + f + "\n"
+      msg+= "    ARCHIVES/" + f + "\n"
   msg+= "```"
   await message.delete()
   await message.channel.send(msg)
@@ -206,7 +206,7 @@ async def getDB(message, filename):
     msg = "```!getDB <path//filename>```"
     dirname = os.path.dirname(__file__)
     if await lengthVerificatorWError(message, "!getDB <path//filename>"):
-        if os.path.exists(os.path.join(dirname, filename)):
+        if os.path.exists(dirname+"/JSON/"+filename):
             if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
                 file = discord.File(filename)  # an image in the same folder as the main bot file
                 embed = discord.Embed()  # any kwargs you want here
