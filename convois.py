@@ -156,10 +156,9 @@ def demandeConvoi(joueur:str, colo:str, constr:str, level:str, apple:str, wood:s
     msg = "ERR: demandeConvoi() - " + str(e) + "\n" + msg
   return msg
 
-def repartitionRessources():
+def repartitionRessources(dateRecap:str):
   msg = ""
   try:
-    today = datetime.date.today().strftime("%Y-%m-%d")
     active_players = f.loadData(S_ACTIVE_PLAYERS)
     nb_joueurs_actifs = len(active_players)
     prod_totale = 0
@@ -167,7 +166,7 @@ def repartitionRessources():
 
     convois = f.loadData(H_CONVOIS_FILENAME)
     for convoi in convois:
-      if convoi["day"] == today and convoi["convoyer"]["name"].lower() in active_players and convoi["convoyed"]["name"].lower() in active_players:
+      if convoi["day"] == dateRecap and convoi["convoyer"]["name"].lower() in active_players and convoi["convoyed"]["name"].lower() in active_players:
         q = convoi["convoy"]["apple"] + convoi["convoy"]["wood"] + convoi["convoy"]["water"]
         if not convoi["convoyer"]["name"].lower() in ressources_detail:
           ressources_detail[convoi["convoyer"]["name"].lower()] = { "convois": [0,0], #reçu, donné
@@ -222,9 +221,9 @@ def repartitionRessources():
     ress_parta = f.loadData(H_RSS_PARTAGEES_FILENAME)
     cumul = {}
     while last_recap_found:
-      if (datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
+      if (datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
         last_recap_found = True
-        cumul = ress_parta[(datetime.date.today() - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
+        cumul = ress_parta[(datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
       else:
         nb_jour += 1
 
@@ -246,19 +245,19 @@ def repartitionRessources():
       "cumul": cumul
     }
 
-    ress_parta[today] = recap
+    ress_parta[dateRecap] = recap
     f.saveData(ress_parta, H_RSS_PARTAGEES_FILENAME)
 
-    msg = printRessourcesPartagees()
+    msg = printRessourcesPartagees(dateRecap)
 
   except Exception as e:
     msg = "ERR: repartitionRessources() - " + str(e) + "\n" + msg
   return msg
 
-def printRessourcesPartagees() -> str:
+def printRessourcesPartagees(dateRecap:str) -> str:
   msg = ""
   try:
-    ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[datetime.date.today().strftime("%Y-%m-%d")]
+    ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[dateRecap]
     msg = "# Récapitulatif des ressources partagées\n\n"
     msg+= "Salaire: " + f.readableNumber(str(int(ress["salaire"]))) +  " ressources\n"
     for player in ress["ressources_detail"]:

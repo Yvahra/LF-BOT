@@ -9,7 +9,7 @@
 import os
 import discord
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, date
 from dotenv import load_dotenv
 
 from keep_alive import keep_alive
@@ -409,10 +409,14 @@ async def autoProd(message):
       for m in f.splitMessage(msg):
         await message.channel.send(m)
 
-# `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
+# `!recapRessources [yyyy-mm-dd]``: calcul le récapitulatif des ressources récoltées de la journée;
 async def recapRSS(message):
     channel = bot.get_channel(1276232505116196894)
-    msg = convois.repartitionRessources()
+    msg = ""
+    if len(message.content.split(" ")) > 1:
+        msg = convois.repartitionRessources(message.content.split(" ")[1])
+    else:
+        msg = convois.repartitionRessources(date.today().strftime("%Y-%m-%d"))
     if msg.startswith("ERR:"):
       await error(channel, msg)
     else:
@@ -1000,13 +1004,14 @@ async def on_message(message):
       else:
         await errorRole(message.channel,["bot admin access", "bot writer access", "membre"])
 
-        # `!recapRessources`
+        # `!recapRessources [yyyy-mm-dd]`
         # calcul le récapitulatif des ressources récoltées de la journée;
     elif message.content.upper().startswith("!RECAPRESSOURCES"):
       if admin:
         await recapRSS(message)
       else:
         await errorRole(message.channel,["bot admin access"])
+
 
         # `!printRecapRessources`
         # affiche le récapitulatif des ressources récoltées de la journée;
