@@ -1,1 +1,5 @@
-{"achat-tdc": {"ally-test": {"tdc-achet\u00e9": 1, "ressources-convoy\u00e9es": 100}, "ally-test2": {"tdc-achet\u00e9": 1, "ressources-convoy\u00e9es": 100}, "LF2": {"tdc-achet\u00e9": 0, "ressources-convoy\u00e9es": 0}, "LF3": {"tdc-achet\u00e9": 0, "ressources-convoy\u00e9es": 0}, "LF-TEST": {"tdc-achet\u00e9": 0, "ressources-convoy\u00e9es": 0}}, "location-tdc": {"ally-test": {"tdc-pris": 100, "tdc-repris": 90}, "ally-test2": {"tdc-pris": 100, "tdc-repris": 90}}, "perc-tdc": {"ally-test": {"tdc-pris": 100, "tdc-repris": 90}, "ally-test2": {"tdc-pris": 100, "tdc-repris": 90}}}
+{
+  "achat-tdc": {},
+  "location-tdc": {},
+  "perc-tdc": {}
+}

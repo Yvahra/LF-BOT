@@ -1,1 +1,1 @@
-[{"ally": "LF2", "title": "Pacte Test", "type-guerre": 1, "type-commercial": 1, "description": "test.", "start": "2024-07-31", "end": "2024-08-18", "n_days": 21}, {"ally": "LF3", "title": "Test2 ", "type-guerre": 1, "type-commercial": 2, "description": "test pour qnto", "start": "2024-08-12", "end": "None", "price_for_1M_tdc": 3000000000}, {"ally": "LF-TEST", "title": "LF-TEST", "type-guerre": 0, "type-commercial": 2, "description": "Test d'archivage", "start": "2024-08-12", "end": "2024-08-21", "price_for_1M_tdc": 3000000000}]
+[]
