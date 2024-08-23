@@ -201,8 +201,9 @@ async def getDbNames(message):
 
 
 # `!getDB <path//filename>`: donne la base de données;
-async def getDB(message, filename):
+async def getDB(message):
     # Rewrite
+    filename = message.content.split(" ")[1]
     msg = "```!getDB <path//filename>```"
     dirname = os.path.dirname(__file__)
     if await lengthVerificatorWError(message, "!getDB <path//filename>"):
