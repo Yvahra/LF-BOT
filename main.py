@@ -214,7 +214,8 @@ async def getDB(message):
                 embed.set_image(url="attachment://" + filename.split("//")[-1])
                 # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
                 await message.delete()
-                await message.channel.send(embed=embed, file=file, message=msg)
+                await message.channel.send(msg)
+                await message.channel.send(embed=embed, file=file)
             else:
                 msg += "\nNo authorised access to: `" + filename + "`"
                 await message.channel.send(msg)
