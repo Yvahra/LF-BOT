@@ -71,9 +71,7 @@ donne:
 `!help`: affiche les commandes;
 `!help <aide/alliance/convois/chasse/joueur/pacte>`: affiche les commandes sur un sujet spécifique;
 `!templatePlayer`: donne la fiche à remplir pour enregistrer un joueur;
-`!templatePacte`: donne la commande à remplir pour enregistrer un pacte;
-`!getDbNames`: donne les noms des bases de données;
-`!getDB <path//filename>`: donne la base de données;""",
+`!templatePacte`: donne la commande à remplir pour enregistrer un pacte;""",
     """### Commandes Alliance
 `!printAlliance`: affiche les données de l'alliance; 
 `!setTDCAlly <tdc>`: modifie la quantité de TDC de l'alliance;
@@ -112,7 +110,11 @@ donne:
     """### Commandes Pactes
 `!printPactes`: affiche les pactes;
 `!endPacte`: clôt un pacte;
-`!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> [end] \\n <titre> \\n <description>`: ajoute un nouveau pacte;"""
+`!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> [end] \\n <titre> \\n <description>`: ajoute un nouveau pacte;""",
+    """"### Commandes Dev
+`!getDbNames`: donne les noms des bases de données;
+`!getDB <path//filename>`: donne la base de données;
+`!getLog [date]`: donne les logs [du jour en cours, par défaut];"""
 ]
 
 
@@ -122,18 +124,25 @@ donne:
 
 # ERROR HANDLER
 # error sender
-async def error(channel, errorMsg: str):
-  await channel.send(errorMsg)
+async def error(message, errorMsg: str):
+    f.log(rank=1, prefixe="[ERROR]", message=message.content + message.content, suffixe=errorMsg)
+    await message.channel.send(errorMsg)
 
+def checkRoles(message, roles:list) -> bool:
+    if not any(roles):
+        f.log(rank=1, prefixe="[ERROR]", message="No permission", suffixe=" - "+str(roles))
+    return any(roles)
 
 # length verification
 async def lengthVerificatorWError(message, command):
   if len(message.content.upper().split(" ")) == len(command.upper().split(" ")):
     return True
   elif len(message.content.upper().split(" ")) < len(command.upper().split(" ")):
+    f.log(rank=1, prefixe="[ERROR]", message="Peu d'arguments ont été donnés:`" + command + "`", suffixe="")
     await error(message.channel,"Peu d'arguments ont été donnés:`" + command + "`")
     return False
   elif len(message.content.upper().split(" ")) > len(command.upper().split(" ")):
+    f.log(rank=1, prefixe="[ERROR]", message="Trop d'arguments ont été donnés:`" + command + "`", suffixe="")
     await error(message.channel,"Trop d'arguments ont été donnés:`" + command + "`")
     return False
 
@@ -183,48 +192,6 @@ async def templatePacte(message):
   msg = f.loadData(CONST_TEMPLATES)["pacte"]
   await message.delete()
   await message.channel.send(msg)
-
-# `!getDbNames`: donne les noms des bases de données;
-async def getDbNames(message):
-
-  msg = "Available files:\n```"
-  print(os.path.dirname(__file__))
-  for f in os.listdir(os.path.dirname(__file__)+"/JSON/CONST/"):
-      msg+= "    CONST/" + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+"/JSON/HIST/"):
-      msg+= "    HIST/" + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+"/JSON/STATS/"):
-      msg+= "    STATS/" + f + "\n"
-  for f in os.listdir(os.path.dirname(__file__)+"/JSON/ARCHIVES/"):
-      msg+= "    ARCHIVES/" + f + "\n"
-  msg+= "```"
-  await message.delete()
-  await message.channel.send(msg)
-
-
-# `!getDB <path//filename>`: donne la base de données;
-async def getDB(message):
-    # Rewrite
-    filename = message.content.split(" ")[1]
-    dirname = os.path.dirname(__file__)
-    if await lengthVerificatorWError(message, "!getDB <path//filename>"):
-        if os.path.exists(dirname+"/JSON/"+filename):
-            if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
-                file = discord.File(dirname+"/JSON/"+filename)  # an image in the same folder as the main bot file
-                embed = discord.Embed()  # any kwargs you want here
-                embed.set_image(url="attachment://" + filename.split("//")[-1])
-                # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
-                await message.delete()
-                await message.channel.send(embed=embed, file=file)
-            else:
-                msg = "```!getDB <path//filename>```"
-                msg += "\nNo authorised access to: `" + filename + "`"
-                await message.channel.send(msg)
-        else:
-            msg = "```!getDB <path//filename>```"
-            msg += "\nNo file with this path: `" + filename + "`"
-            await message.channel.send(msg)
-
 
 
 #__________________________________________________#
@@ -795,9 +762,49 @@ async def pacte(message):
 
 
 #__________________________________________________#
-## EXTERNE ##
+## DEV ##
 #__________________________________________________#
 
+# `!getDbNames`: donne les noms des bases de données;
+async def getDbNames(message):
+
+  msg = "Available files:\n```"
+  print(os.path.dirname(__file__))
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/CONST/"):
+      msg+= "    CONST/" + f + "\n"
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/HIST/"):
+      msg+= "    HIST/" + f + "\n"
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/STATS/"):
+      msg+= "    STATS/" + f + "\n"
+  for f in os.listdir(os.path.dirname(__file__)+"/JSON/ARCHIVES/"):
+      msg+= "    ARCHIVES/" + f + "\n"
+  msg+= "```"
+  await message.delete()
+  await message.channel.send(msg)
+
+
+# `!getDB <path//filename>`: donne la base de données;
+async def getDB(message):
+    # Rewrite
+    filename = message.content.split(" ")[1]
+    dirname = os.path.dirname(__file__)
+    if await lengthVerificatorWError(message, "!getDB <path//filename>"):
+        if os.path.exists(dirname+"/JSON/"+filename):
+            if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
+                file = discord.File(dirname+"/JSON/"+filename)  # an image in the same folder as the main bot file
+                embed = discord.Embed()  # any kwargs you want here
+                embed.set_image(url="attachment://" + filename.split("//")[-1])
+                # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
+                await message.delete()
+                await message.channel.send(embed=embed, file=file)
+            else:
+                msg = "```!getDB <path//filename>```"
+                msg += "\nNo authorised access to: `" + filename + "`"
+                await message.channel.send(msg)
+        else:
+            msg = "```!getDB <path//filename>```"
+            msg += "\nNo file with this path: `" + filename + "`"
+            await message.channel.send(msg)
 
 # !printDB <DB>
 # affiche les données d'une base de données
@@ -805,6 +812,23 @@ async def printDB(message):
   await message.delete()
   if lengthVerificatorWError(message, "!printDB <DB>"):
     await dbg.printDB(message.channel, message.content.split(" ")[1])
+
+# `!getLog [date]`: donne les logs [par défaut, du jour en cours];
+async def getLog(message):
+    # Rewrite
+    filename = os.path.dirname(__file__)+os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
+    if len(message.content.split(" ")) > 1:
+        filename = os.path.dirname(__file__) + os.path.dirname(__file__) + "/LOGS/" + datetime.strptime(message.content.split(" ")[1],"%Y-%m-%d")
+    if os.path.exists(filename):
+        file = discord.File(filename)
+        embed = discord.Embed()
+        embed.set_image(url="attachment://log.txt")
+        await message.delete()
+        await message.channel.send(embed=embed, file=file)
+    else:
+        msg = "```!getLog [date]```"
+        msg += "\nNo file with this path: `" + filename + "`"
+        await message.channel.send(msg)
 
 
 #__________________________________________________#
@@ -857,51 +881,63 @@ async def on_message(message):
     #`!help`
     # affiche les commandes;
     if message.content.upper().startswith("!HELP AIDE"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 0)
     elif message.content.upper().startswith("!HELP ALLIANCE"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 1)
     elif message.content.upper().startswith("!HELP CHASSE"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 2)
     elif message.content.upper().startswith("!HELP CONVOI"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 3)
     elif message.content.upper().startswith("!HELP FLOOD"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 4)
     elif message.content.upper().startswith("!HELP JOUEUR"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 5)
     elif message.content.upper().startswith("!HELP PACTE"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 6)
     elif message.content.upper().startswith("!HELP"): 
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message)
 
       #`!templatePlayer`
       # donne la fiche à remplir pour enregistrer un joueur;
     elif message.content.upper().startswith("!TEMPLATEPLAYER"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await templatePlayer(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
     # `!templatePacte`
     # donne la commande à remplir pour enregistrer un pacte;
     elif message.content.upper().startswith("!TEMPLATEPACTE"):
-      if admin or diplo:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, diplo]):
         await templatePacte(message)
       else:
-        await errorRole(message.channel,["bot admin access", "diplo"])
+        await errorRole(message,["bot admin access", "diplo"])
 
     # `!getDbNames`: donne les noms des bases de données;
     elif message.content.upper().startswith("!GETDBNAMES"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await getDbNames(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
     # `!getDB <path//filename>`: donne la base de données;
     elif message.content.upper().startswith("!GETDB"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await getDB(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
     
     ### -------- ###
     ### Alliance ###
@@ -911,42 +947,47 @@ async def on_message(message):
     # `!printAlliance`
     # affiche les données de l'alliance;
     elif message.content.upper().startswith("!PRINTALLIANCE"):
-      if admin or superReader or membre:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, superReader, membre]):
         await printAlliance(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot super-reader acces", "membre"])
+        await errorRole(message,["bot admin access", "bot super-reader acces", "membre"])
 
     # `!setTDC <tdc>`
     # modifie la quantité de TDC de l'alliance;
     elif message.content.upper().startswith("!SETTDCALLY"):
-      if admin or writer:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer]):
         await setTDCAlly(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     # `!setNbMember <quantité>`
     # modifie le nombre de joueurs de l'alliance;
     elif message.content.upper().startswith("!SETNBMEMBRE"):
-      if admin or writer:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer]):
         await setNBMembre(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     # `!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`
     # modifie le bonus d'alliance;
     elif message.content.upper().startswith("!SETBONUSALLY"):
-      if admin or writer:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer]):
         await setBonusAlly(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     # `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`
     # modifie les stats de l'alliance;
     elif message.content.upper().startswith("!SETALLY"):
-      if admin or writer:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer]):
         await setAlly(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     
     ### ------- ###
@@ -957,19 +998,21 @@ async def on_message(message):
     # `!printChasses <joueur>`
     # affiche les chasses d'un joueur
     elif message.content.upper().startswith("!PRINTCHASSES"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await printChasses(message)
-      if admin or writer:
+      if checkRoles(message, [admin, writer]):
         await setAlly(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     # `!chasse <joueur> <C1/C2> <quantité>`
     # enregistre une chasse;
     elif message.content.upper().startswith("!CHASSE"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await chasse(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
   
       ### ------- ###
@@ -980,51 +1023,57 @@ async def on_message(message):
     # `!convoisEnCours`
     # affiche les convois en cours;
     elif message.content.upper().startswith("!CONVOISENCOURS"):
-      if admin or writer or superReader or membre:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, superReader, membre]):
         await printConvoisEnCours(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
+        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
 
       # `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`
       # ajoute un convoi;
     elif message.content.upper().startswith("!CONVOI"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await convoi(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`
       # met à jour un convoi avec l'autoprod d'un joueur;
     elif message.content.upper().startswith("!AUTOPROD"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await autoProd(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!demandeConvoi <joueur> <C1/C2> <pomme> <bois> <eau>`
       # ajoute un convoi à la liste des convois en cours;
     elif message.content.upper().startswith("!DEMANDECONVOI"):
-      if admin or writer or membre:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, membre]):
         await demandeConvoi(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "membre"])
+        await errorRole(message,["bot admin access", "bot writer access", "membre"])
 
         # `!recapRessources [yyyy-mm-dd]`
         # calcul le récapitulatif des ressources récoltées de la journée;
     elif message.content.upper().startswith("!RECAPRESSOURCES"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await recapRSS(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
 
         # `!printRecapRessources`
         # affiche le récapitulatif des ressources récoltées de la journée;
     elif message.content.upper().startswith("!PRINTRECAPRESSOURCES"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await printRecapRSS(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
     
       ### --------------- ###
       ### Floods externes ###
@@ -1034,42 +1083,47 @@ async def on_message(message):
       # `!floodExtR <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`
       # enregistre un flood externe reçu;
     elif message.content.upper().startswith("!FLOODEXTR"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await floodExtR(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`
       # enregistre un flood externe donné;
     elif message.content.upper().startswith("!FLOODEXTD"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await floodExtD(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!futursfloods`
       # affiche les floods à faire;
     elif message.content.upper().startswith("!FUTURSFLOODS"):
-      if admin or writer or superReader or membre:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, superReader, membre]):
         await printFloodsFuturs(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
+        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
 
       # `!printFloodsExt`
       # affiche les floods externes;
     elif message.content.upper().startswith("!PRINTFLOODSEXT"):
-      if admin or writer or superReader:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, superReader]):
         await printFloodsExt(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "bot super-reader access"])
+        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access"])
 
       # `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`
       # enregistre un don de tdc (butin de guerre par exemple)
     elif message.content.upper().startswith("!DONTDC"):
-      if admin or writer:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer]):
         await donTDC(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access"])
+        await errorRole(message,["bot admin access", "bot writer access"])
 
     
       ### ------- ###
@@ -1080,98 +1134,110 @@ async def on_message(message):
       # `!printPlayer <joueur>`
       # affiche les données d'un joueur.
     elif message.content.upper().startswith("!PRINTPLAYER"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await printPlayer(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!player \\n <templatePlayer>`
       # ajoute un nouveau pacte
     elif message.content.upper().startswith("!PLAYER"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await player(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
       # `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`
       # modifie l'armée d'un joueur.
     elif message.content.upper().startswith("!SETARMY"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setArmy(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`
       # modifie la race d'un joueur.
     elif message.content.upper().startswith("!SETRACE"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setRace(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
         # `!setTDCExploité <joueur> <C1/C2> <tdcExploté>`:
         # modifie le tdc exploité d'un joueur;
     elif message.content.upper().startswith("!SETTDCEXPLOITÉ"):
-        if admin or writer or is_concerned:
+        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+        if checkRoles(message, [admin, writer, is_concerned]):
             await setTDCExploité(message)
         else:
-            await errorRole(message.channel, ["bot admin access", "bot writer access", "joueur concerné"])
+            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
 
         # `!setTDC <joueur> <C1/C2> <tdcExploté>`:
         # modifie le tdc d'un joueur;
     elif message.content.upper().startswith("!SETTDC "):
-        if admin or writer or is_concerned:
+        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+        if checkRoles(message, [admin, writer, is_concerned]):
             await setTDC(message)
         else:
-            await errorRole(message.channel, ["bot admin access", "bot writer access", "joueur concerné"])
+            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsColo <joueur> <colo> <oe> <ov> <tdp>`
       # modifie les stats d'une colonie d'un joueur.
     elif message.content.upper().startswith("!SETSTATSCOLO"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setStatsColo(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setVassal <joueurVassalisé> <coloVassalisée> <vassal> <coloVassal> <pillage>`
       # modifie le vassal d'une colonie d'un joueur.
     elif message.content.upper().startswith("!SETVASSAL"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setVassal(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>`
       # modifie les statistiques générales d'un joueur.
     elif message.content.upper().startswith("!SETSTATSPLAYER"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setStatsPlayer(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setHero <joueur> <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`
       # modifie le héros d'un joueur.
     elif message.content.upper().startswith("!SETHERO"):
-      if admin or writer or is_concerned:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, is_concerned]):
         await setHero(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
     #`!setActivePlayers <joueur1> ... <joueurN>`
     # définit les joueurs actifs de la LF;
     elif message.content.upper().startswith("!SETACTIVEPLAYERS"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await setActivePlayers(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
     #`!getActivePlayers`
     # donne les joueurs actifs de la LF;
     elif message.content.upper().startswith("!GETACTIVEPLAYERS"):
-      if admin:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
         await getActivePlayers(message)
       else:
-        await errorRole(message.channel,["bot admin access"])
+        await errorRole(message,["bot admin access"])
 
     
       ### ------ ###
@@ -1182,26 +1248,29 @@ async def on_message(message):
       # `!printPactes`
       # affiche les pactes;
     elif message.content.upper().startswith("!PRINTPACTES"):
-      if admin or writer or superReader:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, writer, superReader]):
         await printPactes(message)
       else:
-        await errorRole(message.channel,["bot admin access", "bot writer access", "bot super-reader access"])
+        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access"])
 
       # `!endPacte <ally>`
       # clôt un pacte;
     elif message.content.upper().startswith("!ENDPACTE"):
-      if admin or diplo:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, diplo]):
         await endPacte(message)
       else:
-        await errorRole(message.channel,["bot admin access", "diplo"])
+        await errorRole(message,["bot admin access", "diplo"])
 
       # `!pacte <ally> <type-guerre> <type-commerce> <start> <end> \\n <titre> \\n <description>`
       # ajoute un nouveau pacte
     elif message.content.upper().startswith("!PACTE"):
-      if admin or diplo:
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, diplo]):
         await pacte(message)
       else:
-        await errorRole(message.channel,["bot admin access", "diplo"])
+        await errorRole(message,["bot admin access", "diplo"])
 
     
       ### ------ ###
@@ -1210,12 +1279,12 @@ async def on_message(message):
 
     
     elif message.content.startswith("!"):
+      f.log(rank=0, prefixe="[ERROR]", message="Unknown error - " + message.content, suffixe="")
       await error(
           message.channel,
           "Commande inconnue. `!help` pour voir la liste des commandes disponibles."
       )  #error
-    else:
-      pass  #usual message
+
 
 
 #__________________________________________________#
@@ -1225,4 +1294,5 @@ async def on_message(message):
 #On va maintenir le bot en activité
 keep_alive()
 #On lance le bot
+f.log(rank=0, prefixe="[START]", message="Bot lauching", suffixe="")
 bot.run(token)

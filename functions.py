@@ -1,6 +1,6 @@
 import os
 import json
-from datetime import datetime
+from datetime import datetime, date
 
 ARMY_CONV = {
   "ESCLAVES":"E", "ESCLAVE":"E", "E":"E", 
@@ -169,4 +169,14 @@ def setCOLONIES() -> dict:
   for p in data:
     COLONIES[p["name"].upper()] = [p["colo1"]["name"], p["colo2"]["name"]]
   return COLONIES
-  
+
+
+def log(rank= 0, prefixe= "", message= "", suffixe= ""):
+  msg = ""
+  filename = os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
+  for k in range(rank):
+    msg+="\t"
+  msg+= prefixe
+  msg+= message
+  msg+=suffixe
+  os.system("sed -i -e '$a"+msg+"' "+ filename)

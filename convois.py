@@ -220,7 +220,7 @@ def repartitionRessources(dateRecap:str):
     nb_jour = 1
     ress_parta = f.loadData(H_RSS_PARTAGEES_FILENAME)
     cumul = {}
-    while last_recap_found:
+    while not last_recap_found:
       if (datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
         last_recap_found = True
         cumul = ress_parta[(datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
