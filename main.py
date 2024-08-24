@@ -125,7 +125,7 @@ donne:
 # ERROR HANDLER
 # error sender
 async def error(message, errorMsg: str):
-    f.log(rank=1, prefixe="[ERROR]", message=message.content + message.content, suffixe=errorMsg)
+    f.log(rank=1, prefixe="[ERROR]", message=message.content, suffixe=errorMsg)
     await message.channel.send(errorMsg)
 
 def checkRoles(message, roles:list) -> bool:
@@ -139,11 +139,11 @@ async def lengthVerificatorWError(message, command):
     return True
   elif len(message.content.upper().split(" ")) < len(command.upper().split(" ")):
     f.log(rank=1, prefixe="[ERROR]", message="Peu d'arguments ont été donnés:`" + command + "`", suffixe="")
-    await error(message.channel,"Peu d'arguments ont été donnés:`" + command + "`")
+    await error(message,"Peu d'arguments ont été donnés:`" + command + "`")
     return False
   elif len(message.content.upper().split(" ")) > len(command.upper().split(" ")):
     f.log(rank=1, prefixe="[ERROR]", message="Trop d'arguments ont été donnés:`" + command + "`", suffixe="")
-    await error(message.channel,"Trop d'arguments ont été donnés:`" + command + "`")
+    await error(message,"Trop d'arguments ont été donnés:`" + command + "`")
     return False
 
 
@@ -204,7 +204,7 @@ async def printAlliance(message):
   if await lengthVerificatorWError(message, "!printAlliance"):
     msg = alliance.printAlliance()
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       await message.channel.send(msg)
@@ -215,7 +215,7 @@ async def setTDCAlly(message):
   if await lengthVerificatorWError(message, "!setTDCAlly <tdc>"):
     msg = alliance.setTDC(f.getNumber(message.content.split(" ")[1]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       await message.channel.send(msg)
@@ -226,7 +226,7 @@ async def setNBMembre(message):
   if await lengthVerificatorWError(message, "!setMembers <quantité>"):
     msg = alliance.setNBMembre(f.getNumber(message.content.split(" ")[1]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       await message.channel.send(msg)
@@ -243,7 +243,7 @@ async def setBonusAlly(message):
         message.content.split(" ")[3],
         message.content.split(" ")[4])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       await message.channel.send(msg)
@@ -262,7 +262,7 @@ async def setAlly(message):
                            message.content.split(" ")[5],
                            message.content.split(" ")[6])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       await message.channel.send(msg)
@@ -278,7 +278,7 @@ async def printChasses(message):
   if await lengthVerificatorWError(message, "!printChasses <joueur>"):
     msg = chasses.printChasses(message.content.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -294,7 +294,7 @@ async def chasse(message):
         message.content.split(" ")[2],
         f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -311,7 +311,7 @@ async def printConvoisEnCours(message):
   if await lengthVerificatorWError(message, "!printConvois"):
     msg = convois.printConvoisEnCours()
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -330,7 +330,7 @@ async def convoi(message):
         message.content.split(" ")[6],
         message.content.split(" ")[7])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -352,7 +352,7 @@ async def demandeConvoi(message):
         f.getNumber(message.content.split(" ")[6]),
         f.getNumber(message.content.split(" ")[7]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -370,7 +370,7 @@ async def autoProd(message):
         f.getNumber(message.content.split(" ")[4]),
         f.getNumber(message.content.split(" ")[5]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -437,7 +437,7 @@ async def floodExtR(message):
         message.content.split(" ")[5],
         message.content.split(" ")[6], date)
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -470,7 +470,7 @@ async def floodExtD(message):
         date,
     )
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -482,7 +482,7 @@ async def printFloodsFuturs(message):
   if await lengthVerificatorWError(message, "!floodsFuturs"):
     msg = floods.printFloodsFuturs()
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -498,7 +498,7 @@ async def printFloodsExt(message):
     elif len(message.content.split(" ")) == 2:
       msg = floods.printFloodsExtAlly(message.content.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -516,7 +516,7 @@ async def donTDC(message):
         f.getNumber(message.content.split(" ")[3]),
         message.content.split(" ")[4])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -533,7 +533,7 @@ async def printPlayer(message):
   if await lengthVerificatorWError(message, "!printPlayer <joueur>"):
     msg = joueurs.printPlayer(message.content.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -545,13 +545,13 @@ async def player(message):
   if len(message.content.split("\n")) > 2:
     msg = joueurs.addPlayer(message)
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
         await message.channel.send(m)
   else:
-    await error(message.channel,"Erreur dans la commande: `!player \n <templatePlayer>`")
+    await error(message,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
 # `!setTDCExploité <joueur> <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
 async def setTDCExploité(message):
@@ -560,7 +560,7 @@ async def setTDCExploité(message):
                                  message.content.split(" ")[2],
                                  f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -573,7 +573,7 @@ async def setTDC(message):
                          message.content.split(" ")[2],
                          f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -587,13 +587,13 @@ async def setArmy(message):
         message.content.split("\n")[0].split(" ")[2],
         message.content.split("\n")[1])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
         await message.channel.send(m)
   else:
-    await error(message.channel,"Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
+    await error(message,"Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
 
 
 # `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur.
@@ -604,7 +604,7 @@ async def setRace(message):
         message.content.split(" ")[1],
         message.content.split(" ")[2])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -623,7 +623,7 @@ async def setStatsColo(message):
         f.getNumber(message.content.split(" ")[4]),
         message.content.split(" ")[5])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -644,7 +644,7 @@ async def setVassal(message):
         message.content.split(" ")[4],
         message.content.split(" ")[5])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -665,13 +665,13 @@ async def setStatsPlayer(message):
         message.content.split(" ")[4],
         message.content.split(" ")[5])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
         await message.channel.send(m)
   else:
-    await error(message.channel,
+    await error(message,
                 "Erreur dans la commande: `!player \n <templatePlayer>`")
 
 
@@ -685,13 +685,13 @@ async def setHero(message):
         message.content.split(" ")[2],
         message.content.split(" ")[3])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
         await message.channel.send(m)
   else:
-    await error(message.channel,
+    await error(message,
                 "Erreur dans la commande: `!player \n <templatePlayer>`")
 
 #`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
@@ -725,7 +725,7 @@ async def printPactes(message):
   if await lengthVerificatorWError(message, "!printPactes"):
     msg = pactes.printPactes()
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -737,7 +737,7 @@ async def endPacte(message):
   if await lengthVerificatorWError(message, "!endPacte <ally>"):
     msg = pactes.endPacte(message.content.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -749,14 +749,14 @@ async def pacte(message):
   if len(message.content.split("\n")) > 2:
     msg = pactes.addPacte(message)
     if msg.startswith("ERR:"):
-      await error(message.channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
         await message.channel.send(m)
   else:
     await error(
-        message.channel,
+        message,
         "Erreur dans la commande: `!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> <end> \\n <titre> \\n <description>`"
     )
 
@@ -1281,7 +1281,7 @@ async def on_message(message):
     elif message.content.startswith("!"):
       f.log(rank=0, prefixe="[ERROR]", message="Unknown error - " + message.content, suffixe="")
       await error(
-          message.channel,
+          message,
           "Commande inconnue. `!help` pour voir la liste des commandes disponibles."
       )  #error
 
