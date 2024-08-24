@@ -174,6 +174,8 @@ def setCOLONIES() -> dict:
 def log(rank= 0, prefixe= "", message= "", suffixe= ""):
   msg = ""
   filename = os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
+  if not os.path.exists(filename):
+    os.system("touch " + filename)
   for k in range(rank):
     msg+="\t"
   msg+= prefixe
