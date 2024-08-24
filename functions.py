@@ -181,4 +181,4 @@ def log(rank= 0, prefixe= "", message= "", suffixe= ""):
   msg+= prefixe
   msg+= message
   msg+=suffixe
-  os.system("sed -i -e '$a"+msg+"' "+ filename)
+  os.system("echo "+msg+" >> "+ filename)
