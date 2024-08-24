@@ -111,7 +111,7 @@ donne:
 `!printPactes`: affiche les pactes;
 `!endPacte`: clôt un pacte;
 `!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> [end] \\n <titre> \\n <description>`: ajoute un nouveau pacte;""",
-    """"### Commandes Dev
+    """### Commandes Dev
 `!getDbNames`: donne les noms des bases de données;
 `!getDB <path//filename>`: donne la base de données;
 `!getLog [date]`: donne les logs [du jour en cours, par défaut];"""
@@ -901,6 +901,9 @@ async def on_message(message):
     elif message.content.upper().startswith("!HELP PACTE"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message, 6)
+    elif message.content.upper().startswith("!HELP DEV"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      await help(message, 7)
     elif message.content.upper().startswith("!HELP"): 
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       await help(message)
@@ -936,6 +939,13 @@ async def on_message(message):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin]):
         await getDB(message)
+      else:
+        await errorRole(message,["bot admin access"])
+
+    elif message.content.upper().startswith("!GETLOG"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin]):
+        await getLog(message)
       else:
         await errorRole(message,["bot admin access"])
     
