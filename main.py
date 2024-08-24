@@ -816,9 +816,9 @@ async def printDB(message):
 # `!getLog [date]`: donne les logs [par défaut, du jour en cours];
 async def getLog(message):
     # Rewrite
-    filename = os.path.dirname(__file__)+os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
+    filename = os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
     if len(message.content.split(" ")) > 1:
-        filename = os.path.dirname(__file__) + os.path.dirname(__file__) + "/LOGS/" + datetime.strptime(message.content.split(" ")[1],"%Y-%m-%d")
+        filename = os.path.dirname(__file__) + "/LOGS/" + datetime.strptime(message.content.split(" ")[1],"%Y-%m-%d")
     if os.path.exists(filename):
         file = discord.File(filename)
         embed = discord.Embed()
