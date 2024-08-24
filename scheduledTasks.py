@@ -37,7 +37,7 @@ async def recapRSS():
     channel = bot.get_channel(1276232505116196894)
     msg = convois.repartitionRessources()
     if msg.startswith("ERR:"):
-      await error(channel, msg)
+        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
     else:
       for m in f.splitMessage(msg):
         await channel.send(m)

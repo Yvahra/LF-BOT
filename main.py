@@ -1304,5 +1304,5 @@ async def on_message(message):
 #On va maintenir le bot en activité
 keep_alive()
 #On lance le bot
-f.log(rank=0, prefixe="[START]", message="Bot lauching", suffixe="")
+f.log(rank=0, prefixe="[START]", message="Bot launching", suffixe="")
 bot.run(token)
