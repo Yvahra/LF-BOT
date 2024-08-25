@@ -101,7 +101,7 @@ donne:
 `!setTDC [joueur] <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 `!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo [joueur] <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
-`!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal:C1/C2> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur;
+`!setVassal [joueurVassalisé] <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur;
 `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
 `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
