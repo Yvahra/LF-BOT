@@ -97,7 +97,7 @@ donne:
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
 `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
-`!setTDCExploité <joueur> <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
+`!setTDCExploité [joueur] <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
 `!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo <joueur> <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
@@ -616,18 +616,27 @@ async def player(message):
   else:
     await error(message,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
-# `!setTDCExploité <joueur> <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
-async def setTDCExploité(message):
-  if await lengthVerificatorWError(message, "!setTDCExploité <joueur> <C1/C2> <tdcExploité>"):
-    msg = joueurs.setTDCExploité(message.content.split(" ")[1],
-                                 message.content.split(" ")[2],
-                                 f.getNumber(message.content.split(" ")[3]))
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+# `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
+async def setTDCExploit(message, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`"
+    if await lengthVerificator(message, "!setTDCExploité [joueur] <C1/C2> <tdcExploité>"):
+        msg = joueurs.setTDCExploité(message.content.split(" ")[1],
+                                     message.content.split(" ")[2],
+                                     f.getNumber(message.content.split(" ")[3]))
+    if await lengthVerificator(message, "!setTDCExploité <C1/C2> <tdcExploité>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas enregistrer de floods!"
+        else:
+            msg = joueurs.setTDCExploité(player,
+                                         message.content.split(" ")[1],
+                                         f.getNumber(message.content.split(" ")[2]))
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
+
 
 # `!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 async def setTDC(message):
@@ -1247,7 +1256,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETTDCEXPLOITÉ"):
         f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
         if checkRoles(message, [admin, writer, is_concerned]):
-            await setTDCExploité(message)
+            await setTDCExploit(message,player)
         else:
             await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
 
