@@ -50,9 +50,9 @@ def comptTDCVenduToEXT(allyEXT:str, price_for_1M): # price = X tdc pour 1M de rs
   return (res // 1000000) * price_for_1M
 
 
-# !floodExtR <joueurEXT> <C1/C2> <ally> <quantity> <joueurLF> <C1/C2>
-def floodExtR(playerEXT:str, coloEXT:str, allyEXT:str, quantity:str, playerLF:str, coloLF:str, date:str)->str:
-  error = saveFlood(playerEXT, coloEXT, allyEXT, quantity, playerLF, coloLF, "LF", date)
+# !floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>
+def floodExtR(date:str, playerLF:str, playerEXT:str, allyEXT:str, quantity:str)->str:
+  error = saveFlood(playerLF, "LF", quantity, playerEXT, allyEXT, date)
   type = None
   data = f.loadData(H_PACTE_FILENAME)
 
@@ -108,9 +108,9 @@ def floodExtR(playerEXT:str, coloEXT:str, allyEXT:str, quantity:str, playerLF:st
   msg += printFloodsFuturs()
   return msg
 
-# !floodExtD <joueurEXT> <C1/C2> <ally> <quantity> <joueurLF> <C1/C2>
-def floodExtD(playerEXT:str, coloEXT:str, allyEXT:str, quantity:str, playerLF:str, coloLF:str, date:str)->str:
-  error = saveFlood(playerLF, coloLF, "LF", quantity, playerEXT, coloEXT, allyEXT, date)
+# !floodExtD [joueurLF] <joueurExtérieur> <ally> <quantité>
+def floodExtD(date:str, playerLF:str, playerEXT:str, allyEXT:str, quantity:str)->str:
+  error = saveFlood(playerEXT, allyEXT, quantity, playerLF, "LF", date)
   type = None
   data = f.loadData(S_FLOODS_FILENAME)
   q = int(quantity)
@@ -152,12 +152,8 @@ def printFloodsExt() -> str:
   for flood in data:
     if flood["flooded"]["ally"].upper() == "LF": i = 0
     else: i = 1
-    MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]["name"] + "("
-    if flood["flooder"]["player"]["colony"] == 1: MSG[i] += "C1)"
-    else: MSG[i] += "C2)"
-    MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]["name"] + "("
-    if flood["flooded"]["player"]["colony"] == 1: MSG[i] += "C1)"
-    else: MSG[i] += "C2)"
+    MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]
+    MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]
     MSG[i] += "["+flood["flooded"]["ally"]+"]: "+f.convertNumber(str(flood["quantity"]))+ "\n"
 
   if MSG[0] == "": MSG[0] = "Aucun flood extérieur."
@@ -189,12 +185,8 @@ def printFloodsExtAlly(ally:str) -> str:
       i = 0
     elif flood["flooder"]["ally"].upper() == "LF" and flood["flooded"]["ally"].upper() == ally.upper():
       i = 1
-    MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]["name"] + "("
-    if flood["flooder"]["player"]["colony"] == 1: MSG[i] += "C1)"
-    else: MSG[i] += "C2)"
-    MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]["name"] + "("
-    if flood["flooded"]["player"]["colony"] == 1: MSG[i] += "C1)"
-    else: MSG[i] += "C2)"
+    MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]
+    MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]
     MSG[i] += "["+flood["flooded"]["ally"]+"]: "+f.convertNumber(str(flood["quantity"]))+ "\n"
 
   if MSG[0] == "": MSG[0] = "Aucun flood extérieur."
@@ -245,25 +237,13 @@ def printFloodsFuturs() -> str:
   return msg
 
 
-def saveFlood(flooded:str, coloED:str, allyED:str, quantity:str, flooder:str, coloER:str, allyER:str, date:str)->str:
+def saveFlood(flooded:str, allyED:str, quantity:str, flooder:str, allyER:str, date:str)->str:
   error = ''
   data = f.loadData(H_FLOODS_FILENAME)
   flood = {
     "quantity": int(quantity),
-    "flooder": {
-      "ally": allyED, 
-      "player": {
-        "name": flooded,
-        "colony": int(coloED[1])-1
-      }
-    },
-    "flooded": {
-      "ally": allyER,
-      "player": {
-        "name": flooder,
-        "colony": int(coloER[1])-1
-      }
-    },
+    "flooded": {"ally": allyED, "player": flooded},
+    "flooder": {"ally": allyER,"player": flooder},
     "day": date
   }
   data.append(flood)

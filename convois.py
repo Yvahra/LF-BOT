@@ -26,6 +26,25 @@ COLONIES = f.setCOLONIES()
 ## FONCTIONS GENERIQUES ##
 #__________________________________________________#
 
+def updateConvoi(player, apple, wood, water) -> bool:
+  data = f.loadData(S_CONVOIS_FILENAME)
+  found = False
+  for i in range(len(data)):
+    if data[i]["player"]["name"].upper() == player.upper() and not found:
+      found = True
+      data[i]["remaining"]["apple"] -= int(apple)
+      data[i]["remaining"]["wood"] -= int(wood)
+      data[i]["remaining"]["water"] -= int(water)
+      if data[i]["remaining"]["apple"] < 0: data[i]["remaining"]["apple"] = 0
+      if data[i]["remaining"]["wood"] < 0: data[i]["remaining"]["wood"] = 0
+      if data[i]["remaining"]["water"] < 0: data[i]["remaining"]["water"] = 0
+      if data[i]["remaining"]["apple"] + data[i]["remaining"]["wood"] + data[i]["remaining"]["water"] == 0:
+        data.pop(i)
+      break
+  f.saveData(data, S_CONVOIS_FILENAME)
+  return found
+
+
 def printConvoisEnCours() -> str:
   global COLONIES
   data = f.loadData(S_CONVOIS_FILENAME)
@@ -39,42 +58,25 @@ def printConvoisEnCours() -> str:
     msg+= "```"
   return msg
 
-# 3 - `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`: ajoute un convoi;
-def convoi(convoyed, colo1, apple, wood, water, convoyer, colo2) -> str:
+
+# `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
+def convoi(convoyer, convoyed, apple, wood, water) -> str:
   msg = ""
   try:
     data_hist = f.loadData(H_CONVOIS_FILENAME)
-    col1 = 0 if colo1 == "C1" else 1
-    col2 = 0 if colo2 == "C2" else 1
     data_hist.append({
       "convoy": {"apple": int(apple),"wood": int(wood),"water": int(water)},
-      "convoyer": {"name": convoyer,"colony": col1},
-      "convoyed": {"name": convoyed,"colony": col2},
+      "convoyer": convoyer,
+      "convoyed": convoyed,
       "day": datetime.date.today().strftime("%Y-%m-%d")
     })
     f.saveData(data_hist, H_CONVOIS_FILENAME)
     msg = ":incoming_envelope: "+ convoyer + " a lancé " + f.convertNumber(apple) + " :apple:, " + f.convertNumber(wood) + " :wood:, et " + f.convertNumber(water) + " :droplet: à " + convoyed +"\n\n"
     
-    data = f.loadData(S_CONVOIS_FILENAME)
-    found = False
-    for i in range(len(data)):
-      print(data[i]["player"]["colony"])
-      print(col1)
-      if data[i]["player"]["name"].upper() == convoyed.upper() and data[i]["player"]["colony"] == col1:
-        found = True
-        data[i]["remaining"]["apple"] -= int(apple)
-        data[i]["remaining"]["wood"] -= int(wood)
-        data[i]["remaining"]["water"] -= int(water)
-        if data[i]["remaining"]["apple"] < 0: data[i]["remaining"]["apple"] = 0
-        if data[i]["remaining"]["wood"] < 0: data[i]["remaining"]["wood"] = 0
-        if data[i]["remaining"]["water"] < 0: data[i]["remaining"]["water"] = 0
-        if data[i]["remaining"]["apple"]+data[i]["remaining"]["wood"]+data[i]["remaining"]["water"] == 0:
-          data.pop(i)
-          msg += "Convoi terminé.\n"
-        break
+    found = updateConvoi(convoyed, apple, wood, water)
+
     if not found:
       msg = "ERR: convoi() - Convoi non trouvé.\n" + msg
-    f.saveData(data, S_CONVOIS_FILENAME)
     if found:
       msg += printConvoisEnCours()+"\n"
   except Exception as e:
@@ -82,41 +84,24 @@ def convoi(convoyed, colo1, apple, wood, water, convoyer, colo2) -> str:
   return msg
 
 
-# 3 - `!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
-def autoProd(convoyed, colo1, apple, wood, water) -> str:
+# 3 - `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
+def autoProd(convoyed, apple, wood, water) -> str:
   msg = ""
   try:
     data_hist = f.loadData(H_CONVOIS_FILENAME)
-    col1 = 0 if colo1 == "C1" else 1
     data_hist.append({
       "convoy": {"apple": int(apple),"wood": int(wood),"water": int(water)},
-      "convoyer": {"name": convoyed,"colony": col1},
-      "convoyed": {"name": convoyed,"colony": col1},
+      "convoyer": convoyed,
+      "convoyed": convoyed,
       "day": datetime.date.today().strftime("%Y-%m-%d")
     })
     f.saveData(data_hist, H_CONVOIS_FILENAME)
     msg = ":pick: "+ convoyed + " a produit " + f.convertNumber(apple) + " :apple:, " + f.convertNumber(wood) + " :wood:, et " + f.convertNumber(water) + " :droplet:\n\n"
 
-    data = f.loadData(S_CONVOIS_FILENAME)
-    found = False
-    for i in range(len(data)):
-      print(data[i]["player"]["colony"])
-      print(col1)
-      if data[i]["player"]["name"].upper() == convoyed.upper() and data[i]["player"]["colony"] == col1:
-        found = True
-        data[i]["remaining"]["apple"] -= int(apple)
-        data[i]["remaining"]["wood"] -= int(wood)
-        data[i]["remaining"]["water"] -= int(water)
-        if data[i]["remaining"]["apple"] < 0: data[i]["remaining"]["apple"] = 0
-        if data[i]["remaining"]["wood"] < 0: data[i]["remaining"]["wood"] = 0
-        if data[i]["remaining"]["water"] < 0: data[i]["remaining"]["water"] = 0
-        if data[i]["remaining"]["apple"]+data[i]["remaining"]["wood"]+data[i]["remaining"]["water"] == 0:
-          data.pop(i)
-          msg += "Convoi terminé.\n"
-        break
+    found = updateConvoi(convoyed, apple, wood, water)
+
     if not found:
       msg = "ERR: autoProd() - Convoi non trouvé.\n" + msg
-    f.saveData(data, S_CONVOIS_FILENAME)
     if found:
       msg += printConvoisEnCours()+"\n"
   except Exception as e:

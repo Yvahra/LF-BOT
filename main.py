@@ -80,17 +80,17 @@ donne:
 `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie les stats de l'alliance;""",
     """### Commandes Chasses
 `!printChasses <joueur>`: affiche les chasses d'un joueur
-`!chasse <joueur> <C1/C2> <quantité>`: enregistre une chasse;""",
+`!chasse [joueur] <quantité>`: enregistre une chasse;""",
     """### Commandes Convois
 `!convoisEnCours`: affiche les convois en cours;
-`!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
-`!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`: ajoute un convoi;
+`!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
+`!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
 `!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
 `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
     """### Commandes Floods externes
-`!floodExtR <joueurExtérieur> <C1/C2> <ally> <quantité> <joueurLF> <C1/C2>`: enregistre un flood externe reçu;
-`!floodExtD <joueurExtérieur> <C1/C2> <ally> <quantité> <joueurLF> <C1/C2>`: enregistre un flood externe donné;
+`!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
+`!floodExtD [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe donné;
 `!futursfloods`: affiche les floods à faire; 
 `!printFloodsExt [alliance]`: affiche les floods externes;
 `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple);""",
@@ -159,12 +159,22 @@ async def errorRole(channel, roleList: list):
   msg = "il faut être "
   for i in range(len(roleList)):
     msg += "`" + roleList[i]
-    if i == len(roleList) - 1: "` "
-    elif i == len(roleList) - 2: msg += "`, ou "
-    else: msg += "`, "
+    if i == len(roleList) - 1:
+        "` "
+    elif i == len(roleList) - 2:
+        msg += "`, ou "
+    else:
+        msg += "`, "
   msg += "` pour utiliser cette commande"
   await channel.send(msg)
 
+def getPlayerFromRoles(user) -> str:
+     players = f.loadData(CONST_DISCORD)["player_id"]
+     res = None
+     for player in players:
+        if not user.get_role(players[player]) is None:
+            res = player
+     return res
 
 #__________________________________________________#
 ## AIDE ##
@@ -287,18 +297,24 @@ async def printChasses(message):
 
 # `!chasse <joueur> <C1/C2> <quantité>`: enregistre une chasse;
 async def chasse(message):
-  if await lengthVerificatorWError(message,
-                                   "!chasse <joueur> <C1/C2> <quantité>"):
-    msg = chasses.chasse(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        f.getNumber(message.content.split(" ")[3]))
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!chasse [joueur] <quantité>`"
+    if await lengthVerificator(message, "!chasse [joueur] <quantité>"):
+        msg = convois.convoi(
+            message.content.split(" ")[1],
+            f.getNumber(message.content.split(" ")[2]))
+    if await lengthVerificator(message, "!chasse <quantité>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas chasser!"
+        else:
+            msg = convois.convoi(
+                player,
+                f.getNumber(message.content.split(" ")[1]))
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
 
 
 #__________________________________________________#
@@ -318,23 +334,32 @@ async def printConvoisEnCours(message):
         await message.channel.send(m)
 
 
-# `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`: ajoute un convoi;
-async def convoi(message):
-  if await lengthVerificatorWError(message,"!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>"):
-    msg = convois.convoi(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        f.getNumber(message.content.split(" ")[3]),
-        f.getNumber(message.content.split(" ")[4]),
-        f.getNumber(message.content.split(" ")[5]),
-        message.content.split(" ")[6],
-        message.content.split(" ")[7])
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+# `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
+async def convoi(message, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`"
+    if await lengthVerificator(message, "!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>"):
+        msg = convois.convoi(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            f.getNumber(message.content.split(" ")[3]),
+            f.getNumber(message.content.split(" ")[4]),
+            f.getNumber(message.content.split(" ")[5]))
+    if await lengthVerificator(message, "!convoi <convoyé> <pomme> <bois> <eau>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas convoyer!"
+        else:
+            msg = convois.convoi(
+                player,
+                message.content.split(" ")[1],
+                f.getNumber(message.content.split(" ")[2]),
+                f.getNumber(message.content.split(" ")[3]),
+                f.getNumber(message.content.split(" ")[4]))
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
 
 
 # `!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
@@ -359,16 +384,24 @@ async def demandeConvoi(message):
         await message.channel.send(m)
 
 
-# `!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
-async def autoProd(message):
-  if await lengthVerificatorWError(
-      message, "!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>"):
+# `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
+async def autoProd(message, player):
+  msg = "ERR: trop ou pas assez d'arguments dans la commande: `!autoProd [joueur] <pomme> <bois> <eau>`"
+  if await lengthVerificator(message, "!autoProd [joueur] <pomme> <bois> <eau>"):
     msg = convois.autoProd(
         message.content.split(" ")[1],
-        message.content.split(" ")[2],
+        f.getNumber(message.content.split(" ")[2]),
         f.getNumber(message.content.split(" ")[3]),
-        f.getNumber(message.content.split(" ")[4]),
-        f.getNumber(message.content.split(" ")[5]))
+        f.getNumber(message.content.split(" ")[4]))
+  if await lengthVerificator(message, "!autoProd <pomme> <bois> <eau>") :
+    if player is None:
+        msg = "ERR: vous ne pouvez pas vous autoconvoyer!"
+    else:
+        msg = convois.autoProd(
+            player,
+            f.getNumber(message.content.split(" ")[1]),
+            f.getNumber(message.content.split(" ")[2]),
+            f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
       await error(message, msg)
     else:
@@ -413,68 +446,98 @@ async def printRecapRSS(message):
 #__________________________________________________#
 
 
-# `!floodExtR <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`: enregistre un flood externe reçu;
-async def floodExtR(message):
-  checked = False
-  date = ""
-  if await lengthVerificator(
-      message,
-      "!floodEXT <joueurEXT> <C1/C2> <ally> <quantity> <joueurLF> <C1/C2>"):
-    checked = True
-    date = datetime.now().strftime("%Y-%m-%d")
-  elif await lengthVerificator(
-      message,
-      "!floodExtR <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2> <date>"
-  ):
-    checked = True
-    date = message.content.split(" ")[7]
-  if checked:
-    msg = floods.floodExtR(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        f.getNumber(message.content.split(" ")[4]),
-        message.content.split(" ")[5],
-        message.content.split(" ")[6], date)
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+# `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
+async def floodExtR(message, palyer):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
+    if await lengthVerificator(message, "!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+        msg = floods.floodExtR(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            f.getNumber(message.content.split(" ")[5]))
+    if await lengthVerificator(message, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
+        try:
+            datetime.strptime(message.content.split(" ")[1], "%Y-%m-%d")
+            msg = floods.floodExtR(
+                message.content.split(" ")[1],
+                player,
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+            f.getNumber(message.content.split(" ")[4]))
+        except:
+            if player is None:
+                msg = "ERR: vous ne pouvez pas enregistrer de floods!"
+            else:
+                msg = floods.floodExtR(
+                    datetime.now().strftime("%Y-%m-%d"),
+                    message.content.split(" ")[1],
+                    message.content.split(" ")[2],
+                    message.content.split(" ")[3],
+                f.getNumber(message.content.split(" ")[4]))
+    if await lengthVerificator(message, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas enregistrer de floods!"
+        else:
+            msg = floods.floodExtR(
+                datetime.now().strftime("%Y-%m-%d"),
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                f.getNumber(message.content.split(" ")[3]))
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
 
 
 # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`: enregistre un flood externe donné;
-async def floodExtD(message):
-  checked = False
-  date = ""
-  if await lengthVerificator(
-      message,
-      "!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>"):
-    checked = True
-    date = datetime.now().strftime("%Y-%m-%d")
-  elif await lengthVerificator(
-      message,
-      "!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2> <date>"
-  ):
-    checked = True
-    date = message.content.split(" ")[7]
-  if checked:
-    msg = floods.floodExtD(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        f.getNumber(message.content.split(" ")[4]),
-        message.content.split(" ")[5],
-        message.content.split(" ")[6],
-        date,
-    )
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+async def floodExtD(message, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
+    if await lengthVerificator(message, "!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+        msg = floods.floodExtD(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            f.getNumber(message.content.split(" ")[5]))
+    if await lengthVerificator(message, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
+        try:
+            datetime.strptime(message.content.split(" ")[1], "%Y-%m-%d")
+            msg = floods.floodExtD(
+                message.content.split(" ")[1],
+                player,
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+                f.getNumber(message.content.split(" ")[4]))
+        except:
+            if player is None:
+                msg = "ERR: vous ne pouvez pas enregistrer de floods!"
+            else:
+                msg = floods.floodExtD(
+                    datetime.now().strftime("%Y-%m-%d"),
+                    message.content.split(" ")[1],
+                    message.content.split(" ")[2],
+                    message.content.split(" ")[3],
+                    f.getNumber(message.content.split(" ")[4]))
+    if await lengthVerificator(message, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas enregistrer de floods!"
+        else:
+            msg = floods.floodExtD(
+                datetime.now().strftime("%Y-%m-%d"),
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                f.getNumber(message.content.split(" ")[3]))
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
 
 
 # `!futursfloods`: affiche les floods à faire;
@@ -848,6 +911,8 @@ async def on_message(message):
   user = message.author
 
   if message.content.upper().startswith("!"):
+    player = getPlayerFromRoles(user)
+
     admin = user.get_role(rolesIDs["bot admin access"]) is not None
     writer = user.get_role(rolesIDs["bot writer access"]) is not None
     superReader = user.get_role(rolesIDs["bot super-reader access"]) is not None
@@ -1015,12 +1080,12 @@ async def on_message(message):
       else:
         await errorRole(message,["bot admin access", "bot writer access"])
 
-    # `!chasse <joueur> <C1/C2> <quantité>`
+    # `!chasse [joueur] <quantité>`
     # enregistre une chasse;
     elif message.content.upper().startswith("!CHASSE"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await chasse(message)
+        await chasse(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1044,16 +1109,16 @@ async def on_message(message):
     elif message.content.upper().startswith("!CONVOI"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await convoi(message)
+        await convoi(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
-      # `!autoProd <joueur> <C1/C2> <pomme> <bois> <eau>`
+      # `!autoProd [joueur] <pomme> <bois> <eau>`
       # met à jour un convoi avec l'autoprod d'un joueur;
     elif message.content.upper().startswith("!AUTOPROD"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await autoProd(message)
+        await autoProd(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1090,21 +1155,21 @@ async def on_message(message):
       ### --------------- ###
 
     
-      # `!floodExtR <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`
+      # `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe reçu;
     elif message.content.upper().startswith("!FLOODEXTR"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await floodExtR(message)
+        await floodExtR(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
-      # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`
+      # `!floodExtD [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe donné;
     elif message.content.upper().startswith("!FLOODEXTD"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await floodExtD(message)
+        await floodExtD(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
