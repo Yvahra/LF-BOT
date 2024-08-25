@@ -50,7 +50,7 @@ def comptTDCVenduToEXT(allyEXT:str, price_for_1M): # price = X tdc pour 1M de rs
   return (res // 1000000) * price_for_1M
 
 
-# !floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>
+# !floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>
 def floodExtR(date:str, playerLF:str, playerEXT:str, allyEXT:str, quantity:str)->str:
   error = saveFlood(playerLF, "LF", quantity, playerEXT, allyEXT, date)
   type = None

@@ -89,21 +89,21 @@ donne:
 `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
     """### Commandes Floods externes
-`!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
-`!floodExtD [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe donné;
+`!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
+`!floodExtD [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe donné;
 `!futursfloods`: affiche les floods à faire; 
 `!printFloodsExt [alliance]`: affiche les floods externes;
 `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple);""",
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
-`!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
+`!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur;
 `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
-`!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
-`!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
-`!setStatsColo <joueur> <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
-`!setVassal <joueurVassalisé> <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillage>`: modifie le vassal d'une colonie d'un joueur;
-`!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
-`!setHero <joueur> <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
+`!setTDC [joueur] <C1/C2> <tdc>`: modifie le tdc d'un joueur;
+`!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
+`!setStatsColo [joueur] <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
+`!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal:C1/C2> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur;
+`!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
+`!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 `!getActivePlayers`: donne les joueurs actifs de la LF;""",
@@ -114,7 +114,7 @@ donne:
     """### Commandes Dev
 `!getDbNames`: donne les noms des bases de données;
 `!getDB <path//filename>`: donne la base de données;
-`!getLog [date]`: donne les logs [du jour en cours, par défaut];"""
+`!getLog [date:aaaa-mm-jj]`: donne les logs [du jour en cours, par défaut];"""
 ]
 
 
@@ -446,10 +446,10 @@ async def printRecapRSS(message):
 #__________________________________________________#
 
 
-# `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
+# `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
 async def floodExtR(message, palyer):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
-    if await lengthVerificator(message, "!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
+    if await lengthVerificator(message, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
         msg = floods.floodExtR(
             message.content.split(" ")[1],
             message.content.split(" ")[2],
@@ -495,8 +495,8 @@ async def floodExtR(message, palyer):
 
 # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`: enregistre un flood externe donné;
 async def floodExtD(message, player):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
-    if await lengthVerificator(message, "!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
+    if await lengthVerificator(message, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
         msg = floods.floodExtD(
             message.content.split(" ")[1],
             message.content.split(" ")[2],
@@ -638,133 +638,195 @@ async def setTDCExploit(message, player):
                 await message.channel.send(m)
 
 
-# `!setTDC <joueur> <C1/C2> <tdc>`: modifie le tdc d'un joueur;
-async def setTDC(message):
-  if await lengthVerificatorWError(message, "!setTDC <joueur> <C1/C2> <tdc>"):
-    msg = joueurs.setTDC(message.content.split(" ")[1],
-                         message.content.split(" ")[2],
-                         f.getNumber(message.content.split(" ")[3]))
-    if msg.startswith("ERR:"):
-      await error(message, msg)
-    else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+# `!setTDC [joueur] <C1/C2> <tdc>`: modifie le tdc d'un joueur;
+async def setTDC(message, player):
+    msg = "ERR: Commande mal formulée - !setTDC [joueur] <C1/C2> <tdc>"
+    if await lengthVerificator(message, "!setTDC [joueur] <C1/C2> <tdc>"):
+        msg = joueurs.setRace(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2])
 
-# `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
-async def setArmy(message):
-  if len(message.content.split("\n")) > 1:
-    msg = joueurs.setArmy(
-        message.content.split("\n")[0].split(" ")[1],
-        message.content.split("\n")[0].split(" ")[2],
-        message.content.split("\n")[1])
+    if await lengthVerificator(message, "!setTDC <C1/C2> <tdc>"):
+        if not player is None:
+            msg = joueurs.setRace(
+                player,
+                message.content.split(" ")[1])
+        else:
+            msg = "ERR: vous ne pouvez pas changer le tdc de votre colo!"
     if msg.startswith("ERR:"):
-      await error(message, msg)
+        await error(message, msg)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
-  else:
-    await error(message,"Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
-# `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur.
-async def setRace(message):
-  if await lengthVerificatorWError(
-      message, "!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
-    msg = joueurs.setRace(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2])
-    if msg.startswith("ERR:"):
-      await error(message, msg)
+# `!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
+async def setArmy(message, player):
+    if len(message.content.split("\n")) > 1:
+        msg = "ERR: Commande mal formulée - !setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>"
+        if len(message.content.split("\n")[0].split(" ")) == 3:
+            msg = joueurs.setArmy(
+                message.content.split("\n")[0].split(" ")[1],
+                message.content.split("\n")[0].split(" ")[2],
+                message.content.split("\n")[1])
+        if len(message.content.split("\n")[0].split(" ")) == 2:
+            if not player is None:
+                msg = joueurs.setArmy(
+                    player,
+                    message.content.split("\n")[0].split(" ")[1],
+                    message.content.split("\n")[1])
+            else:
+                msg="ERR: vous ne pouvez pas changer votre armée!"
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await error(message,"Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
+
+
+# `!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur.
+async def setRace(message, player):
+    msg = "ERR: Commande mal formulée - !setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"
+    if await lengthVerificator(message,"!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
+        msg = joueurs.setRace(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2])
+
+    if await lengthVerificator(message, "!setRace <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
+        if not player is None:
+            msg = joueurs.setRace(
+                player,
+                message.content.split(" ")[1])
+        else:
+            msg = "ERR: vous ne pouvez pas changer votre race!"
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
+
   
 
 
-# `!setStatsColo <joueur> <colo> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur.
-async def setStatsColo(message):
-  if await lengthVerificatorWError(
-      message, "!setStatsColo <joueur> <colo> <oe> <ov> <tdp>"):
-    msg = joueurs.setStatsColo(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        f.getNumber(message.content.split(" ")[3]),
-        f.getNumber(message.content.split(" ")[4]),
-        message.content.split(" ")[5])
+# `!setStatsColo [joueur] <colo> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur.
+async def setStatsColo(message, player):
+    msg = "ERR: Commande mal formulée - !setStatsColo [joueur] <colo> <oe> <ov> <tdp>"
+    if await lengthVerificator( message, "!setStatsColo [joueur] <colo> <oe> <ov> <tdp>"):
+        msg = joueurs.setStatsColo(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            f.getNumber(message.content.split(" ")[3]),
+            f.getNumber(message.content.split(" ")[4]),
+            message.content.split(" ")[5])
+
+    if await lengthVerificator( message, "!setStatsColo <colo> <oe> <ov> <tdp>"):
+        if not player is None:
+            msg = joueurs.setStatsColo(
+                player,
+                message.content.split(" ")[1],
+                f.getNumber(message.content.split(" ")[2]),
+                f.getNumber(message.content.split(" ")[3]),
+                message.content.split(" ")[4])
+        else:
+            msg="ERR: vous ne pouvez pas changer les statistiques de votre colo!"
     if msg.startswith("ERR:"):
-      await error(message, msg)
+        await error(message, msg)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
 
-# `!setVassal <joueurVassalisé> <coloVassalisée> <vassal> <coloVassal> <pillage>`: modifie le vassal d'une colonie d'un joueur.
-async def setVassal(message):
-  if await lengthVerificatorWError(
-      message,
-      "!setVassal <joueurVassalisé> <coloVassalisée> <vassal> <coloVassal> <pillage>"
-  ):
-    msg = joueurs.setVassal(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        message.content.split(" ")[4],
-        message.content.split(" ")[5])
+# `!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur.
+async def setVassal(message, player):
+    msg = "ERR: Commande mal formulée - !setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"
+    if await lengthVerificator( message, "!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
+        msg = joueurs.setVassal(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            message.content.split(" ")[5])
+
+    if await lengthVerificator( message, "!setVassal <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
+        if not player is None:
+            msg = joueurs.setStatsColo(
+                player,
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4])
+        else:
+            msg="ERR: vous ne pouvez pas changer le vassal de votre colo!"
     if msg.startswith("ERR:"):
-      await error(message, msg)
+        await error(message, msg)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
 
-# `!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur.
-async def setStatsPlayer(message):
-  if await lengthVerificatorWError(
-      message,
-      "!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>"
-  ):
-    msg = joueurs.setStatsPlayer(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        message.content.split(" ")[4],
-        message.content.split(" ")[5])
+# `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur.
+async def setStatsPlayer(message, player):
+    msg = "ERR: Commande mal formulée - !setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"
+    if await lengthVerificator( message, "!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"):
+        msg = joueurs.setStatsPlayer(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            message.content.split(" ")[5])
+
+    if await lengthVerificator( message, "!setStatsPlayer <mandibule> <carapace> <phéromone> <thermique>"):
+        if not player is None:
+            msg = joueurs.setStatsPlayer(
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+                message.content.split(" ")[4])
+        else:
+            msg="ERR: vous ne pouvez pas changer vos statistiques!"
     if msg.startswith("ERR:"):
-      await error(message, msg)
+        await error(message, msg)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
-  else:
-    await error(message,
-                "Erreur dans la commande: `!player \n <templatePlayer>`")
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
-# `!setHero <joueur> <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur.
-async def setHero(message):
-  if await lengthVerificatorWError(
-      message,
-      "!setHero <joueur> <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
-    msg = joueurs.setHero(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3])
+# `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur.
+async def setHero(message, player):
+    msg = "ERR: Commande mal formulée - !setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"
+    if await lengthVerificator(message,"!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
+        msg = joueurs.setHero(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3])
+
+    if await lengthVerificator(message, "!setHero <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
+        if not player is None:
+            msg = joueurs.setHero(
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2])
+        else:
+            msg = "ERR: vous ne pouvez pas changer votre héros!"
     if msg.startswith("ERR:"):
-      await error(message, msg)
+        await error(message, msg)
     else:
-      await message.delete()
-      for m in f.splitMessage(msg):
-        await message.channel.send(m)
-  else:
-    await error(message,
-                "Erreur dans la commande: `!player \n <templatePlayer>`")
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
+
+
 
 #`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 async def setActivePlayers(message):
@@ -885,7 +947,7 @@ async def printDB(message):
   if lengthVerificatorWError(message, "!printDB <DB>"):
     await dbg.printDB(message.channel, message.content.split(" ")[1])
 
-# `!getLog [date]`: donne les logs [par défaut, du jour en cours];
+# `!getLog [date:aaaa-mm-jj]`: donne les logs [par défaut, du jour en cours];
 async def getLog(message):
     # Rewrite
     filename = os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
@@ -898,7 +960,7 @@ async def getLog(message):
         await message.delete()
         await message.channel.send(embed=embed, file=file)
     else:
-        msg = "```!getLog [date]```"
+        msg = "```!getLog [date:aaaa-mm-jj]```"
         msg += "\nNo file with this path: `" + filename + "`"
         await message.channel.send(msg)
 
@@ -1164,7 +1226,7 @@ async def on_message(message):
       ### --------------- ###
 
     
-      # `!floodExtR [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`
+      # `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe reçu;
     elif message.content.upper().startswith("!FLOODEXTR"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
@@ -1173,7 +1235,7 @@ async def on_message(message):
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
-      # `!floodExtD [date] [joueurLF] <joueurExtérieur> <ally> <quantité>`
+      # `!floodExtD [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe donné;
     elif message.content.upper().startswith("!FLOODEXTD"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
@@ -1238,7 +1300,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETARMY"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setArmy(message)
+        await setArmy(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1247,7 +1309,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETRACE"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setRace(message)
+        await setRace(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1265,7 +1327,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETTDC "):
         f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
         if checkRoles(message, [admin, writer, is_concerned]):
-            await setTDC(message)
+            await setTDC(message, player)
         else:
             await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1274,7 +1336,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETSTATSCOLO"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setStatsColo(message)
+        await setStatsColo(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1283,7 +1345,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETVASSAL"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setVassal(message)
+        await setVassal(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1292,7 +1354,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETSTATSPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setStatsPlayer(message)
+        await setStatsPlayer(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
@@ -1301,7 +1363,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!SETHERO"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setHero(message)
+        await setHero(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
