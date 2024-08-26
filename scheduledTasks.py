@@ -7,11 +7,14 @@
 #__________________________________________________#
 
 import os
+from datetime import datetime
+
 import discord
 from discord.ext import commands
 
 import functions as f
 from dotenv import load_dotenv
+from datetime import date
 
 
 
@@ -35,7 +38,7 @@ async def error(channel, errorMsg: str):
 
 async def recapRSS():
     channel = bot.get_channel(1276232505116196894)
-    msg = convois.repartitionRessources()
+    msg = convois.repartitionRessources(date.today().strftime("%Y-%m-%d"))
     if msg.startswith("ERR:"):
         f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
     else:

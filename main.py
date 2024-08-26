@@ -447,7 +447,7 @@ async def printRecapRSS(message):
 
 
 # `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
-async def floodExtR(message, palyer):
+async def floodExtR(message, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
     if await lengthVerificator(message, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
         msg = floods.floodExtR(
@@ -485,12 +485,12 @@ async def floodExtR(message, palyer):
                 message.content.split(" ")[1],
                 message.content.split(" ")[2],
                 f.getNumber(message.content.split(" ")[3]))
-        if msg.startswith("ERR:"):
-            await error(message, msg)
-        else:
-            await message.delete()
-            for m in f.splitMessage(msg):
-                await message.channel.send(m)
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
 # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`: enregistre un flood externe donné;
@@ -532,12 +532,12 @@ async def floodExtD(message, player):
                 message.content.split(" ")[1],
                 message.content.split(" ")[2],
                 f.getNumber(message.content.split(" ")[3]))
-        if msg.startswith("ERR:"):
-            await error(message, msg)
-        else:
-            await message.delete()
-            for m in f.splitMessage(msg):
-                await message.channel.send(m)
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
 # `!futursfloods`: affiche les floods à faire;

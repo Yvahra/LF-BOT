@@ -113,30 +113,38 @@ def autoProd(convoyed, apple, wood, water) -> str:
 def demandeConvoi(joueur:str, colo:str, constr:str, level:str, apple:str, wood:str, water:str) -> str: 
   msg = ""
   try:
-    col = 0 if colo == "C1" else 1
-    demande = {
-       "title": constr,
-       "level": int(level),
-       "player": {
-         "name": joueur,
-         "colony": col
-       },
-       "remaining": {
-         "apple": int(apple),
-         "wood": int(wood),
-         "water": int(water)
-       }}
+    convois = f.loadData(S_CONVOIS_FILENAME)
+    found = False
+    for i in range(len(convois)):
+      if convois[i]["player"]["name"].upper() == joueur.upper() and not found:
+        found = True
+    if found:
+      msg = 'ERR: un convoi est déjà en cours pour ce joueur'
+    else:
+      col = 0 if colo == "C1" else 1
+      demande = {
+         "title": constr,
+         "level": int(level),
+         "player": {
+           "name": joueur,
+           "colony": col
+         },
+         "remaining": {
+           "apple": int(apple),
+           "wood": int(wood),
+           "water": int(water)
+         }}
 
-    data_hist = f.loadData(H_DEMANDE_FILENAME)
-    data_hist.append({"date": datetime.date.today().strftime("%Y-%m-%d"),
-                     "demande":demande})
-    f.saveData(data_hist, H_DEMANDE_FILENAME)
-    msg = "Demande enregistrée.\n"
-    
-    data = f.loadData(S_CONVOIS_FILENAME)
-    data.append(demande)
-    f.saveData(data, S_CONVOIS_FILENAME)
-    msg = "Demande lancée.\n"
+      data_hist = f.loadData(H_DEMANDE_FILENAME)
+      data_hist.append({"date": datetime.date.today().strftime("%Y-%m-%d"),
+                       "demande":demande})
+      f.saveData(data_hist, H_DEMANDE_FILENAME)
+      msg = "Demande enregistrée.\n"
+
+      data = f.loadData(S_CONVOIS_FILENAME)
+      data.append(demande)
+      f.saveData(data, S_CONVOIS_FILENAME)
+      msg = "Demande lancée.\n"
   except Exception as e:
     msg = "ERR: demandeConvoi() - " + str(e) + "\n" + msg
   return msg
