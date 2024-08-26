@@ -630,25 +630,25 @@ async def setTDCExploit(message, player):
             msg = joueurs.setTDCExploité(player,
                                          message.content.split(" ")[1],
                                          f.getNumber(message.content.split(" ")[2]))
-        if msg.startswith("ERR:"):
-            await error(message, msg)
-        else:
-            await message.delete()
-            for m in f.splitMessage(msg):
-                await message.channel.send(m)
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 
 # `!setTDC [joueur] <C1/C2> <tdc>`: modifie le tdc d'un joueur;
 async def setTDC(message, player):
     msg = "ERR: Commande mal formulée - !setTDC [joueur] <C1/C2> <tdc>"
     if await lengthVerificator(message, "!setTDC [joueur] <C1/C2> <tdc>"):
-        msg = joueurs.setRace(
+        msg = joueurs.setTDC(
             message.content.split(" ")[1],
             message.content.split(" ")[2])
 
     if await lengthVerificator(message, "!setTDC <C1/C2> <tdc>"):
         if not player is None:
-            msg = joueurs.setRace(
+            msg = joueurs.setTDC(
                 player,
                 message.content.split(" ")[1])
         else:
