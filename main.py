@@ -644,13 +644,15 @@ async def setTDC(message, player):
     if await lengthVerificator(message, "!setTDC [joueur] <C1/C2> <tdc>"):
         msg = joueurs.setTDC(
             message.content.split(" ")[1],
-            message.content.split(" ")[2])
+            message.content.split(" ")[2],
+            f.getNumber(message.content.split(" ")[3]))
 
     if await lengthVerificator(message, "!setTDC <C1/C2> <tdc>"):
         if not player is None:
             msg = joueurs.setTDC(
                 player,
-                message.content.split(" ")[1])
+                message.content.split(" ")[1],
+                f.getNumber(message.content.split(" ")[2]))
         else:
             msg = "ERR: vous ne pouvez pas changer le tdc de votre colo!"
     if msg.startswith("ERR:"):
