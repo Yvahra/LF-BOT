@@ -84,8 +84,8 @@ donne:
     """### Commandes Convois
 `!convoisEnCours`: affiche les convois en cours;
 `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
-`!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
-`!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
+`!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: enregistre une livraison;
+`!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute une nouvelle demande à la liste des convois en cours (attention, un convoi par joueur);
 `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
     """### Commandes Floods externes
