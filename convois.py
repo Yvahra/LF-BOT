@@ -52,9 +52,9 @@ def printConvoisEnCours() -> str:
   for convoi in data:
     msg+= convoi["player"]["name"] + " (" + COLONIES[convoi["player"]["name"].upper()][convoi["player"]["colony"]] + ")"
     msg+= ": "+ convoi["title"]+" "+str(convoi["level"])+"\n```"
-    msg+= "    P: "+ f.convertNumber(str(convoi["remaining"]["apple"])) + "\n"
-    msg+= "    B: "+ f.convertNumber(str(convoi["remaining"]["wood"])) + "\n"
-    msg+= "    E: "+ f.convertNumber(str(convoi["remaining"]["water"])) + "\n"
+    msg+= "    P: "+ f.betterNumber(str(convoi["remaining"]["apple"])) + "\n"
+    msg+= "    B: "+ f.betterNumber(str(convoi["remaining"]["wood"])) + "\n"
+    msg+= "    E: "+ f.betterNumber(str(convoi["remaining"]["water"])) + "\n"
     msg+= "```"
   return msg
 
@@ -71,7 +71,7 @@ def convoi(convoyer, convoyed, apple, wood, water) -> str:
       "day": datetime.date.today().strftime("%Y-%m-%d")
     })
     f.saveData(data_hist, H_CONVOIS_FILENAME)
-    msg = ":incoming_envelope: "+ convoyer + " a lancé " + f.convertNumber(apple) + " :apple:, " + f.convertNumber(wood) + " :wood:, et " + f.convertNumber(water) + " :droplet: à " + convoyed +"\n\n"
+    msg = ":incoming_envelope: "+ convoyer + " a lancé " + f.betterNumber(apple) + " :apple:, " + f.betterNumber(wood) + " :wood:, et " + f.betterNumber(water) + " :droplet: à " + convoyed +"\n\n"
     
     found = updateConvoi(convoyed, apple, wood, water)
 
@@ -252,21 +252,21 @@ def printRessourcesPartagees(dateRecap:str) -> str:
   try:
     ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[dateRecap]
     msg = "# Récapitulatif des ressources partagées\n\n"
-    msg+= "Salaire: " + f.readableNumber(str(int(ress["salaire"]))) +  " ressources\n"
+    msg+= "Salaire: " + f.betterNumber(str(int(ress["salaire"]))) +  " ressources\n"
     for player in ress["ressources_detail"]:
       msg+= "``` * "+ player.upper() + ":\n"
-      msg+= "Ressources exploitées :           "+ f.readableNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
-      msg+= "Ressources livrées par le joueur: "+ f.readableNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
-      msg+= "Ressources livrées au joueur:     "+ f.readableNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
-      msg+= "Ressources pillées par le joueur: "+ f.readableNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
+      msg+= "Ressources exploitées :           "+ f.betterNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
+      msg+= "Ressources livrées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
+      msg+= "Ressources livrées au joueur:     "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
+      msg+= "Ressources pillées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
       msg+= "```\n"
     msg+= "```\n"
     MSG = ["",""]
     for player in ress["cumul"]:
       if ress["cumul"][player] < 0:
-        MSG[0]+= player + " doit percevoir " + f.readableNumber(str(int(-ress["cumul"][player]))) + " ressources\n"
+        MSG[0]+= player + " doit percevoir " + f.betterNumber(str(int(-ress["cumul"][player]))) + " ressources\n"
       else:
-        MSG[1]+= player + " doit rendre " + f.readableNumber(str(int(ress["cumul"][player]))) + " ressources\n"
+        MSG[1]+= player + " doit rendre " + f.betterNumber(str(int(ress["cumul"][player]))) + " ressources\n"
     msg+= MSG[0]+"\n"+MSG[1]
     msg+= "```"
 

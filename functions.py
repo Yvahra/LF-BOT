@@ -22,52 +22,7 @@ ARMY_CONV = {
 
 NUMBERS = [str(i) for i in range(0,10)]
 
-def convertNumber(number:str):
-  count_last_zeros = 0
-  for letter in number:
-    if letter == "0":
-      count_last_zeros += 1
-    else:
-      count_last_zeros = 0
-  if count_last_zeros >= 9:
-    number = number[:-9] + "G"
-  elif count_last_zeros >= 6:
-    number = number[:-6] + "M"
-  elif count_last_zeros >= 3:
-    number = number[:-3] + "k"
-  return number
 
-def readableNumber(number:str):
-  L = len(number)
-  res = ""
-  for i in range(L):
-    if i == L-1:
-      res+= number[i]
-    elif (L-i-1) % 3 == 0:
-      res+= number[i]
-      res+= "'"
-    else:
-      res+= number[i]
-  return res
-
-def getNumber(number:str) -> str:
-  if "G" in number.upper():
-    number = number.upper().replace("G", "000000000")
-  elif "M" in number.upper():
-    number = number.upper().replace("M", "000000")
-  elif "K" in number.upper():
-    number = number.upper().replace("K", "000")
-  return number
-
-def getArmy(army:str) -> dict:# 300 000 Esclaves, 10 Maîtres esclaves, 10 Jeunes soldates, 10 Soldates, 10 Soldates d'élite, 10 Gardiennes, 10 Gardiennes d'élite, 10 Tirailleuses, 10 Tirailleuses d'élite, 10 Jeunes légionnaires, 10 Légionnaires, 10 Légionnaires d'élite, 9 580 Jeunes tanks, 10 Tanks, 10 Tanks d'élite
-  res = {}
-  army = army.replace(" ", "")
-  for unite in army.split(","):
-    i = 0
-    while i < len(unite) and unite[i] in NUMBERS:
-      i+=1
-    res[ARMY_CONV[unite[i:].upper()]] = int(unite[:i])
-  return res
   
 
 #__________________________________________________#
@@ -182,3 +137,61 @@ def log(rank= 0, prefixe= "", message= "", suffixe= ""):
   msg+= message
   msg+=suffixe
   os.system("echo "+msg+" >> "+ filename)
+
+
+#__________________________________________________#
+## NUMBERS ##
+#__________________________________________________#
+
+
+def convertNumber(number:str):
+  count_last_zeros = 0
+  for letter in number:
+    if letter == "0":
+      count_last_zeros += 1
+    else:
+      count_last_zeros = 0
+  if count_last_zeros >= 9:
+    number = number[:-9] + "G"
+  elif count_last_zeros >= 6:
+    number = number[:-6] + "M"
+  elif count_last_zeros >= 3:
+    number = number[:-3] + "k"
+  return number
+
+def readableNumber(number:str):
+  L = len(number)
+  res = ""
+  for i in range(L):
+    if i == L-1:
+      res+= number[i]
+    elif (L-i-1) % 3 == 0:
+      res+= number[i]
+      res+= "'"
+    else:
+      res+= number[i]
+  return res
+
+def betterNumber(number:str) -> str:
+  if len(number) <= 3: return number
+  elif number[-3:] == "000": return convertNumber(number)
+  else: return readableNumber(number)
+
+def getNumber(number:str) -> str:
+  if "G" in number.upper():
+    number = number.upper().replace("G", "000000000")
+  elif "M" in number.upper():
+    number = number.upper().replace("M", "000000")
+  elif "K" in number.upper():
+    number = number.upper().replace("K", "000")
+  return number
+
+def getArmy(army:str) -> dict:# 300 000 Esclaves, 10 Maîtres esclaves, 10 Jeunes soldates, 10 Soldates, 10 Soldates d'élite, 10 Gardiennes, 10 Gardiennes d'élite, 10 Tirailleuses, 10 Tirailleuses d'élite, 10 Jeunes légionnaires, 10 Légionnaires, 10 Légionnaires d'élite, 9 580 Jeunes tanks, 10 Tanks, 10 Tanks d'élite
+  res = {}
+  army = army.replace(" ", "")
+  for unite in army.split(","):
+    i = 0
+    while i < len(unite) and unite[i] in NUMBERS:
+      i+=1
+    res[ARMY_CONV[unite[i:].upper()]] = int(unite[:i])
+  return res

@@ -104,7 +104,7 @@ def floodExtR(date:str, playerLF:str, playerEXT:str, allyEXT:str, quantity:str)-
     if newQuantity > 0:
       error = saveFloodFutur(date, str(newQuantity), allyEXT)
 
-  msg = playerEXT + " ["+allyEXT+"] a pris "+ str(quantity) + "cm à "+ playerLF + "[LF].\n\n"
+  msg = playerEXT + " ["+allyEXT+"] a pris "+ f.betterNumber(str(quantity)) + "cm à "+ playerLF + "[LF].\n\n"
   msg += printFloodsFuturs()
   return msg
 
@@ -137,7 +137,7 @@ def floodExtD(date:str, playerLF:str, playerEXT:str, allyEXT:str, quantity:str)-
 
   f.saveData(data, S_FLOODS_FILENAME)
 
-  msg =  playerLF + "[LF] a pris "+ quantity + "cm à "+ playerEXT + " ["+allyEXT+"].\n\n"
+  msg =  playerLF + "[LF] a pris "+ f.betterNumber(quantity) + "cm à "+ playerEXT + " ["+allyEXT+"].\n\n"
   msg += printFloodsFuturs()
   return msg
 

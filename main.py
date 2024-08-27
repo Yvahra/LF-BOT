@@ -85,7 +85,7 @@ donne:
 `!convoisEnCours`: affiche les convois en cours;
 `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
 `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
-`!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
+`!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
 `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
 `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
     """### Commandes Floods externes
@@ -362,20 +362,30 @@ async def convoi(message, player):
                 await message.channel.send(m)
 
 
-# `!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
+# `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
 async def demandeConvoi(message):
-  if await lengthVerificatorWError(
-      message,
-      "!demandeConvoi <joueur> <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"
-  ):
-    msg = convois.demandeConvoi(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        message.content.split(" ")[4],
-        f.getNumber(message.content.split(" ")[5]),
-        f.getNumber(message.content.split(" ")[6]),
-        f.getNumber(message.content.split(" ")[7]))
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`"
+    if await lengthVerificator(message, "!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"):
+        msg = convois.demandeConvoi(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            f.getNumber(message.content.split(" ")[5]),
+            f.getNumber(message.content.split(" ")[6]),
+            f.getNumber(message.content.split(" ")[7]))
+    if await lengthVerificator(message, "!demandeConvoi <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>") :
+        if player is None:
+            msg = "ERR: vous ne pouvez pas demander de convois!"
+        else:
+            msg = convois.demandeConvoi(
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+                f.getNumber(message.content.split(" ")[4]),
+                f.getNumber(message.content.split(" ")[5]),
+                f.getNumber(message.content.split(" ")[6]))
     if msg.startswith("ERR:"):
       await error(message, msg)
     else:
@@ -386,22 +396,22 @@ async def demandeConvoi(message):
 
 # `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
 async def autoProd(message, player):
-  msg = "ERR: trop ou pas assez d'arguments dans la commande: `!autoProd [joueur] <pomme> <bois> <eau>`"
-  if await lengthVerificator(message, "!autoProd [joueur] <pomme> <bois> <eau>"):
-    msg = convois.autoProd(
-        message.content.split(" ")[1],
-        f.getNumber(message.content.split(" ")[2]),
-        f.getNumber(message.content.split(" ")[3]),
-        f.getNumber(message.content.split(" ")[4]))
-  if await lengthVerificator(message, "!autoProd <pomme> <bois> <eau>") :
-    if player is None:
-        msg = "ERR: vous ne pouvez pas vous autoconvoyer!"
-    else:
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!autoProd [joueur] <pomme> <bois> <eau>`"
+    if await lengthVerificator(message, "!autoProd [joueur] <pomme> <bois> <eau>"):
         msg = convois.autoProd(
-            player,
-            f.getNumber(message.content.split(" ")[1]),
+            message.content.split(" ")[1],
             f.getNumber(message.content.split(" ")[2]),
-            f.getNumber(message.content.split(" ")[3]))
+            f.getNumber(message.content.split(" ")[3]),
+            f.getNumber(message.content.split(" ")[4]))
+    if await lengthVerificator(message, "!autoProd <pomme> <bois> <eau>") :
+        if player is None:
+            msg = "ERR: vous ne pouvez pas vous autoconvoyer!"
+        else:
+            msg = convois.autoProd(
+                player,
+                f.getNumber(message.content.split(" ")[1]),
+                f.getNumber(message.content.split(" ")[2]),
+                f.getNumber(message.content.split(" ")[3]))
     if msg.startswith("ERR:"):
       await error(message, msg)
     else:
