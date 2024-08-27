@@ -288,6 +288,7 @@ def convoisDuJour(date:str):
         if not convoyer in msg_temp: msg_temp[convoyer] = ""
         if not convoyer in qc: qc[convoyer] = 0
         msg_temp[convoyer] = "- " + convoi["convoyed"] + " a reçu " + f.betterNumber(str(qc[convoyer])) + " ressources \n"
+        qc[convoyer] +=  qc[convoyer]
 
     for convoyer in msg_temp:
       msg+= convoyer + ": " + f.betterNumber(str(qc[convoyer])) + " ressources (Total)\n"
