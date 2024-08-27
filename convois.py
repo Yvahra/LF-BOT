@@ -159,18 +159,18 @@ def repartitionRessources(dateRecap:str):
 
   convois = f.loadData(H_CONVOIS_FILENAME)
   for convoi in convois:
-    if convoi["day"] == dateRecap and convoi["convoyer"]["name"].lower() in active_players and convoi["convoyed"]["name"].lower() in active_players:
+    if convoi["day"] == dateRecap and convoi["convoyer"].lower() in active_players and convoi["convoyed"].lower() in active_players:
       q = convoi["convoy"]["apple"] + convoi["convoy"]["wood"] + convoi["convoy"]["water"]
-      if not convoi["convoyer"]["name"].lower() in ressources_detail:
-        ressources_detail[convoi["convoyer"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+      if not convoi["convoyer"].lower() in ressources_detail:
+        ressources_detail[convoi["convoyer"].lower()] = { "convois": [0,0], #reçu, donné
                                                           "exploit": 0,
                                                           "pillage": 0}
-      if not convoi["convoyed"]["name"].lower() in ressources_detail:
-        ressources_detail[convoi["convoyed"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+      if not convoi["convoyed"].lower() in ressources_detail:
+        ressources_detail[convoi["convoyed"].lower()] = { "convois": [0,0], #reçu, donné
                                                           "exploit": 0,
                                                           "pillage": 0}
-      ressources_detail[convoi["convoyed"]["name"].lower()]["convois"][0] += q
-      ressources_detail[convoi["convoyer"]["name"].lower()]["convois"][1] += q
+      ressources_detail[convoi["convoyed"].lower()]["convois"][0] += q
+      ressources_detail[convoi["convoyer"].lower()]["convois"][1] += q
 
   players = f.loadData(S_JOUEUR_FILENAME)
   for player in players:
