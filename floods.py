@@ -245,8 +245,8 @@ def printFloodsFuturs() -> str:
       msg_temp[ally]+= "- ["+d+"] " + str(fl[1]) + ": " + f.betterNumber(str(fl[0])) + " cm²\n"
 
     for ally in msg_temp:
-      msg+= "["+d+"] " + ally + ": " + f.betterNumber(str(qf[ally])) + " cm²\n"
-      msg+= msg_temp[ally]
+      msg+= "["+d+"] " + ally + ": " + f.betterNumber(str(qf[ally])) + " cm² (Total)\n"
+      msg+= msg_temp[ally]+"\n"
 
   if nf == 0: msg += "Aucun flood futur."
   msg+="```"

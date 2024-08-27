@@ -274,3 +274,27 @@ def printRessourcesPartagees(dateRecap:str) -> str:
     msg = "ERR printRessourcesPartagees() - " + str(e) + "\n" + msg
 
   return msg
+
+
+def convoisDuJour(date:str):
+  msg = "## Convois effectué le " + date + "\n```"
+  try:
+    convois = f.loadData(H_CONVOIS_FILENAME)
+    msg_temp = {}
+    qc = {}
+    for convoi in convois:
+      if date == convoi["day"]:
+        convoyer = convoi["convoyer"]
+        if not convoyer in msg_temp: msg_temp[convoyer] = ""
+        if not convoyer in qc: qc[convoyer] = 0
+        msg_temp[convoyer] = "- " + convoi["convoyed"] + " a reçu " + f.betterNumber(str(qc[convoyer])) + " ressources \n"
+
+    for convoyer in msg_temp:
+      msg+= convoyer + ": " + f.betterNumber(str(qc[convoyer])) + " ressources (Total)\n"
+      msg+= msg_temp[convoyer]+"\n"
+
+    if msg[-1] == "`": msg+="Aucun convoi."
+    msg += "```"
+  except Exception as e:
+    msg = "ERR: convoi() - " + str(e) + "\n" + msg
+  return msg

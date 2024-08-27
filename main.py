@@ -155,7 +155,7 @@ async def lengthVerificator(message, command):
   return res
 
 
-async def errorRole(channel, roleList: list):
+async def errorRole(message, roleList: list):
   msg = "il faut être "
   for i in range(len(roleList)):
     msg += "`" + roleList[i]
@@ -166,7 +166,7 @@ async def errorRole(channel, roleList: list):
     else:
         msg += "`, "
   msg += "` pour utiliser cette commande"
-  await channel.send(msg)
+  await message.channel.send(msg)
 
 def getPlayerFromRoles(user) -> str:
      players = f.loadData(CONST_DISCORD)["player_id"]
