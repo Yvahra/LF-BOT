@@ -418,7 +418,7 @@ async def recapRSS(message):
     else:
         msg = convois.repartitionRessources(date.today().strftime("%Y-%m-%d"))
     if msg.startswith("ERR:"):
-      await error(channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
