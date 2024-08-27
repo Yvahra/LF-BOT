@@ -225,13 +225,28 @@ def printFloodsFuturs() -> str:
   for k in floods.keys():
     dates.append(k)  
   sorted_dates = f.dateMergeSort(dates)
-  print(sorted_dates)
-  msg = "**Floods à venir**:\n```"
+
+  msg = "## Floods en cours\n```"
   nf = 0
+  state_date = 0
   for d in sorted_dates:
+    if state_date == 0 and datetime.datetime.strptime(d, "%Y-%m-%d") > datetime.date.today():
+      state_date = 1
+      msg+= "```\n## Floods à venir\n```"
+    msg_temp = {}
+    qf = {}
     for fl in floods[d]:
+      ally = str(fl[1])
       nf+=1
-      msg+= "["+d+"] " + str(fl[1]) + ": " + str(fl[0]) + "cm²\n"
+      if not ally in msg_temp: msg_temp[ally] = ""
+      if not ally in qf: qf[ally] = 0
+      qf[ally] += fl[0]
+      msg_temp[ally]+= "- ["+d+"] " + str(fl[1]) + ": " + f.betterNumber(str(fl[0])) + "cm²\n"
+
+    for ally in msg_temp:
+      msg+= "["+d+"] " + ally + ": " + f.betterNumber(str(qf[ally])) + "cm²\n"
+      msg+= msg_temp[ally]
+
   if nf == 0: msg += "Aucun flood futur."
   msg+="```"
   return msg
