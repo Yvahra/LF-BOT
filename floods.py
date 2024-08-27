@@ -230,7 +230,7 @@ def printFloodsFuturs() -> str:
   nf = 0
   state_date = 0
   for d in sorted_dates:
-    if state_date == 0 and datetime.datetime.strptime(d, "%Y-%m-%d") > datetime.date.today():
+    if state_date == 0 and datetime.datetime.strptime(d, "%Y-%m-%d").date() > datetime.date.today():
       state_date = 1
       msg+= "```\n## Floods à venir\n```"
     msg_temp = {}
