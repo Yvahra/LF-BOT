@@ -12,6 +12,7 @@ from datetime import datetime
 import discord
 from discord.ext import commands
 
+import floods
 import functions as f
 from dotenv import load_dotenv
 from datetime import date
@@ -44,6 +45,22 @@ async def recapRSS():
     else:
       for m in f.splitMessage(msg):
         await channel.send(m)
+
+    channel = bot.get_channel(1278074306391183452)
+    msg = convois.convoisDuJour(date.today().strftime("%Y-%m-%d"))
+    if msg.startswith("ERR:"):
+        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
+    else:
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+    channel = bot.get_channel(1276451985352294440)
+    msg = floods.printFloodsFuturs()
+    if msg.startswith("ERR:"):
+        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
+    else:
+        for m in f.splitMessage(msg):
+            await channel.send(m)
 
 # Login Section
 @bot.event

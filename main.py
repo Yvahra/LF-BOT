@@ -87,7 +87,8 @@ donne:
 `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: enregistre une livraison;
 `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute une nouvelle demande à la liste des convois en cours (attention, un convoi par joueur);
 `!recapRessources`: calcul le récapitulatif des ressources récoltées de la journée;
-`!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;""",
+`!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
+`!printConvoisJour [date:aaaa-mm-jj]`: affiche les convois effectués sur cette date""",
     """### Commandes Floods externes
 `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
 `!floodExtD [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe donné;
@@ -450,6 +451,20 @@ async def printRecapRSS(message):
       for m in f.splitMessage(msg):
         await channel.send(m)
 
+async def printConvoisJour(message):
+    channel = bot.get_channel(1278074306391183452)
+    msg = ""
+    if len(message.content.split(" ")) > 1:
+        msg = convois.convoisDuJour(message.content.split(" ")[1])
+    else:
+        msg = convois.convoisDuJour(date.today().strftime("%Y-%m-%d"))
+
+    if msg.startswith("ERR:"):
+        await error(channel, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
 
 #__________________________________________________#
 ## FLOODS EXTERNES ##
@@ -1232,7 +1247,16 @@ async def on_message(message):
         await printRecapRSS(message)
       else:
         await errorRole(message,["bot admin access"])
-    
+
+        # `!printConvoisJour [date:aaaa-mm-jj]`
+        # affiche les convois effectués sur cette date
+    elif message.content.upper().startswith("!PRINTCONVOISJOUR"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, superReader]):
+          await printConvoisJour(message)
+      else:
+          await errorRole(message, ["bot admin access", "bot super-reader access"])
+
       ### --------------- ###
       ### Floods externes ###
       ### --------------- ###
