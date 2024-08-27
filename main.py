@@ -445,7 +445,7 @@ async def printRecapRSS(message):
         msg = convois.printRessourcesPartagees(date.today().strftime("%Y-%m-%d"))
 
     if msg.startswith("ERR:"):
-      await error(channel, msg)
+      await error(message, msg)
     else:
       await message.delete()
       for m in f.splitMessage(msg):
@@ -460,7 +460,7 @@ async def printConvoisJour(message):
         msg = convois.convoisDuJour(date.today().strftime("%Y-%m-%d"))
 
     if msg.startswith("ERR:"):
-        await error(channel, msg)
+        await error(message, msg)
     else:
         await message.delete()
         for m in f.splitMessage(msg):
