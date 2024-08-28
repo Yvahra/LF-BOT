@@ -216,7 +216,7 @@ def repartitionRessources(dateRecap:str):
     while not last_recap_found:
       if (datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d") in ress_parta:
         last_recap_found = True
-        cumul = ress_parta[(datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"]
+        cumul = dict(ress_parta[(datetime.datetime.strptime(dateRecap, "%Y-%m-%d") - datetime.timedelta(days=nb_jour)).strftime("%Y-%m-%d")]["cumul"])
       else:
         nb_jour += 1
 
@@ -288,7 +288,7 @@ def convoisDuJour(date:str):
         if not convoyer in msg_temp: msg_temp[convoyer] = ""
         if not convoyer in qc: qc[convoyer] = 0
         quant = convoi["convoy"]["apple"]+convoi["convoy"]["wood"]+convoi["convoy"]["water"]
-        msg_temp[convoyer] = "- " + convoi["convoyed"] + " a reçu " + f.betterNumber(str(quant)) + " ressources \n"
+        msg_temp[convoyer] += "- " + convoi["convoyed"] + " a reçu " + f.betterNumber(str(quant)) + " ressources \n"
         qc[convoyer] +=  quant
 
     for convoyer in msg_temp:

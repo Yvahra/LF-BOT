@@ -437,7 +437,8 @@ async def recapRSS(message):
 
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
 async def printRecapRSS(message):
-    channel = bot.get_channel(1276232505116196894)
+    #channel = bot.get_channel(1276232505116196894)
+    channel = message.channel
     msg = ""
     if len(message.content.split(" ")) > 1:
         msg = convois.printRessourcesPartagees(message.content.split(" ")[1])
