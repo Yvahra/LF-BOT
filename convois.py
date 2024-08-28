@@ -251,7 +251,7 @@ def printRessourcesPartagees(dateRecap:str) -> str:
   msg = ""
   try:
     ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[dateRecap]
-    msg = "# Récapitulatif des ressources partagées\n\n"
+    msg = "# Récapitulatif des ressources partagées du "+dateRecap+"\n\n"
     msg+= "Salaire: " + f.betterNumber(str(int(ress["salaire"]))) +  " ressources\n"
     for player in ress["ressources_detail"]:
       msg+= "``` * "+ player.upper() + ":\n"
