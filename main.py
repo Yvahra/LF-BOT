@@ -580,7 +580,6 @@ async def printFloodsFuturs(message):
 
 # `!printFloodsExt`: affiche les floods externes;
 async def printFloodsExt(message):
-  if await lengthVerificatorWError(message, "!printFloodsExt"):
     msg= ""
     if len(message.content.split(" ")) == 1:
       msg = floods.printFloodsExt()
