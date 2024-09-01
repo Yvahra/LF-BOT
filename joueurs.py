@@ -107,8 +107,8 @@ class Joueur:
     data = f.loadData(S_ALLIANCE_FILENAME)
     bonus_ally_tdp = int(data["bonus"]["tdp"])
     if self.isValide():
-      cout=   round(50.0*(1.7**(self.mandibule+1)),0)
-      msg=    "Coût ouvrières: " + str(cout)
+      cout=   int(50.0*(1.7**(self.mandibule+1)))
+      msg=    "```Coût ouvrières:         " + str(cout)
       tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0.95**self.colo1["tdp"])*(0.99**bonus_ally_tdp) / (24*3600)),2)
       msg+=   " (" + str(tdp_ov) + "j)\n"
 
@@ -121,18 +121,18 @@ class Joueur:
       fdf=    fdf_hb*(1+self.mandibule*0.05+bonus/100)
       fdfp1=  fdf_hb*(1+(self.mandibule+1)*0.05+bonus/100)
       d_fdf=  fdfp1 - fdf
-      msg+=   "FdF gagnée: "+f.betterNumber(str(d_fdf)) + "\n"
+      msg+=   "FdF gagnée:             "+f.betterNumber(str(d_fdf)) + "\n"
 
       nb_jtk= d_fdf / (DATA_ARMY["JTK"]["fdf"] * (1+self.mandibule * 0.05+ bonus / 100))
-      msg+=   "Nombre de JTk équivalentes: " + str(nb_jtk)
+      msg+=   "Nb de JTk équivalentes: " + str(int(nb_jtk))
       tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
       msg += " (" + str(tdp_jtk) + "j)\n"
 
-      msg += "Il vaut mieux "
+      msg += "```\nIl vaut mieux *"
       if tdp_ov < tdp_jtk:
-        msg+= "augmenter les mandibules!"
+        msg+= "augmenter les mandibules!*"
       else:
-        msg+= "pondre de Jeunes Tanks!"
+        msg+= "pondre de Jeunes Tanks!*"
       return msg
 
 #__________________________________________________#
