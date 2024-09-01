@@ -71,12 +71,13 @@ def convoi(convoyer, convoyed, apple, wood, water) -> str:
       "day": datetime.date.today().strftime("%Y-%m-%d")
     })
     f.saveData(data_hist, H_CONVOIS_FILENAME)
-    msg = ":incoming_envelope: "+ convoyer + " a lancé " + f.betterNumber(apple) + " :apple:, " + f.betterNumber(wood) + " :wood:, et " + f.betterNumber(water) + " :droplet: à " + convoyed +"\n\n"
+    msg = ":incoming_envelope: "+ convoyer + " a lancé " + f.betterNumber(apple) + " :apple:, " + f.betterNumber(wood) + " :wood:, et " + f.betterNumber(water) + " :droplet: à " + convoyed
     
     found = updateConvoi(convoyed, apple, wood, water)
 
     if not found:
-      msg = "ERR: convoi() - Convoi non trouvé.\n" + msg
+      msg += " (convoi hors demande)"
+    msg += "\n\n"
     if found:
       msg += printConvoisEnCours()+"\n"
   except Exception as e:

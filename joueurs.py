@@ -17,6 +17,86 @@ S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
 S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
 RACES = ["Abeille", "Araignée", "Fourmi", "Termite"]
 BONUS_HEROS = ["Vie", "FdF - Combat", "FdF - Chasse"]
+DATA_ARMY = {
+  "E":{"tdp":336, "vie":4,"fdf":4, "fdd":3},
+  "ME":{"tdp":504, "vie":6,"fdf":6, "fdd":4},
+  "JS":{"tdp":588, "vie":16,"fdf":8, "fdd":7},
+  "S":{"tdp":756, "vie":20,"fdf":11, "fdd":10},
+  "SE":{"tdp":1008, "vie":26,"fdf":17, "fdd":14},
+  "G":{"tdp":1008, "vie":25,"fdf":1, "fdd":27},
+  "GE":{"tdp":1344, "vie":32,"fdf":1, "fdd":35},
+  "T":{"tdp":1176, "vie":12,"fdf":32, "fdd":10},
+  "TE":{"tdp":1512, "vie":15,"fdf":40, "fdd":12},
+  "JL":{"tdp":1848, "vie":40,"fdf":45, "fdd":35},
+  "L":{"tdp":2520, "vie":55,"fdf":60, "fdd":45},
+  "LE":{"tdp":2940, "vie":60,"fdf":65, "fdd":50},
+  "JTK":{"tdp":3024, "vie":40,"fdf":80, "fdd":1},
+  "TK":{"tdp":5712, "vie":70,"fdf":140, "fdd":1},
+  "TKE":{"tdp":6974, "vie":80,"fdf":160, "fdd":1}
+}
+
+#__________________________________________________#
+## OBJECT ##
+#__________________________________________________#
+
+class Joueur:
+  def __init__(self, name):
+    self.name=        name
+    self.race=        None
+    self.mandibule=   None
+    self.carapace=    None
+    self.pheromones=  None
+    self.thermique=   None
+    self.hero=        { "bonus": None, "level": None}
+    self.colo1 =      None
+    self.colo2 =      None
+
+    data = f.loadData(S_JOUEUR_FILENAME)
+    for i in range(len(data)):
+      if data[i]["name"].upper() == name.upper():
+        if "race" in data[i]:       self.race=        int(data[i]["race"])
+        if "mandibule" in data[i]:  self.mandibule=   int(data[i]["mandibule"])
+        if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
+        if "pheromones" in data[i]: self.pheromones=  int(data[i]["pheromones"])
+        if "thermique" in data[i]:  self.thermique=   int(data[i]["thermique"])
+        if "hero" in data[i]:
+          self.hero= {
+            "bonus": int(data[i]["hero"]["bonus"]),
+            "level": int(data[i]["hero"]["level"])
+          }
+        for colo in ["colo1", "colo2"]:
+          if colo in data[i]:
+            temp = dict()
+            temp["name"]= str(data[i][colo]["name"])
+            temp["army"]= {}
+            fdf_hb = 0
+            vie_hb = 0
+            fdd_hb = 0
+            tdp_hb = 0
+            for unit in data[i][colo]["army"]:
+              temp["army"][unit.upper()]= int(data[i][colo]["army"][unit])
+              fdf_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["fdf"]
+              vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["vie"]
+              fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["fdd"]
+              tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["tdp"]
+            temp["stats_army"] =  {"fdf_nb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
+            temp["oe"]=           int(data[i][colo]["oe"])
+            temp["ov"]=           int(data[i][colo]["ov"])
+            temp["tdc"]=          int(data[i][colo]["tdc"])
+            temp["tdc_exploit"]=  int(data[i][colo]["exploitation"])
+            temp["tdp"]=          int(data[i][colo]["tdp"])
+            if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
+              temp["vassal"]=             dict()
+              temp["vassal"]["name"]=     str(data[i][colo]["vassal"]["name"])
+              temp["vassal"]["colo"]=     int(data[i][colo]["vassal"]["colony"])
+              temp["vassal"]["pillage"]=  int(data[i][colo]["vassal"]["pillage"])
+            if colo == "colo1":
+              self.colo1 = temp
+            else:
+              self.colo2 = temp
+
+
+
 
 #__________________________________________________#
 ## FONCTIONS GENERIQUES ##
