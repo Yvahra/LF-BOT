@@ -109,8 +109,8 @@ class Joueur:
     if self.isValide():
       cout=   round(50.0*(1.7**(self.mandibule+1)),0)
       msg=    "Coût ouvrières: " + str(cout)
-      tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0,95**self.colo1["tdp"])*(0,99**bonus_ally_tdp) / (24*3600)),2)
-      msg+=   " (" + tdp_ov + "j)\n"
+      tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0.95**self.colo1["tdp"])*(0.99**bonus_ally_tdp) / (24*3600)),2)
+      msg+=   " (" + str(tdp_ov) + "j)\n"
 
       fdf_hb= self.colo1["stats_army"]["fdf_nb"]
       if self.colo2 != None:
@@ -125,8 +125,8 @@ class Joueur:
 
       nb_jtk= d_fdf / (DATA_ARMY["JTK"]["fdf"] * (1+self.mandibule * 0.05+ bonus / 100))
       msg+=   "Nombre de JTk équivalentes: " + str(nb_jtk)
-      tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0, 95 ** self.colo1["tdp"]) * (0, 99 ** bonus_ally_tdp) / (24 * 3600)), 2)
-      msg += " (" + tdp_jtk + "j)\n"
+      tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
+      msg += " (" + str(tdp_jtk) + "j)\n"
 
       msg += "Il vaut mieux "
       if tdp_ov < tdp_jtk:
