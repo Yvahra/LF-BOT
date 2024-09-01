@@ -128,11 +128,11 @@ class Joueur:
       tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
       msg += " (" + str(tdp_jtk) + "j)\n"
 
-      msg += "```\nIl vaut mieux *"
+      msg += "```\nIl vaut mieux **"
       if tdp_ov < tdp_jtk:
-        msg+= "augmenter les mandibules!*"
+        msg+= "augmenter les mandibules!**"
       else:
-        msg+= "pondre de Jeunes Tanks!*"
+        msg+= "pondre des Jeunes Tanks!**"
       return msg
 
 #__________________________________________________#
