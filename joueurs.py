@@ -124,9 +124,9 @@ class Joueur:
       msg+=   "FdF gagnée:             "+f.betterNumber(str(int(d_fdf))) + "\n"
 
       nb_jtk= d_fdf / (DATA_ARMY["JTK"]["fdf"] * (1+self.mandibule * 0.05+ bonus / 100))
-      msg+=   "Nb de JTk équivalentes: " + str(int(nb_jtk))
+      msg+=   "Nb de JTk équivalentes: " + f.betterNumber(str(int(nb_jtk)))
       tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
-      msg += " (" + f.betterNumber(str(tdp_jtk)) + "j)\n"
+      msg += " (" + str(tdp_jtk) + "j)\n"
 
       msg += "```\nIl vaut mieux *"
       if tdp_ov < tdp_jtk:
