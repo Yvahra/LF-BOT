@@ -107,7 +107,8 @@ donne:
 `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
-`!getActivePlayers`: donne les joueurs actifs de la LF;""",
+`!getActivePlayers`: donne les joueurs actifs de la LF;
+`!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;""",
     """### Commandes Pactes
 `!printPactes`: affiche les pactes;
 `!endPacte`: clôt un pacte;
@@ -875,6 +876,26 @@ async def getActivePlayers(message):
     for m in f.splitMessage(msg):
         await message.channel.send(m)
 
+# `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
+async def optiMandi(message, player):
+    msg = "ERR: Commande mal formulée - !optiMandi [joueur]"
+    if await lengthVerificator( message, "!optiMandi [joueur]"):
+        j_obj= joueurs.Joueur(message.content.split(" ")[1])
+        msg = j_obj.optiMandi()
+
+    if await lengthVerificator( message, "!optiMandi"):
+        if not player is None:
+            j_obj = joueurs.Joueur(player)
+            msg = j_obj.optiMandi()
+        else:
+            msg="ERR: vous ne pouvez pas calculer la rentabilité de vos mandibules!"
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
+
 
 #__________________________________________________#
 ## PACTES ##
@@ -1420,6 +1441,15 @@ async def on_message(message):
         await getActivePlayers(message)
       else:
         await errorRole(message,["bot admin access"])
+
+    #`!optiMandi [joueur]`
+    # dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
+    elif message.content.upper().startswith("!OPTIMANDI"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, superReader, is_concerned]):
+        await optiMandi(message, player)
+      else:
+        await errorRole(message,["bot admin access", "bot super-reader access", "joueur concerné"])
 
     
       ### ------ ###

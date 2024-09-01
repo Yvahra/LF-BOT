@@ -15,9 +15,11 @@ from functions import convertNumber
 
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
 S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
+S_ALLIANCE_FILENAME = "STATS//Stats_Alliance.json"
 RACES = ["Abeille", "Araignée", "Fourmi", "Termite"]
 BONUS_HEROS = ["Vie", "FdF - Combat", "FdF - Chasse"]
 DATA_ARMY = {
+  "OV":{"tdp":60, "vie":0,"fdf":0, "fdd":0},
   "E":{"tdp":336, "vie":4,"fdf":4, "fdd":3},
   "ME":{"tdp":504, "vie":6,"fdf":6, "fdd":4},
   "JS":{"tdp":588, "vie":16,"fdf":8, "fdd":7},
@@ -42,6 +44,7 @@ DATA_ARMY = {
 class Joueur:
   def __init__(self, name):
     self.name=        name
+    self.valide=      False
     self.race=        None
     self.mandibule=   None
     self.carapace=    None
@@ -54,6 +57,7 @@ class Joueur:
     data = f.loadData(S_JOUEUR_FILENAME)
     for i in range(len(data)):
       if data[i]["name"].upper() == name.upper():
+        self.valide= True
         if "race" in data[i]:       self.race=        int(data[i]["race"])
         if "mandibule" in data[i]:  self.mandibule=   int(data[i]["mandibule"])
         if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
@@ -95,8 +99,41 @@ class Joueur:
             else:
               self.colo2 = temp
 
+  def isValide(self):
+    return self.valide
 
+  def optiMandi(self) -> str:
+    msg= self.name + " n'est pas un joueur valide pour calculer sa rentabilité de mandibule."
+    data = f.loadData(S_ALLIANCE_FILENAME)
+    bonus_ally_tdp = int(data["bonus"]["tdp"])
+    if self.isValide():
+      cout=   round(50.0*(1.7**(self.mandibule+1)),0)
+      msg=    "Coût ouvrières: " + str(cout)
+      tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0,95**self.colo1["tdp"])*(0,99**bonus_ally_tdp) / (24*3600)),2)
+      msg+=   " (" + tdp_ov + "j)\n"
 
+      fdf_hb= self.colo1["stats_army"]["fdf_nb"]
+      if self.colo2 != None:
+        fdf_hb+= self.colo2["stats_army"]["fdf_nb"]
+      bonus= 0
+      if not self.hero is None:
+        bonus= 0 if self.hero["bonus"] == 0 else self.hero["level"]
+      fdf=    fdf_hb*(1+self.mandibule*0.05+bonus/100)
+      fdfp1=  fdf_hb*(1+(self.mandibule+1)*0.05+bonus/100)
+      d_fdf=  fdfp1 - fdf
+      msg+=   "FdF gagnée: "+f.betterNumber(str(d_fdf)) + "\n"
+
+      nb_jtk= d_fdf / (DATA_ARMY["JTK"]["fdf"] * (1+self.mandibule * 0.05+ bonus / 100))
+      msg+=   "Nombre de JTk équivalentes: " + str(nb_jtk)
+      tdp_jtk = round(nb_jtk * (DATA_ARMY["JTK"]["tdp"] * (0, 95 ** self.colo1["tdp"]) * (0, 99 ** bonus_ally_tdp) / (24 * 3600)), 2)
+      msg += " (" + tdp_jtk + "j)\n"
+
+      msg += "Il vaut mieux "
+      if tdp_ov < tdp_jtk:
+        msg+= "augmenter les mandibules!"
+      else:
+        msg+= "pondre de Jeunes Tanks!"
+      return msg
 
 #__________________________________________________#
 ## FONCTIONS GENERIQUES ##
