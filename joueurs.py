@@ -158,7 +158,7 @@ class Joueur:
       msg+=   "Vie gagnée:             "+f.betterNumber(str(int(d_vie))) + "\n"
 
       nb_js=  d_vie / (DATA_ARMY["JS"]["vie"] * (1+self.carapace * 0.05+ bonus_ally_vie/100 + bonus/100))
-      msg+=   "Nb de JS équivalentes: " + f.betterNumber(str(int(nb_js)))
+      msg+=   "Nb de JS équivalentes:  " + f.betterNumber(str(int(nb_js)))
       tdp_js= round(nb_js * (DATA_ARMY["JS"]["vie"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
       msg +=  " (" + str(tdp_js) + "j)\n"
 
