@@ -108,7 +108,8 @@ donne:
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 `!getActivePlayers`: donne les joueurs actifs de la LF;
-`!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;""",
+`!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
+`!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;""",
     """### Commandes Pactes
 `!printPactes`: affiche les pactes;
 `!endPacte`: clôt un pacte;
@@ -896,6 +897,26 @@ async def optiMandi(message, player):
         for m in f.splitMessage(msg):
             await message.channel.send(m)
 
+# `!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
+async def optiCara(message, player):
+    msg = "ERR: Commande mal formulée - !optiCara [joueur]"
+    if await lengthVerificator( message, "!optiCara [joueur]"):
+        j_obj= joueurs.Joueur(message.content.split(" ")[1])
+        msg = j_obj.optiCara()
+
+    if await lengthVerificator( message, "!optiCara"):
+        if not player is None:
+            j_obj = joueurs.Joueur(player)
+            msg = j_obj.optiCara()
+        else:
+            msg="ERR: vous ne pouvez pas calculer la rentabilité de votre carapace!"
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
+
 
 #__________________________________________________#
 ## PACTES ##
@@ -1450,6 +1471,15 @@ async def on_message(message):
         await optiMandi(message, player)
       else:
         await errorRole(message,["bot admin access", "bot super-reader access", "joueur concerné"])
+
+    # `!optiCara [joueur]`
+    # dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
+    elif message.content.upper().startswith("!OPTICARA"):
+        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+        if checkRoles(message, [admin, superReader, is_concerned]):
+            await optiCara(message, player)
+        else:
+            await errorRole(message, ["bot admin access", "bot super-reader access", "joueur concerné"])
 
     
       ### ------ ###

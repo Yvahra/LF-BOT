@@ -83,7 +83,7 @@ class Joueur:
               vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["vie"]
               fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["fdd"]
               tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["tdp"]
-            temp["stats_army"] =  {"fdf_nb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
+            temp["stats_army"] =  {"fdf_hb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
             temp["oe"]=           int(data[i][colo]["oe"])
             temp["ov"]=           int(data[i][colo]["ov"])
             temp["tdc"]=          int(data[i][colo]["tdc"])
@@ -112,9 +112,9 @@ class Joueur:
       tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0.95**self.colo1["tdp"])*(0.99**bonus_ally_tdp) / (24*3600)),2)
       msg+=   " (" + str(tdp_ov) + "j)\n"
 
-      fdf_hb= self.colo1["stats_army"]["fdf_nb"]
+      fdf_hb= self.colo1["stats_army"]["fdf_hb"]
       if self.colo2 != None:
-        fdf_hb+= self.colo2["stats_army"]["fdf_nb"]
+        fdf_hb+= self.colo2["stats_army"]["fdf_hb"]
       bonus= 0
       if not self.hero is None:
         bonus= 0 if self.hero["bonus"] == 0 else self.hero["level"]
@@ -133,6 +133,40 @@ class Joueur:
         msg+= "augmenter les mandibules!**"
       else:
         msg+= "pondre des Jeunes Tanks!**"
+      return msg
+
+  def optiCara(self) -> str:
+    msg= self.name + " n'est pas un joueur valide pour calculer sa rentabilité de carapace."
+    data = f.loadData(S_ALLIANCE_FILENAME)
+    bonus_ally_tdp = int(data["bonus"]["tdp"])
+    bonus_ally_vie = int(data["bonus"]["health"])
+    if self.isValide():
+      cout=   int(50.0*(1.7**(self.carapace+1)))
+      msg=    "```Coût ouvrières:         " + f.betterNumber(str(cout))
+      tdp_ov= round(cout*(DATA_ARMY["OV"]["tdp"]*(0.95**self.colo1["tdp"])*(0.99**bonus_ally_tdp) / (24*3600)),2)
+      msg+=   " (" + str(tdp_ov) + "j)\n"
+
+      vie_hb= self.colo1["stats_army"]["vie_hb"]
+      if self.colo2 != None:
+        vie_hb+= self.colo2["stats_army"]["vie_hb"]
+      bonus= 0
+      if not self.hero is None:
+        bonus= 0 if self.hero["bonus"] != 0 else self.hero["level"]
+      vie=    vie_hb*(1+self.carapace*0.05 + bonus_ally_vie/100 + bonus/100)
+      viep1=  vie_hb*(1+(self.carapace+1)*0.05 + bonus_ally_vie/100 + bonus/100)
+      d_vie=  viep1 - vie
+      msg+=   "Vie gagnée:             "+f.betterNumber(str(int(d_vie))) + "\n"
+
+      nb_js=  d_vie / (DATA_ARMY["JS"]["vie"] * (1+self.carapace * 0.05+ bonus_ally_vie/100 + bonus/100))
+      msg+=   "Nb de JS équivalentes: " + f.betterNumber(str(int(nb_js)))
+      tdp_js= round(nb_js * (DATA_ARMY["JS"]["vie"] * (0.95 ** self.colo1["tdp"]) * (0.99 ** bonus_ally_tdp) / (24 * 3600)), 2)
+      msg +=  " (" + str(tdp_js) + "j)\n"
+
+      msg += "```\nIl vaut mieux **"
+      if tdp_ov < tdp_js:
+        msg+= "augmenter la carapace!**"
+      else:
+        msg+= "pondre des Jeunes Soldates!**"
       return msg
 
 #__________________________________________________#
