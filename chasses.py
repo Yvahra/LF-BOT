@@ -8,6 +8,8 @@
 
 import datetime
 import functions as f
+import chasses_simulateur as simu
+import joueurs
 
 #__________________________________________________#
 ## GLOBAL VAR ##
@@ -48,4 +50,22 @@ def chasse(joueur:str, quantity:str):
   except Exception as e:
     msg = "ERR: chasse() - " + str(e)
   return msg
-  
+
+def convertTPSChasse(tdc_init:int, tdc_chasse:int, vt:int) -> str:
+  # calcul duree des chasses
+  tps_chasse = (60 + tdc_init / 10 + tdc_chasse / 2) / (1 + vt / 10)
+  tps_chasse = datetime.timedelta(seconds=tps_chasse)
+  return "{}".format(tps_chasse)
+
+
+  # !simuChasse <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
+def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str) -> str:
+  msg= "Chasse impossible. Essayez avec moins de chasses simultanées."
+  chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt))
+  if len(chasses) > 0:
+    for chasse in chasses:
+    msg=
+    msg= "# Résultats du simulateur de chasses\n"
+    msg+="```Joueur: "+joueur+" ("+colo+")\n"
+    msg+="TdC Chassé: "+f.betterNumber(tdc_chasse)+"```"+msg_temp
+  return ""
