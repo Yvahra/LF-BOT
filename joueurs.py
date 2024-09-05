@@ -273,7 +273,7 @@ def setArmy(player:str, colo:str, army:str) -> str:
     data = f.loadData(S_JOUEUR_FILENAME)
     for p in data:
       if p["name"].upper() == player.upper():
-        colo = "colo1"if colo == "C1" else "colo2"
+        colo = "colo1" if colo.upper() == "C1" else "colo2"
         p[colo]["army"] = f.getArmy(army)
         colo_name = p[colo]["name"]
     f.saveData(data, S_JOUEUR_FILENAME)
@@ -303,7 +303,7 @@ def setStatsColo(player:str, colo:str, oe:str, ov:str, tdp:str) -> str:
     data = f.loadData(S_JOUEUR_FILENAME)
     for p in data:
       if p["name"].upper() == player.upper():
-        colo = "colo1"if colo == "C1" else "colo2"
+        colo = "colo1" if colo.upper() == "C1" else "colo2"
         p[colo]["oe"] = int(oe)
         p[colo]["ov"] = int(ov)
         p[colo]["tdp"] = int(tdp)
@@ -321,7 +321,7 @@ def setVassal(player:str, colo:str, vassal:str, coloVassal:str, pillage:str) -> 
     data = f.loadData(S_JOUEUR_FILENAME)
     for p in data:
       if p["name"].upper() == player.upper():
-        colo = "colo1"if colo == "C1" else "colo2"
+        colo = "colo1" if colo.upper() == "C1" else "colo2"
         p[colo]["vassal"]["name"] = vassal
         p[colo]["vassal"]["colony"] = 1 if coloVassal == "C2" else 0
         p[colo]["vassal"]["pillage"] = int(pillage)
