@@ -59,13 +59,21 @@ def convertTPSChasse(tdc_init:int, tdc_chasse:int, vt:int) -> str:
 
 
   # !simuChasse <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
-def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str) -> str:
-  msg= "Chasse impossible. Essayez avec moins de chasses simultanées."
-  chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt))
+def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> str:
+  msg= "Chasse impossible."
+  chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt),int(nb_chasses))
+  # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
+    msg_temp= ""
+    tdc_chasse= 0
     for chasse in chasses:
-    msg=
+      msg_temp+= "    Quantité chassée: "+f.betterNumber(str(chasse["quantity"]))
+      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"]))+")\n"
+      msg_temp+= "```"
+      for unit in chasse["army"]:
+        msg_temp+=unit + ": " + str(chasse["army"][unit])+"\n"
+      tdc_chasse+= chasse["quantity"]
     msg= "# Résultats du simulateur de chasses\n"
-    msg+="```Joueur: "+joueur+" ("+colo+")\n"
-    msg+="TdC Chassé: "+f.betterNumber(tdc_chasse)+"```"+msg_temp
-  return ""
+    msg+="Joueur:     " + joueur + " (" + colo + ")\n"
+    msg+="TdC Chassé: " + f.betterNumber(str(tdc_chasse)) + "\n" + msg_temp
+  return msg

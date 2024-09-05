@@ -49,11 +49,11 @@ def approx_tdc_chasse(tdc_arrivee:int, fdf:int) -> int:
     return tdc_chasse
 
 
-def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int) -> list:
+def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses:int) -> list:
     # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
 
     # Initialisation des variables
-    nbr_chasses = vt + 1
+    #nbr_chasses = vt + 1
 
 
     fdf_hb= joueur.colo1["stats_army"]["fdf_hb"] if colo.upper() == "C1" else joueur.colo2["stats_army"]["fdf_hb"]

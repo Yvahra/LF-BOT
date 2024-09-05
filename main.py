@@ -80,7 +80,8 @@ donne:
 `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie les stats de l'alliance;""",
     """### Commandes Chasses
 `!printChasses <joueur>`: affiche les chasses d'un joueur
-`!chasse [joueur] <quantité>`: enregistre une chasse;""",
+`!chasse [joueur] <quantité>`: enregistre une chasse;
+`!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur""",
     """### Commandes Convois
 `!convoisEnCours`: affiche les convois en cours;
 `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
@@ -299,17 +300,17 @@ async def printChasses(message):
 
 
 # `!chasse <joueur> <C1/C2> <quantité>`: enregistre une chasse;
-async def chasse(message):
+async def chasse(message, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!chasse [joueur] <quantité>`"
     if await lengthVerificator(message, "!chasse [joueur] <quantité>"):
-        msg = convois.convoi(
+        msg = chasses.chasse(
             message.content.split(" ")[1],
             f.getNumber(message.content.split(" ")[2]))
     if await lengthVerificator(message, "!chasse <quantité>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas chasser!"
         else:
-            msg = convois.convoi(
+            msg = chasses.chasse(
                 player,
                 f.getNumber(message.content.split(" ")[1]))
         if msg.startswith("ERR:"):
@@ -319,6 +320,32 @@ async def chasse(message):
             for m in f.splitMessage(msg):
                 await message.channel.send(m)
 
+# `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
+async def simuChasse(message, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <tdc_total_chassé> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"
+    if await lengthVerificator(message, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>"):
+        msg = chasses.simuChasse(
+            message.content.split(" ")[1],
+            message.content.split(" ")[2],
+            message.content.split(" ")[3],
+            message.content.split(" ")[4],
+            message.content.split(" ")[5])
+    if await lengthVerificator(message, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas chasser!"
+        else:
+            msg = chasses.simuChasse(
+                player,
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+                message.content.split(" ")[4])
+        if msg.startswith("ERR:"):
+            await error(message, msg)
+        else:
+            await message.delete()
+            for m in f.splitMessage(msg):
+                await message.channel.send(m)
 
 #__________________________________________________#
 ## CONVOIS ##
@@ -1229,7 +1256,15 @@ async def on_message(message):
       else:
         await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
 
-  
+    # `!simuChasse [joueur] <tdc_initial> <tdc_total_chassé> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`:
+    # donne la simulation de chasse pour le joueur
+    elif message.content.upper().startswith("!SIMUCHASSE"):
+      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+      if checkRoles(message, [admin, superReader, is_concerned]):
+        await simuChasse(message, player)
+      else:
+        await errorRole(message,["bot admin access", "bot super-reader access", "joueur concerné"])
+
       ### ------- ###
       ### Convois ###
       ### ------- ###
