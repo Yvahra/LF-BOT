@@ -79,10 +79,10 @@ class Joueur:
             tdp_hb = 0
             for unit in data[i][colo]["army"]:
               temp["army"][unit.upper()]= int(data[i][colo]["army"][unit])
-              fdf_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["fdf"]
-              vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["vie"]
-              fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["fdd"]
-              tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit]["tdp"]
+              fdf_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdf"]
+              vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["vie"]
+              fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdd"]
+              tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["tdp"]
             temp["stats_army"] =  {"fdf_hb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
             temp["oe"]=           int(data[i][colo]["oe"])
             temp["ov"]=           int(data[i][colo]["ov"])

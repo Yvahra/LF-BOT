@@ -50,7 +50,10 @@ def printConvoisEnCours() -> str:
   data = f.loadData(S_CONVOIS_FILENAME)
   msg = """**Convoi(s) en cours**:\n"""
   for convoi in data:
-    msg+= convoi["player"]["name"] + " (" + COLONIES[convoi["player"]["name"].upper()][convoi["player"]["colony"]] + ")"
+    if convoi["player"]["name"].upper() in COLONIES:
+      msg+= convoi["player"]["name"] + " (" + COLONIES[convoi["player"]["name"].upper()][convoi["player"]["colony"]] + ")"
+    else:
+      msg += convoi["player"]["name"] + " (" + str(convoi["player"]["colony"]+1) + ")"
     msg+= ": "+ convoi["title"]+" "+str(convoi["level"])+"\n```"
     msg+= "    P: "+ f.betterNumber(str(convoi["remaining"]["apple"])) + "\n"
     msg+= "    B: "+ f.betterNumber(str(convoi["remaining"]["wood"])) + "\n"
