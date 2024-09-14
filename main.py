@@ -327,8 +327,8 @@ async def simuChasse(message, player):
         msg = chasses.simuChasse(
             message.content.split(" ")[1],
             message.content.split(" ")[2],
-            message.content.split(" ")[3],
             message.content.split(" ")[4],
+            message.content.split(" ")[3],
             message.content.split(" ")[5])
     if await lengthVerificator(message, "!simuChasse <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         if player is None:
