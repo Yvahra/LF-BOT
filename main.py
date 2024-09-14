@@ -340,12 +340,12 @@ async def simuChasse(message, player):
                 message.content.split(" ")[2],
                 message.content.split(" ")[3],
                 message.content.split(" ")[4])
-        if msg.startswith("ERR:"):
-            await error(message, msg)
-        else:
-            await message.delete()
-            for m in f.splitMessage(msg):
-                await message.channel.send(m)
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 #__________________________________________________#
 ## CONVOIS ##
