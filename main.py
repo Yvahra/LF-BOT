@@ -1098,9 +1098,7 @@ async def on_message(message):
     is_concerned = False
 
     lf_members = f.loadData(S_ACTIVE_PLAYERS)
-    print(rolesIDs)
     for m in lf_members:
-      print(m)
       if user.get_role(rolesIDs[m]) is not None and m in message.content.lower():
         is_concerned = True
 
