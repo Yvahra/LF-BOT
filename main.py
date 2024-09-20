@@ -814,10 +814,10 @@ async def setVassal(message, player):
         if not player is None:
             msg = joueurs.setStatsColo(
                 player,
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4])
+                message.content.split(" ")[1],
+                message.content.split(" ")[2],
+                message.content.split(" ")[3],
+                message.content.split(" ")[4])
         else:
             msg="ERR: vous ne pouvez pas changer le vassal de votre colo!"
     if msg.startswith("ERR:"):
@@ -1099,8 +1099,9 @@ async def on_message(message):
 
     lf_members = f.loadData(S_ACTIVE_PLAYERS)
     for m in lf_members:
-      if user.get_role(rolesIDs[m]) is not None and m in message.content.lower():
-        is_concerned = True
+        if m in rolesIDs:
+          if user.get_role(rolesIDs[m]) is not None and m in message.content.lower():
+            is_concerned = True
 
 
 
