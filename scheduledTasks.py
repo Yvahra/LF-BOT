@@ -85,7 +85,7 @@ def sauvegarder_fichiers(source_dir, destination_dir):
 
         # Vérifie si c'est un fichier avant de le déplacer
         if os.path.isfile(source_file):
-            shutil.copy(source_file, destination_file)
+            shutil.copytree(source_file, destination_file)
             print(f"Fichier {filename} sauvegardé dans {destination_dir}")
 
 def supprimer_anciens_fichiers(destination_dir, age_jours=30):
