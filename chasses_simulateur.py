@@ -100,5 +100,5 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
 def tempsChasse(tdcInit:int, tdcChasse:int, vt:int) -> str:
     tps_chasse = (60 + tdcInit / 10 + tdcChasse / 2) / (1 + vt / 10)
     tps_chasse_conv = timedelta(seconds=tps_chasse)
-    return datetime.fromtimestamp(tps_chasse).strftime("%d jours %Ih %Mmin %Ss") #"{}".format(tps_chasse)
+    return datetime.fromtimestamp(tps_chasse).strftime("%Y années %B mois %d jours %Ih %Mmin %Ss") #"{}".format(tps_chasse)
 
