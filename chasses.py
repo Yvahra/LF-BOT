@@ -78,5 +78,5 @@ def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> st
       tdc_chasse+= chasse["quantity"]
     msg= "# Résultats du simulateur de chasses\n"
     msg+="**Joueur**:     " + joueur + " (" + colo + ")\n"
-    msg+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasses.\n\n" + msg_temp
+    msg+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasse(s)\n" + msg_temp
   return msg

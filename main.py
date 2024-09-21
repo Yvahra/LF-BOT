@@ -676,7 +676,7 @@ async def renameColo(message, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`"
     if len(message.content.split("/n")[0].split(" ")) == 3: #"!renameColo [joueur] <C1/C2>"
         msg = joueurs.renameColo(message.content.split("\n")[0].split(" ")[1],
-                                 message.content.split("\n")[1].split(" ")[2],
+                                 message.content.split("\n")[0].split(" ")[2],
                                  message.content.split("\n")[1])
     if len(message.content.split("/n")[0].split(" ")) == 2: #"!renameColo <C1/C2>"
         if player is None:
