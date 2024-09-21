@@ -337,7 +337,7 @@ async def simuChasse(message, player):
         else:
             msg = chasses.simuChasse(
                 player,
-                f.getNumber(message.content.split(" ")[2]),
+                f.getNumber(message.content.split(" ")[1]),
                 message.content.split(" ")[3],
                 message.content.split(" ")[2],
                 message.content.split(" ")[4])
