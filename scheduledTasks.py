@@ -109,9 +109,9 @@ def supprimer_anciens_fichiers(destination_dir, age_jours=30):
 # Login Section
 @bot.event
 async def on_ready():
-  #await recapRSS()  # le bot est prêt
-  #await recapConvois()
-  #await recapFlood()
+  await recapRSS()  # le bot est prêt
+  await recapConvois()
+  await recapFlood()
 
   source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
   destination_dir = '/home/yavhra/Archives/LF-BOT'
