@@ -15,7 +15,7 @@ from discord.ext import commands
 import floods
 import functions as f
 from dotenv import load_dotenv
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 
 
@@ -64,12 +64,62 @@ async def recapFlood():
         for m in f.splitMessage(msg):
             await channel.send(m)
 
+
+import os
+import shutil
+import time
+from datetime import datetime, timedelta
+
+def sauvegarder_fichiers(source_dir, destination_dir):
+    date= datetime.now()- timedelta(days=1)
+    datename= date.strftime("%Y-%m-%d")
+    destination_dir+= "/"+datename
+    # Vérifie si le dossier de destination existe, sinon le crée
+    if not os.path.exists(destination_dir):
+        os.makedirs(destination_dir)
+
+    # Déplace les fichiers du dossier source vers le dossier de destination
+    for filename in os.listdir(source_dir):
+        source_file = os.path.join(source_dir, filename)
+        destination_file = os.path.join(destination_dir, filename)
+
+        # Vérifie si c'est un fichier avant de le déplacer
+        if os.path.isfile(source_file):
+            shutil.copy(source_file, destination_file)
+            print(f"Fichier {filename} sauvegardé dans {destination_dir}")
+
+def supprimer_anciens_fichiers(destination_dir, age_jours=30):
+    # Détermine la date limite (aujourd'hui - 30 jours)
+    date = datetime.now() - timedelta(days=age_jours)
+    datename = date.strftime("%Y-%m-%d")
+    destination_dir += "/" + datename
+
+    # Parcourt les fichiers dans le dossier de destination
+    for filename in os.listdir(destination_dir):
+        fichier = os.path.join(destination_dir, filename)
+
+        # Vérifie si c'est un fichier
+        if os.path.isfile(fichier):
+            os.remove(fichier)
+            print(f"Fichier {filename} supprimé (ancien de plus de {age_jours} jours)")
+    os.rmdir(destination_dir)
+    print(f"Dossier {destination_dir} supprimé (ancien de plus de {age_jours} jours)")
+
+
+
 # Login Section
 @bot.event
 async def on_ready():
   await recapRSS()  # le bot est prêt
   await recapConvois()
   await recapFlood()
+
+  source_dir = '/home/yavhra/GIT/LF-BOT'
+  destination_dir = '/home/yavhra/Archives/LF-BOT'
+
+  sauvegarder_fichiers(source_dir, destination_dir)
+  supprimer_anciens_fichiers(destination_dir, age_jours=30)
+
   exit()
 
 bot.run(token)
