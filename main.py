@@ -314,12 +314,12 @@ async def chasse(message, player):
             msg = chasses.chasse(
                 player,
                 f.getNumber(message.content.split(" ")[1]))
-        if msg.startswith("ERR:"):
-            await error(message, msg)
-        else:
-            await message.delete()
-            for m in f.splitMessage(msg):
-                await message.channel.send(m)
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
 
 # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
 async def simuChasse(message, player):
