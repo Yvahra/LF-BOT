@@ -323,11 +323,11 @@ async def chasse(message, player):
 
 # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
 async def simuChasse(message, player):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <tdc_total_chassé> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
     if await lengthVerificator(message, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         msg = chasses.simuChasse(
             message.content.split(" ")[1],
-            message.content.split(" ")[2],
+            f.getNumber(message.content.split(" ")[2]),
             message.content.split(" ")[4],
             message.content.split(" ")[3],
             message.content.split(" ")[5])
@@ -337,7 +337,7 @@ async def simuChasse(message, player):
         else:
             msg = chasses.simuChasse(
                 player,
-                message.content.split(" ")[1],
+                f.getNumber(message.content.split(" ")[2]),
                 message.content.split(" ")[2],
                 message.content.split(" ")[3],
                 message.content.split(" ")[4])
