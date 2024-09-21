@@ -66,15 +66,17 @@ def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> st
   if len(chasses) > 0:
     msg_temp= ""
     tdc_chasse= 0
+    init= chasses[0]["init"]
     for chasse in chasses:
       msg_temp+= " - Quantité chassée: "+f.betterNumber(str(chasse["quantity"]))
-      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"]))+")\n"
+      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"]))
+      msg_temp+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
       msg_temp+= "```"
       for unit in chasse["army"]:
         msg_temp+=unit + ": " + str(chasse["army"][unit])+"\n"
       msg_temp+= "```\n"
       tdc_chasse+= chasse["quantity"]
     msg= "# Résultats du simulateur de chasses\n"
-    msg+="*Joueur*:     " + joueur + " (" + colo + ")\n"
-    msg+="*TdC Chassé*: " + f.betterNumber(str(tdc_chasse)) + "\n---\n\n" + msg_temp
+    msg+="**Joueur**:     " + joueur + " (" + colo + ")\n"
+    msg+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasses.\n\n" + msg_temp
   return msg
