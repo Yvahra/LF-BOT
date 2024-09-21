@@ -69,7 +69,7 @@ def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> st
     init= chasses[0]["init"]
     for chasse in chasses:
       msg_temp+= " - Quantité chassée: "+f.betterNumber(str(chasse["quantity"]))
-      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"]))
+      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"])) +")"
       msg_temp+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
       msg_temp+= "```"
       for unit in chasse["army"]:
