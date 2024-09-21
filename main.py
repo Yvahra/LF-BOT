@@ -812,7 +812,7 @@ async def setVassal(message, player):
 
     if await lengthVerificator( message, "!setVassal <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
         if not player is None:
-            msg = joueurs.setStatsColo(
+            msg = joueurs.setVassal(
                 player,
                 message.content.split(" ")[1],
                 message.content.split(" ")[2],
