@@ -74,7 +74,7 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
             fdf_ch=     approx_fdf(tdc_init+i*tdc_chasse,tdc_chasse)
             fdf_tot+=   fdf_ch
             fdf_required.append(fdf_ch)
-        if fdf_required < fdf_army:
+        if fdf_tot < fdf_army:
             fdf_chasse= fdf_required[:]
             tdc_chasse+= tdc_delta
         else:
