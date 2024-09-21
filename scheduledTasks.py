@@ -95,26 +95,27 @@ def supprimer_anciens_fichiers(destination_dir, age_jours=30):
     destination_dir += "/" + datename
 
     # Parcourt les fichiers dans le dossier de destination
-    for filename in os.listdir(destination_dir):
-        fichier = os.path.join(destination_dir, filename)
+    if os.path.exists(destination_dir):
+        for filename in os.listdir(destination_dir):
+            fichier = os.path.join(destination_dir, filename)
 
         # Vérifie si c'est un fichier
-        if os.path.isfile(fichier):
-            os.remove(fichier)
-            print(f"Fichier {filename} supprimé (ancien de plus de {age_jours} jours)")
-    os.rmdir(destination_dir)
-    print(f"Dossier {destination_dir} supprimé (ancien de plus de {age_jours} jours)")
+            if os.path.isfile(fichier):
+                os.remove(fichier)
+                print(f"Fichier {filename} supprimé (ancien de plus de {age_jours} jours)")
+        os.rmdir(destination_dir)
+        print(f"Dossier {destination_dir} supprimé (ancien de plus de {age_jours} jours)")
 
 
 
 # Login Section
 @bot.event
 async def on_ready():
-  await recapRSS()  # le bot est prêt
-  await recapConvois()
-  await recapFlood()
+  #await recapRSS()  # le bot est prêt
+  #await recapConvois()
+  #await recapFlood()
 
-  source_dir = '/home/yavhra/GIT/LF-BOT'
+  source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
   destination_dir = '/home/yavhra/Archives/LF-BOT'
 
   sauvegarder_fichiers(source_dir, destination_dir)
