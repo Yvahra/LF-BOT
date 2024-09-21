@@ -264,7 +264,21 @@ def addPlayer(message):
   f.saveData(data, S_JOUEUR_FILENAME)
   return "Joueur ajouté avec succès."
 
-
+def renameColo(player:str, colo:str, name:str) -> str:
+  msg = ""
+  old_colo_name = ""
+  try:
+    data = f.loadData(S_JOUEUR_FILENAME)
+    for p in data:
+      if p["name"].upper() == player.upper():
+        colo = "colo1" if colo.upper() == "C1" else "colo2"
+        old_colo_name = p[colo]["name"]
+        p[colo]["name"] = name
+    f.saveData(data, S_JOUEUR_FILENAME)
+    msg = "Nom de la colonie de "+ player + " a été modifiée avec succès. [" + old_colo_name + " > " + name + "]"
+  except Exception as e:
+    msg = "ERR: renameColo() - " + str(e) + "\n"+ msg
+  return msg
 
 def setArmy(player:str, colo:str, army:str) -> str:
   msg = ""

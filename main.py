@@ -670,6 +670,28 @@ async def player(message):
   else:
     await error(message,"Erreur dans la commande: `!player \n <templatePlayer>`")
 
+# `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`: modifie le nom de la colo d'un joueur d'un joueur
+async def renameColo(message, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`"
+    if await lengthVerificator(message.split("/n")[0], "!renameColo [joueur] <C1/C2>"):
+        msg = joueurs.renameColo(message.content.split("\n")[0].split(" ")[1],
+                                 message.content.split("\n")[1].split(" ")[2],
+                                 message.content.split("\n")[1])
+    if await lengthVerificator(message.split("/n")[0], "!renameColo <C1/C2>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas renommer vos colonies!"
+        else:
+            msg = joueurs.renameColo(
+                                    player,
+                                    message.content.split("\n")[0].split(" ")[1],
+                                    message.content.split("\n")[1])
+    if msg.startswith("ERR:"):
+        await error(message, msg)
+    else:
+        await message.delete()
+        for m in f.splitMessage(msg):
+            await message.channel.send(m)
+
 # `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
 async def setTDCExploit(message, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`"
@@ -1408,6 +1430,15 @@ async def on_message(message):
         await player(message)
       else:
         await errorRole(message,["bot admin access"])
+
+        # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`
+        # modifie le nom de la colo d'un joueur d'un joueur.
+    elif message.content.upper().startswith("!RENAMECOLO"):
+        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+        if checkRoles(message, [admin, writer, is_concerned]):
+            await renameColo(message, player)
+        else:
+            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`
       # modifie l'armée d'un joueur.
