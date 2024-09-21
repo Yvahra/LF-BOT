@@ -338,8 +338,8 @@ async def simuChasse(message, player):
             msg = chasses.simuChasse(
                 player,
                 f.getNumber(message.content.split(" ")[2]),
-                message.content.split(" ")[2],
                 message.content.split(" ")[3],
+                message.content.split(" ")[2],
                 message.content.split(" ")[4])
     if msg.startswith("ERR:"):
         await error(message, msg)
