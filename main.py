@@ -659,7 +659,7 @@ async def printPlayer(message):
 
 
 # `!player \n <templatePlayer>`: ajoute un nouveau pacte
-async def player(message):
+async def addPlayer(message):
   if len(message.content.split("\n")) > 2:
     msg = joueurs.addPlayer(message)
     if msg.startswith("ERR:"):
@@ -1428,7 +1428,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!PLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin]):
-        await player(message)
+        await addPlayer(message)
       else:
         await errorRole(message,["bot admin access"])
 
