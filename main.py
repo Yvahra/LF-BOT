@@ -394,7 +394,7 @@ async def convoi(message, player):
 
 
 # `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
-async def demandeConvoi(message):
+async def demandeConvoi(message, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`"
     if await lengthVerificator(message, "!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"):
         msg = convois.demandeConvoi(
@@ -1326,7 +1326,7 @@ async def on_message(message):
     elif message.content.upper().startswith("!DEMANDECONVOI"):
       f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
       if checkRoles(message, [admin, writer, membre]):
-        await demandeConvoi(message)
+        await demandeConvoi(message, player)
       else:
         await errorRole(message,["bot admin access", "bot writer access", "membre"])
 
