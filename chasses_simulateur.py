@@ -128,7 +128,7 @@ def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, nbr_chasses_max:
             fdf_tot_ab-= fdf_ch
             vie_tot_ab-= vie_ch
 
-            temp_army = {"JS":int(vie_ch/bonus_vie),"JTK":int(fdf_ch/bonus_fdf)}
+            temp_army = {"JS":int(vie_ch/(16*bonus_vie)),"JTK":int(fdf_ch/(80*bonus_fdf))}
             res.append({"quantity": 1, "init": tdc_init + i, "army": temp_army})
         else:
             keepGoing= False
