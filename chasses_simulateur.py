@@ -84,6 +84,7 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
             tdc_chasse+= tdc_delta
         else:
             keep_going= False
+        i+=1
 
     if fdf_chasse is None:
         return []
