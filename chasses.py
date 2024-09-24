@@ -82,9 +82,9 @@ def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> st
   return msg
 
   # !simuChassePex <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
-def simuChassePex(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> str:
+def simuChassePex(joueur:str, tdc_init:str, tdc_chasse:str, colo:str, vt:str, nb_chasses:str) -> str:
   msg= "Chasse impossible."
-  chasses= simu.simulatorPex(joueurs.Joueur(joueur),colo,int(tdc_init),int(nb_chasses))
+  chasses= simu.simulatorPex(joueurs.Joueur(joueur),colo,int(tdc_init),int(tdc_chasse),int(nb_chasses))
   # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
     msg_temp= ""

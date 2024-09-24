@@ -100,7 +100,7 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
         return res
 
 
-def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, nbr_chasses_max:int):
+def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, tdc_chasse:int, nbr_chasses_max:int):
     army= joueur.colo1["army"] if colo.upper() == "C1" else joueur.colo2["army"]
     vie_tot_hb= army["JS"]*16 if "JS" in army else 0
     fdf_tot_hb= army["JTK"]*80 if "JTK" in army else 0
@@ -121,15 +121,15 @@ def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, nbr_chasses_max:
     i= 0
     keepGoing= True
     while i < nbr_chasses_max and keepGoing:
-        fdf_ch = approx_fdf(tdc_init + i, 1)
-        vie_ch = approx_vie(tdc_init + i, 1)
+        fdf_ch = approx_fdf(tdc_init + i * tdc_chasse, 1)
+        vie_ch = approx_vie(tdc_init + i * tdc_chasse, 1)
 
         if fdf_ch<fdf_tot_ab and vie_ch<vie_tot_ab:
             fdf_tot_ab-= fdf_ch
             vie_tot_ab-= vie_ch
 
             temp_army = {"JS":int(vie_ch/(16*bonus_vie)),"JTK":int(fdf_ch/(80*bonus_fdf))}
-            res.append({"quantity": 1, "init": tdc_init + i, "army": temp_army})
+            res.append({"quantity": 1, "init": tdc_init + i * tdc_chasse, "army": temp_army})
         else:
             keepGoing= False
         i+= 1
