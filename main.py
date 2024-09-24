@@ -133,7 +133,7 @@ async def error(channel, command, errorMsg: str):
     f.log(rank=1, prefixe="[ERROR]", message=command, suffixe=errorMsg)
     await channel.send(errorMsg)
 
-def checkRoles(message, roles:list) -> bool:
+def checkRoles(roles:list) -> bool:
     if not any(roles):
         f.log(rank=1, prefixe="[ERROR]", message="No permission", suffixe=" - "+str(roles))
     return any(roles)
@@ -1129,38 +1129,38 @@ async def on_message(message):
     # affiche les commandes;
     if command.upper().startswith("!HELP AIDE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 0)
+      await help(channel, 0)
     elif command.upper().startswith("!HELP ALLIANCE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 1)
+      await help(channel, 1)
     elif command.upper().startswith("!HELP CHASSE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 2)
+      await help(channel, 2)
     elif command.upper().startswith("!HELP CONVOI"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 3)
+      await help(channel, 3)
     elif command.upper().startswith("!HELP FLOOD"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 4)
+      await help(channel, 4)
     elif command.upper().startswith("!HELP JOUEUR"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 5)
+      await help(channel, 5)
     elif command.upper().startswith("!HELP PACTE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 6)
+      await help(channel, 6)
     elif command.upper().startswith("!HELP DEV"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message, 7)
+      await help(channel, 7)
     elif command.upper().startswith("!HELP"): 
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(message)
+      await help(channel)
 
       #`!templatePlayer`
       # donne la fiche à remplir pour enregistrer un joueur;
     elif command.upper().startswith("!TEMPLATEPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
-        await templatePlayer(message)
+      if checkRoles( [admin]):
+        await templatePlayer(channel)
       else:
         await errorRole(channel,["bot admin access"])
 
@@ -1168,30 +1168,30 @@ async def on_message(message):
     # donne la commande à remplir pour enregistrer un pacte;
     elif command.upper().startswith("!TEMPLATEPACTE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, diplo]):
-        await templatePacte(message)
+      if checkRoles( [admin, diplo]):
+        await templatePacte(channel)
       else:
         await errorRole(channel,["bot admin access", "diplo"])
 
     # `!getDbNames`: donne les noms des bases de données;
     elif command.upper().startswith("!GETDBNAMES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
-        await getDbNames(message)
+      if checkRoles( [admin]):
+        await getDbNames(channel)
       else:
         await errorRole(channel,["bot admin access"])
 
     # `!getDB <path//filename>`: donne la base de données;
     elif command.upper().startswith("!GETDB"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await getDB(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
 
     elif command.upper().startswith("!GETLOG"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await getLog(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
@@ -1205,7 +1205,7 @@ async def on_message(message):
     # affiche les données de l'alliance;
     elif command.upper().startswith("!PRINTALLIANCE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, superReader, membre]):
+      if checkRoles( [admin, superReader, membre]):
         await printAlliance(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader acces", "membre"])
@@ -1214,7 +1214,7 @@ async def on_message(message):
     # modifie la quantité de TDC de l'alliance;
     elif command.upper().startswith("!SETTDCALLY"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await setTDCAlly(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
@@ -1223,7 +1223,7 @@ async def on_message(message):
     # modifie le nombre de joueurs de l'alliance;
     elif command.upper().startswith("!SETNBMEMBRE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await setNBMembre(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
@@ -1232,7 +1232,7 @@ async def on_message(message):
     # modifie le bonus d'alliance;
     elif command.upper().startswith("!SETBONUSALLY"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await setBonusAlly(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
@@ -1241,7 +1241,7 @@ async def on_message(message):
     # modifie les stats de l'alliance;
     elif command.upper().startswith("!SETALLY"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await setAlly(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
@@ -1256,7 +1256,7 @@ async def on_message(message):
     # affiche les chasses d'un joueur
     elif command.upper().startswith("!PRINTCHASSES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await printChasses(channel,command)
         #await setAlly(channel,command)
       else:
@@ -1266,7 +1266,7 @@ async def on_message(message):
     # enregistre une chasse;
     elif command.upper().startswith("!CHASSE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await chasse(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1275,7 +1275,7 @@ async def on_message(message):
     # donne la simulation de chasse pour le joueur
     elif command.upper().startswith("!SIMUCHASSE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, superReader, is_concerned]):
+      if checkRoles( [admin, superReader, is_concerned]):
         await simuChasse(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
@@ -1289,7 +1289,7 @@ async def on_message(message):
     # affiche les convois en cours;
     elif command.upper().startswith("!CONVOISENCOURS"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, superReader, membre]):
+      if checkRoles( [admin, writer, superReader, membre]):
         await printConvoisEnCours(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
@@ -1298,7 +1298,7 @@ async def on_message(message):
       # ajoute un convoi;
     elif command.upper().startswith("!CONVOI"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await convoi(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1307,7 +1307,7 @@ async def on_message(message):
       # met à jour un convoi avec l'autoprod d'un joueur;
     elif command.upper().startswith("!AUTOPROD"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await autoProd(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1316,7 +1316,7 @@ async def on_message(message):
       # ajoute un convoi à la liste des convois en cours;
     elif command.upper().startswith("!DEMANDECONVOI"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, membre]):
+      if checkRoles( [admin, writer, membre]):
         await demandeConvoi(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "membre"])
@@ -1325,7 +1325,7 @@ async def on_message(message):
         # calcul le récapitulatif des ressources récoltées de la journée;
     elif command.upper().startswith("!RECAPRESSOURCES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await recapRSS(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
@@ -1335,7 +1335,7 @@ async def on_message(message):
         # affiche le récapitulatif des ressources récoltées de la journée;
     elif command.upper().startswith("!PRINTRECAPRESSOURCES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await printRecapRSS(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
@@ -1344,7 +1344,7 @@ async def on_message(message):
         # affiche les convois effectués sur cette date
     elif command.upper().startswith("!PRINTCONVOISJOUR"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, superReader]):
+      if checkRoles( [admin, superReader]):
           await printConvoisJour(channel,command)
       else:
           await errorRole(channel, ["bot admin access", "bot super-reader access"])
@@ -1358,7 +1358,7 @@ async def on_message(message):
       # enregistre un flood externe reçu;
     elif command.upper().startswith("!FLOODEXTR"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await floodExtR(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1367,7 +1367,7 @@ async def on_message(message):
       # enregistre un flood externe donné;
     elif command.upper().startswith("!FLOODEXTD"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await floodExtD(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1376,7 +1376,7 @@ async def on_message(message):
       # affiche les floods à faire;
     elif command.upper().startswith("!FUTURSFLOODS"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, superReader, membre]):
+      if checkRoles( [admin, writer, superReader, membre]):
         await printFloodsFuturs(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
@@ -1385,7 +1385,7 @@ async def on_message(message):
       # affiche les floods externes;
     elif command.upper().startswith("!PRINTFLOODSEXT"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, superReader]):
+      if checkRoles( [admin, writer, superReader]):
         await printFloodsExt(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access"])
@@ -1394,7 +1394,7 @@ async def on_message(message):
       # enregistre un don de tdc (butin de guerre par exemple)
     elif command.upper().startswith("!DONTDC"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer]):
+      if checkRoles( [admin, writer]):
         await donTDC(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
@@ -1409,7 +1409,7 @@ async def on_message(message):
       # affiche les données d'un joueur.
     elif command.upper().startswith("!PRINTPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await printPlayer(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1418,7 +1418,7 @@ async def on_message(message):
       # ajoute un nouveau pacte
     elif command.upper().startswith("!PLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await addPlayer(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
@@ -1427,7 +1427,7 @@ async def on_message(message):
         # modifie le nom de la colo d'un joueur d'un joueur.
     elif command.upper().startswith("!RENAMECOLO"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-        if checkRoles(message, [admin, writer, is_concerned]):
+        if checkRoles( [admin, writer, is_concerned]):
             await renameColo(channel,command, player)
         else:
             await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
@@ -1436,7 +1436,7 @@ async def on_message(message):
       # modifie l'armée d'un joueur.
     elif command.upper().startswith("!SETARMY"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setArmy(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1445,7 +1445,7 @@ async def on_message(message):
       # modifie la race d'un joueur.
     elif command.upper().startswith("!SETRACE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setRace(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1454,7 +1454,7 @@ async def on_message(message):
         # modifie le tdc exploité d'un joueur;
     elif command.upper().startswith("!SETTDCEXPLOITÉ"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-        if checkRoles(message, [admin, writer, is_concerned]):
+        if checkRoles( [admin, writer, is_concerned]):
             await setTDCExploit(channel,command,player)
         else:
             await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
@@ -1463,7 +1463,7 @@ async def on_message(message):
         # modifie le tdc d'un joueur;
     elif command.upper().startswith("!SETTDC "):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-        if checkRoles(message, [admin, writer, is_concerned]):
+        if checkRoles( [admin, writer, is_concerned]):
             await setTDC(channel,command, player)
         else:
             await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
@@ -1472,7 +1472,7 @@ async def on_message(message):
       # modifie les stats d'une colonie d'un joueur.
     elif command.upper().startswith("!SETSTATSCOLO"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setStatsColo(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1481,7 +1481,7 @@ async def on_message(message):
       # modifie le vassal d'une colonie d'un joueur.
     elif command.upper().startswith("!SETVASSAL"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setVassal(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1490,7 +1490,7 @@ async def on_message(message):
       # modifie les statistiques générales d'un joueur.
     elif command.upper().startswith("!SETSTATSPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setStatsPlayer(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1499,7 +1499,7 @@ async def on_message(message):
       # modifie le héros d'un joueur.
     elif command.upper().startswith("!SETHERO"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, is_concerned]):
+      if checkRoles( [admin, writer, is_concerned]):
         await setHero(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
@@ -1508,7 +1508,7 @@ async def on_message(message):
     # définit les joueurs actifs de la LF;
     elif command.upper().startswith("!SETACTIVEPLAYERS"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
+      if checkRoles( [admin]):
         await setActivePlayers(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
@@ -1517,8 +1517,8 @@ async def on_message(message):
     # donne les joueurs actifs de la LF;
     elif command.upper().startswith("!GETACTIVEPLAYERS"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin]):
-        await getActivePlayers(message)
+      if checkRoles( [admin]):
+        await getActivePlayers(channel)
       else:
         await errorRole(channel,["bot admin access"])
 
@@ -1526,7 +1526,7 @@ async def on_message(message):
     # dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
     elif command.upper().startswith("!OPTIMANDI"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, superReader, is_concerned]):
+      if checkRoles( [admin, superReader, is_concerned]):
         await optiMandi(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
@@ -1535,7 +1535,7 @@ async def on_message(message):
     # dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
     elif command.upper().startswith("!OPTICARA"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-        if checkRoles(message, [admin, superReader, is_concerned]):
+        if checkRoles( [admin, superReader, is_concerned]):
             await optiCara(channel,command, player)
         else:
             await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
@@ -1550,7 +1550,7 @@ async def on_message(message):
       # affiche les pactes;
     elif command.upper().startswith("!PRINTPACTES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, writer, superReader]):
+      if checkRoles( [admin, writer, superReader]):
         await printPactes(channel,command)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access"])
@@ -1559,7 +1559,7 @@ async def on_message(message):
       # clôt un pacte;
     elif command.upper().startswith("!ENDPACTE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, diplo]):
+      if checkRoles( [admin, diplo]):
         await endPacte(channel,command)
       else:
         await errorRole(channel,["bot admin access", "diplo"])
@@ -1568,7 +1568,7 @@ async def on_message(message):
       # ajoute un nouveau pacte
     elif command.upper().startswith("!PACTE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      if checkRoles(message, [admin, diplo]):
+      if checkRoles( [admin, diplo]):
         await pacte(channel,command)
       else:
         await errorRole(channel,["bot admin access", "diplo"])
