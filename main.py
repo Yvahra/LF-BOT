@@ -129,9 +129,9 @@ donne:
 
 # ERROR HANDLER
 # error sender
-async def error(message, errorMsg: str):
-    f.log(rank=1, prefixe="[ERROR]", message=message.content, suffixe=errorMsg)
-    await message.channel.send(errorMsg)
+async def error(channel, command, errorMsg: str):
+    f.log(rank=1, prefixe="[ERROR]", message=command, suffixe=errorMsg)
+    await channel.send(errorMsg)
 
 def checkRoles(message, roles:list) -> bool:
     if not any(roles):
@@ -139,28 +139,27 @@ def checkRoles(message, roles:list) -> bool:
     return any(roles)
 
 # length verification
-async def lengthVerificatorWError(message, command):
-  if len(message.content.upper().split(" ")) == len(command.upper().split(" ")):
+async def lengthVerificatorWerror(messageCMD, channel, command):
+  if len(messageCMD.upper().split(" ")) == len(command.upper().split(" ")):
     return True
-  elif len(message.content.upper().split(" ")) < len(command.upper().split(" ")):
+  elif len(messageCMD.upper().split(" ")) < len(command.upper().split(" ")):
     f.log(rank=1, prefixe="[ERROR]", message="Peu d'arguments ont été donnés:`" + command + "`", suffixe="")
-    await error(message,"Peu d'arguments ont été donnés:`" + command + "`")
+    await error(channel, command,"Peu d'arguments ont été donnés:`" + command + "`")
     return False
-  elif len(message.content.upper().split(" ")) > len(command.upper().split(" ")):
+  elif len(messageCMD.upper().split(" ")) > len(command.upper().split(" ")):
     f.log(rank=1, prefixe="[ERROR]", message="Trop d'arguments ont été donnés:`" + command + "`", suffixe="")
-    await error(message,"Trop d'arguments ont été donnés:`" + command + "`")
+    await error(channel, command,"Trop d'arguments ont été donnés:`" + command + "`")
     return False
 
 
-async def lengthVerificator(message, command):
+async def lengthVerificator(messageCMD, command):
   res = False
-  if len(message.content.upper().split(" ")) == len(
-      command.upper().split(" ")):
+  if len(messageCMD.upper().split(" ")) == len(command.upper().split(" ")):
     res = True
   return res
 
 
-async def errorRole(message, roleList: list):
+async def errorRole(channel, roleList: list):
   msg = "il faut être "
   for i in range(len(roleList)):
     msg += "`" + roleList[i]
@@ -171,7 +170,7 @@ async def errorRole(message, roleList: list):
     else:
         msg += "`, "
   msg += "` pour utiliser cette commande"
-  await message.channel.send(msg)
+  await channel.send(msg)
 
 def getPlayerFromRoles(user) -> str:
      players = f.loadData(CONST_DISCORD)["player_id"]
@@ -187,26 +186,26 @@ def getPlayerFromRoles(user) -> str:
 
 
 # `!help`: affiche les commandes;
-async def help(message, page=None):
+async def help(channel, page=None):
   global helpMSG
-  await message.delete()
+  #await message.delete()
   for i in range(len(helpMSG)):
     if page == None or page+1 == i:
-      await message.channel.send(helpMSG[i])
+      await channel.send(helpMSG[i])
 
 
 # `!templatePlayer`: donne la fiche à remplir pour enregistrer un joueur;
-async def templatePlayer(message):
+async def templatePlayer(channel):
   msg = f.loadData(CONST_TEMPLATES)["player"]
-  await message.delete()
-  await message.channel.send(msg)
+  #await message.delete()
+  await channel.send(msg)
 
 
 # `!templatePacte`: donne la commande à remplir pour enregistrer un pacte;
-async def templatePacte(message):
+async def templatePacte(channel):
   msg = f.loadData(CONST_TEMPLATES)["pacte"]
-  await message.delete()
-  await message.channel.send(msg)
+  #await message.delete()
+  await channel.send(msg)
 
 
 #__________________________________________________#
@@ -215,72 +214,67 @@ async def templatePacte(message):
 
 
 # `!printAlliance`: affiche les données de l'alliance;
-async def printAlliance(message):
-  if await lengthVerificatorWError(message, "!printAlliance"):
+async def printAlliance(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!printAlliance"):
     msg = alliance.printAlliance()
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
-      await message.channel.send(msg)
+      #await message.delete()
+      await channel.send(msg)
 
 
 # `!setTDCAlly <tdc>`: modifie la quantité de TDC de l'alliance;
-async def setTDCAlly(message):
-  if await lengthVerificatorWError(message, "!setTDCAlly <tdc>"):
-    msg = alliance.setTDC(f.getNumber(message.content.split(" ")[1]))
+async def setTDCAlly(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!setTDCAlly <tdc>"):
+    msg = alliance.setTDC(f.getNumber(command.split(" ")[1]))
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
-      await message.channel.send(msg)
+      #await message.delete()
+      await channel.send(msg)
 
 
 # `!setNBMembre <quantité>`: modifie le nombre de joueurs de l'alliance;
-async def setNBMembre(message):
-  if await lengthVerificatorWError(message, "!setMembers <quantité>"):
-    msg = alliance.setNBMembre(f.getNumber(message.content.split(" ")[1]))
+async def setNBMembre(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!setMembers <quantité>"):
+    msg = alliance.setNBMembre(f.getNumber(command.split(" ")[1]))
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
-      await message.channel.send(msg)
+      #await message.delete()
+      await channel.send(msg)
 
 
 # `!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie le bonus d'alliance;
-async def setBonusAlly(message):
-  if await lengthVerificatorWError(
-      message,
-      "!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>"):
+async def setBonusAlly(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>"):
     msg = alliance.setBonusAlly(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        message.content.split(" ")[3],
-        message.content.split(" ")[4])
+        command.split(" ")[1],
+        command.split(" ")[2],
+        command.split(" ")[3],
+        command.split(" ")[4])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
-      await message.channel.send(msg)
+      #await message.delete()
+      await channel.send(msg)
 
 
 # `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`: modifie les stats de l'alliance;
-async def setAlly(message):
-  if await lengthVerificatorWError(
-      message,
-      "!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>"
-  ):
-    msg = alliance.setAlly(f.getNumber(message.content.split(" ")[1]),
-                           message.content.split(" ")[2],
-                           message.content.split(" ")[3],
-                           message.content.split(" ")[4],
-                           message.content.split(" ")[5],
-                           message.content.split(" ")[6])
+async def setAlly(channel, command):
+  if await lengthVerificatorWerror(command, channel,"!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>"):
+    msg = alliance.setAlly(f.getNumber(command.split(" ")[1]),
+                           command.split(" ")[2],
+                           command.split(" ")[3],
+                           command.split(" ")[4],
+                           command.split(" ")[5],
+                           command.split(" ")[6])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
-      await message.channel.send(msg)
+      #await message.delete()
+      await channel.send(msg)
 
 
 #__________________________________________________#
@@ -289,64 +283,64 @@ async def setAlly(message):
 
 
 # `!printChasses <joueur>`: affiche les chasses d'un joueur
-async def printChasses(message):
-  if await lengthVerificatorWError(message, "!printChasses <joueur>"):
-    msg = chasses.printChasses(message.content.split(" ")[1])
+async def printChasses(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!printChasses <joueur>"):
+    msg = chasses.printChasses(command.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!chasse <joueur> <C1/C2> <quantité>`: enregistre une chasse;
-async def chasse(message, player):
+async def chasse(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!chasse [joueur] <quantité>`"
-    if await lengthVerificator(message, "!chasse [joueur] <quantité>"):
+    if await lengthVerificator(command, "!chasse [joueur] <quantité>"):
         msg = chasses.chasse(
-            message.content.split(" ")[1],
-            f.getNumber(message.content.split(" ")[2]))
-    if await lengthVerificator(message, "!chasse <quantité>"):
+            command.split(" ")[1],
+            f.getNumber(command.split(" ")[2]))
+    if await lengthVerificator(command, "!chasse <quantité>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas chasser!"
         else:
             msg = chasses.chasse(
                 player,
-                f.getNumber(message.content.split(" ")[1]))
+                f.getNumber(command.split(" ")[1]))
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
-async def simuChasse(message, player):
+async def simuChasse(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
-    if await lengthVerificator(message, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
+    if await lengthVerificator(command, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         msg = chasses.simuChasse(
-            message.content.split(" ")[1],
-            f.getNumber(message.content.split(" ")[2]),
-            message.content.split(" ")[4],
-            message.content.split(" ")[3],
-            message.content.split(" ")[5])
-    if await lengthVerificator(message, "!simuChasse <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
+            command.split(" ")[1],
+            f.getNumber(command.split(" ")[2]),
+            command.split(" ")[4],
+            command.split(" ")[3],
+            command.split(" ")[5])
+    if await lengthVerificator(command, "!simuChasse <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas chasser!"
         else:
             msg = chasses.simuChasse(
                 player,
-                f.getNumber(message.content.split(" ")[1]),
-                message.content.split(" ")[3],
-                message.content.split(" ")[2],
-                message.content.split(" ")[4])
+                f.getNumber(command.split(" ")[1]),
+                command.split(" ")[3],
+                command.split(" ")[2],
+                command.split(" ")[4])
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 #__________________________________________________#
 ## CONVOIS ##
@@ -354,146 +348,145 @@ async def simuChasse(message, player):
 
 
 # `!convoisEnCours`: affiche les convois en cours;
-async def printConvoisEnCours(message):
-  if await lengthVerificatorWError(message, "!printConvois"):
+async def printConvoisEnCours(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!printConvois"):
     msg = convois.printConvoisEnCours()
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`: ajoute un convoi;
-async def convoi(message, player):
+async def convoi(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>`"
-    if await lengthVerificator(message, "!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>"):
+    if await lengthVerificator(command, "!convoi [convoyeur] <convoyé> <pomme> <bois> <eau>"):
         msg = convois.convoi(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            f.getNumber(message.content.split(" ")[3]),
-            f.getNumber(message.content.split(" ")[4]),
-            f.getNumber(message.content.split(" ")[5]))
-    if await lengthVerificator(message, "!convoi <convoyé> <pomme> <bois> <eau>"):
+            command.split(" ")[1],
+            command.split(" ")[2],
+            f.getNumber(command.split(" ")[3]),
+            f.getNumber(command.split(" ")[4]),
+            f.getNumber(command.split(" ")[5]))
+    if await lengthVerificator(command, "!convoi <convoyé> <pomme> <bois> <eau>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas convoyer!"
         else:
             msg = convois.convoi(
                 player,
-                message.content.split(" ")[1],
-                f.getNumber(message.content.split(" ")[2]),
-                f.getNumber(message.content.split(" ")[3]),
-                f.getNumber(message.content.split(" ")[4]))
+                command.split(" ")[1],
+                f.getNumber(command.split(" ")[2]),
+                f.getNumber(command.split(" ")[3]),
+                f.getNumber(command.split(" ")[4]))
         if msg.startswith("ERR:"):
-            await error(message, msg)
+            await error(channel, command, msg)
         else:
-            await message.delete()
+            #await message.delete()
             for m in f.splitMessage(msg):
-                await message.channel.send(m)
+                await channel.send(m)
 
 
 # `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`: ajoute un convoi à la liste des convois en cours;
-async def demandeConvoi(message, player):
+async def demandeConvoi(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>`"
-    if await lengthVerificator(message, "!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"):
+    if await lengthVerificator(command, "!demandeConvoi [joueur] <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>"):
         msg = convois.demandeConvoi(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4],
-            f.getNumber(message.content.split(" ")[5]),
-            f.getNumber(message.content.split(" ")[6]),
-            f.getNumber(message.content.split(" ")[7]))
-    if await lengthVerificator(message, "!demandeConvoi <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>") :
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            f.getNumber(command.split(" ")[5]),
+            f.getNumber(command.split(" ")[6]),
+            f.getNumber(command.split(" ")[7]))
+    if await lengthVerificator(command, "!demandeConvoi <C1/C2> <construction/recherche> <niveau> <pomme> <bois> <eau>") :
         if player is None:
             msg = "ERR: vous ne pouvez pas demander de convois!"
         else:
             msg = convois.demandeConvoi(
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2],
-                message.content.split(" ")[3],
-                f.getNumber(message.content.split(" ")[4]),
-                f.getNumber(message.content.split(" ")[5]),
-                f.getNumber(message.content.split(" ")[6]))
+                command.split(" ")[1],
+                command.split(" ")[2],
+                command.split(" ")[3],
+                f.getNumber(command.split(" ")[4]),
+                f.getNumber(command.split(" ")[5]),
+                f.getNumber(command.split(" ")[6]))
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
-async def autoProd(message, player):
+async def autoProd(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!autoProd [joueur] <pomme> <bois> <eau>`"
-    if await lengthVerificator(message, "!autoProd [joueur] <pomme> <bois> <eau>"):
+    if await lengthVerificator(command, "!autoProd [joueur] <pomme> <bois> <eau>"):
         msg = convois.autoProd(
-            message.content.split(" ")[1],
-            f.getNumber(message.content.split(" ")[2]),
-            f.getNumber(message.content.split(" ")[3]),
-            f.getNumber(message.content.split(" ")[4]))
-    if await lengthVerificator(message, "!autoProd <pomme> <bois> <eau>") :
+            command.split(" ")[1],
+            f.getNumber(command.split(" ")[2]),
+            f.getNumber(command.split(" ")[3]),
+            f.getNumber(command.split(" ")[4]))
+    if await lengthVerificator(command, "!autoProd <pomme> <bois> <eau>") :
         if player is None:
             msg = "ERR: vous ne pouvez pas vous autoconvoyer!"
         else:
             msg = convois.autoProd(
                 player,
-                f.getNumber(message.content.split(" ")[1]),
-                f.getNumber(message.content.split(" ")[2]),
-                f.getNumber(message.content.split(" ")[3]))
+                f.getNumber(command.split(" ")[1]),
+                f.getNumber(command.split(" ")[2]),
+                f.getNumber(command.split(" ")[3]))
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 # `!recapRessources [yyyy-mm-dd]``: calcul le récapitulatif des ressources récoltées de la journée;
-async def recapRSS(message):
+async def recapRSS(channel, command):
     channel = bot.get_channel(1276232505116196894)
     msg = ""
-    if len(message.content.split(" ")) > 1:
-        msg = convois.repartitionRessources(message.content.split(" ")[1])
+    if len(command.split(" ")) > 1:
+        msg = convois.repartitionRessources(command.split(" ")[1])
     else:
         msg = convois.repartitionRessources(date.today().strftime("%Y-%m-%d"))
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
         await channel.send(m)
 
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
-async def printRecapRSS(message):
+async def printRecapRSS(channel, command):
     #channel = bot.get_channel(1276232505116196894)
-    channel = message.channel
     msg = ""
-    if len(message.content.split(" ")) > 1:
-        msg = convois.printRessourcesPartagees(message.content.split(" ")[1])
+    if len(command.split(" ")) > 1:
+        msg = convois.printRessourcesPartagees(command.split(" ")[1])
     else:
         msg = convois.printRessourcesPartagees(date.today().strftime("%Y-%m-%d"))
 
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
         await channel.send(m)
 
-async def printConvoisJour(message):
+async def printConvoisJour(channel, command):
     channel = bot.get_channel(1278074306391183452)
     msg = ""
-    if len(message.content.split(" ")) > 1:
-        msg = convois.convoisDuJour(message.content.split(" ")[1])
+    if len(command.split(" ")) > 1:
+        msg = convois.convoisDuJour(command.split(" ")[1])
     else:
         msg = convois.convoisDuJour(date.today().strftime("%Y-%m-%d"))
 
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
             await channel.send(m)
 
@@ -503,142 +496,140 @@ async def printConvoisJour(message):
 
 
 # `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe reçu;
-async def floodExtR(message, player):
+async def floodExtR(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
-    if await lengthVerificator(message, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+    if await lengthVerificator(command, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
         msg = floods.floodExtR(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4],
-            f.getNumber(message.content.split(" ")[5]))
-    if await lengthVerificator(message, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            f.getNumber(command.split(" ")[5]))
+    if await lengthVerificator(command, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
         try:
-            datetime.strptime(message.content.split(" ")[1], "%Y-%m-%d")
+            datetime.strptime(command.split(" ")[1], "%Y-%m-%d")
             msg = floods.floodExtR(
-                message.content.split(" ")[1],
+                command.split(" ")[1],
                 player,
-                message.content.split(" ")[2],
-                message.content.split(" ")[3],
-            f.getNumber(message.content.split(" ")[4]))
+                command.split(" ")[2],
+                command.split(" ")[3],
+            f.getNumber(command.split(" ")[4]))
         except:
             if player is None:
                 msg = "ERR: vous ne pouvez pas enregistrer de floods!"
             else:
                 msg = floods.floodExtR(
                     datetime.now().strftime("%Y-%m-%d"),
-                    message.content.split(" ")[1],
-                    message.content.split(" ")[2],
-                    message.content.split(" ")[3],
-                f.getNumber(message.content.split(" ")[4]))
-    if await lengthVerificator(message, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
+                    command.split(" ")[1],
+                    command.split(" ")[2],
+                    command.split(" ")[3],
+                f.getNumber(command.split(" ")[4]))
+    if await lengthVerificator(command, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas enregistrer de floods!"
         else:
             msg = floods.floodExtR(
                 datetime.now().strftime("%Y-%m-%d"),
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2],
-                f.getNumber(message.content.split(" ")[3]))
+                command.split(" ")[1],
+                command.split(" ")[2],
+                f.getNumber(command.split(" ")[3]))
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 # `!floodExtD <floodeur> <C1/C2> <ally> <quantité> <floodé> <C1/C2>`: enregistre un flood externe donné;
-async def floodExtD(message, player):
+async def floodExtD(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`"
-    if await lengthVerificator(message, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
+    if await lengthVerificator(command, "!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>"):
         msg = floods.floodExtD(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4],
-            f.getNumber(message.content.split(" ")[5]))
-    if await lengthVerificator(message, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            f.getNumber(command.split(" ")[5]))
+    if await lengthVerificator(command, "!floodExtR [date/joueurLF] <joueurExtérieur> <ally> <quantité>"):
         try:
-            datetime.strptime(message.content.split(" ")[1], "%Y-%m-%d")
+            datetime.strptime(command.split(" ")[1], "%Y-%m-%d")
             msg = floods.floodExtD(
-                message.content.split(" ")[1],
+                command.split(" ")[1],
                 player,
-                message.content.split(" ")[2],
-                message.content.split(" ")[3],
-                f.getNumber(message.content.split(" ")[4]))
+                command.split(" ")[2],
+                command.split(" ")[3],
+                f.getNumber(command.split(" ")[4]))
         except:
             if player is None:
                 msg = "ERR: vous ne pouvez pas enregistrer de floods!"
             else:
                 msg = floods.floodExtD(
                     datetime.now().strftime("%Y-%m-%d"),
-                    message.content.split(" ")[1],
-                    message.content.split(" ")[2],
-                    message.content.split(" ")[3],
-                    f.getNumber(message.content.split(" ")[4]))
-    if await lengthVerificator(message, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
+                    command.split(" ")[1],
+                    command.split(" ")[2],
+                    command.split(" ")[3],
+                    f.getNumber(command.split(" ")[4]))
+    if await lengthVerificator(command, "!floodExtR <joueurExtérieur> <ally> <quantité>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas enregistrer de floods!"
         else:
             msg = floods.floodExtD(
                 datetime.now().strftime("%Y-%m-%d"),
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2],
-                f.getNumber(message.content.split(" ")[3]))
+                command.split(" ")[1],
+                command.split(" ")[2],
+                f.getNumber(command.split(" ")[3]))
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 # `!futursfloods`: affiche les floods à faire;
-async def printFloodsFuturs(message):
-  if await lengthVerificatorWError(message, "!floodsFuturs"):
+async def printFloodsFuturs(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!floodsFuturs"):
     msg = floods.printFloodsFuturs()
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!printFloodsExt`: affiche les floods externes;
-async def printFloodsExt(message):
+async def printFloodsExt(channel, command):
     msg= ""
-    if len(message.content.split(" ")) == 1:
+    if len(command.split(" ")) == 1:
       msg = floods.printFloodsExt()
-    elif len(message.content.split(" ")) == 2:
-      msg = floods.printFloodsExtAlly(message.content.split(" ")[1])
+    elif len(command.split(" ")) == 2:
+      msg = floods.printFloodsExtAlly(command.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple)
-async def donTDC(message):
-  if await lengthVerificatorWError(
-      message,
-      "!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>"):
+async def donTDC(channel, command):
+  if await lengthVerificatorWerror(command, channel,"!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>"):
     msg = floods.donTDC(
-        message.content.split(" ")[1],
-        message.content.split(" ")[2],
-        f.getNumber(message.content.split(" ")[3]),
-        message.content.split(" ")[4])
+        command.split(" ")[1],
+        command.split(" ")[2],
+        f.getNumber(command.split(" ")[3]),
+        command.split(" ")[4])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 #__________________________________________________#
@@ -647,325 +638,325 @@ async def donTDC(message):
 
 
 # `!printPlayer <joueur>`: affiche les données d'un joueur.
-async def printPlayer(message):
-  if await lengthVerificatorWError(message, "!printPlayer <joueur>"):
-    msg = joueurs.printPlayer(message.content.split(" ")[1])
+async def printPlayer(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!printPlayer <joueur>"):
+    msg = joueurs.printPlayer(command.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!player \n <templatePlayer>`: ajoute un nouveau pacte
-async def addPlayer(message):
-  if len(message.content.split("\n")) > 2:
-    msg = joueurs.addPlayer(message)
+async def addPlayer(channel, command):
+  if len(command.split("\n")) > 2:
+    msg = joueurs.addPlayer(command)
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
   else:
-    await error(message,"Erreur dans la commande: `!player \n <templatePlayer>`")
+    await error(channel, command, "Erreur dans la commande: `!player \n <templatePlayer>`")
 
 # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`: modifie le nom de la colo d'un joueur d'un joueur
-async def renameColo(message, player):
+async def renameColo(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`"
-    if len(message.content.split("/n")[0].split(" ")) == 3: #"!renameColo [joueur] <C1/C2>"
-        msg = joueurs.renameColo(message.content.split("\n")[0].split(" ")[1],
-                                 message.content.split("\n")[0].split(" ")[2],
-                                 message.content.split("\n")[1])
-    if len(message.content.split("/n")[0].split(" ")) == 2: #"!renameColo <C1/C2>"
+    if len(command.split("/n")[0].split(" ")) == 3: #"!renameColo [joueur] <C1/C2>"
+        msg = joueurs.renameColo(command.split("\n")[0].split(" ")[1],
+                                 command.split("\n")[0].split(" ")[2],
+                                 command.split("\n")[1])
+    if len(command.split("/n")[0].split(" ")) == 2: #"!renameColo <C1/C2>"
         if player is None:
             msg = "ERR: vous ne pouvez pas renommer vos colonies!"
         else:
             msg = joueurs.renameColo(
                                     player,
-                                    message.content.split("\n")[0].split(" ")[1],
-                                    message.content.split("\n")[1])
+                                    command.split("\n")[0].split(" ")[1],
+                                    command.split("\n")[1])
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 # `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`: modifie le tdc exploité d'un joueur;
-async def setTDCExploit(message, player):
+async def setTDCExploit(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!setTDCExploité [joueur] <C1/C2> <tdcExploité>`"
-    if await lengthVerificator(message, "!setTDCExploité [joueur] <C1/C2> <tdcExploité>"):
-        msg = joueurs.setTDCExploité(message.content.split(" ")[1],
-                                     message.content.split(" ")[2],
-                                     f.getNumber(message.content.split(" ")[3]))
-    if await lengthVerificator(message, "!setTDCExploité <C1/C2> <tdcExploité>"):
+    if await lengthVerificator(command, "!setTDCExploité [joueur] <C1/C2> <tdcExploité>"):
+        msg = joueurs.setTDCExploité(command.split(" ")[1],
+                                     command.split(" ")[2],
+                                     f.getNumber(command.split(" ")[3]))
+    if await lengthVerificator(command, "!setTDCExploité <C1/C2> <tdcExploité>"):
         if player is None:
             msg = "ERR: vous ne pouvez pas enregistrer de floods!"
         else:
             msg = joueurs.setTDCExploité(player,
-                                         message.content.split(" ")[1],
-                                         f.getNumber(message.content.split(" ")[2]))
+                                         command.split(" ")[1],
+                                         f.getNumber(command.split(" ")[2]))
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 # `!setTDC [joueur] <C1/C2> <tdc>`: modifie le tdc d'un joueur;
-async def setTDC(message, player):
+async def setTDC(channel, command, player):
     msg = "ERR: Commande mal formulée - !setTDC [joueur] <C1/C2> <tdc>"
-    if await lengthVerificator(message, "!setTDC [joueur] <C1/C2> <tdc>"):
+    if await lengthVerificator(command, "!setTDC [joueur] <C1/C2> <tdc>"):
         msg = joueurs.setTDC(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            f.getNumber(message.content.split(" ")[3]))
+            command.split(" ")[1],
+            command.split(" ")[2],
+            f.getNumber(command.split(" ")[3]))
 
-    if await lengthVerificator(message, "!setTDC <C1/C2> <tdc>"):
+    if await lengthVerificator(command, "!setTDC <C1/C2> <tdc>"):
         if not player is None:
             msg = joueurs.setTDC(
                 player,
-                message.content.split(" ")[1],
-                f.getNumber(message.content.split(" ")[2]))
+                command.split(" ")[1],
+                f.getNumber(command.split(" ")[2]))
         else:
             msg = "ERR: vous ne pouvez pas changer le tdc de votre colo!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 # `!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
-async def setArmy(message, player):
-    if len(message.content.split("\n")) > 1:
+async def setArmy(channel, command, player):
+    if len(command.split("\n")) > 1:
         msg = "ERR: Commande mal formulée - !setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>"
-        if len(message.content.split("\n")[0].split(" ")) == 3:
+        if len(command.split("\n")[0].split(" ")) == 3:
             msg = joueurs.setArmy(
-                message.content.split("\n")[0].split(" ")[1],
-                message.content.split("\n")[0].split(" ")[2],
-                message.content.split("\n")[1])
-        if len(message.content.split("\n")[0].split(" ")) == 2:
+                command.split("\n")[0].split(" ")[1],
+                command.split("\n")[0].split(" ")[2],
+                command.split("\n")[1])
+        if len(command.split("\n")[0].split(" ")) == 2:
             if not player is None:
                 msg = joueurs.setArmy(
                     player,
-                    message.content.split("\n")[0].split(" ")[1],
-                    message.content.split("\n")[1])
+                    command.split("\n")[0].split(" ")[1],
+                    command.split("\n")[1])
             else:
                 msg="ERR: vous ne pouvez pas changer votre armée!"
         if msg.startswith("ERR:"):
-            await error(message, msg)
+            await error(channel, command, msg)
         else:
-            await message.delete()
+            #await message.delete()
             for m in f.splitMessage(msg):
-                await message.channel.send(m)
+                await channel.send(m)
     else:
-        await error(message,"Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
+        await error(channel, command, "Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
 
 
 # `!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur.
-async def setRace(message, player):
+async def setRace(channel, command, player):
     msg = "ERR: Commande mal formulée - !setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"
-    if await lengthVerificator(message,"!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
+    if await lengthVerificator(command,"!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
         msg = joueurs.setRace(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2])
+            command.split(" ")[1],
+            command.split(" ")[2])
 
-    if await lengthVerificator(message, "!setRace <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
+    if await lengthVerificator(command, "!setRace <0:Abeille,1:Araignée,2:Fourmi,3:Termite>"):
         if not player is None:
             msg = joueurs.setRace(
                 player,
-                message.content.split(" ")[1])
+                command.split(" ")[1])
         else:
             msg = "ERR: vous ne pouvez pas changer votre race!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
   
 
 
 # `!setStatsColo [joueur] <colo> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur.
-async def setStatsColo(message, player):
+async def setStatsColo(channel, command, player):
     msg = "ERR: Commande mal formulée - !setStatsColo [joueur] <colo> <oe> <ov> <tdp>"
-    if await lengthVerificator( message, "!setStatsColo [joueur] <colo> <oe> <ov> <tdp>"):
+    if await lengthVerificator(command,"!setStatsColo [joueur] <colo> <oe> <ov> <tdp>"):
         msg = joueurs.setStatsColo(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            f.getNumber(message.content.split(" ")[3]),
-            f.getNumber(message.content.split(" ")[4]),
-            message.content.split(" ")[5])
+            command.split(" ")[1],
+            command.split(" ")[2],
+            f.getNumber(command.split(" ")[3]),
+            f.getNumber(command.split(" ")[4]),
+            command.split(" ")[5])
 
-    if await lengthVerificator( message, "!setStatsColo <colo> <oe> <ov> <tdp>"):
+    if await lengthVerificator(command, "!setStatsColo <colo> <oe> <ov> <tdp>"):
         if not player is None:
             msg = joueurs.setStatsColo(
                 player,
-                message.content.split(" ")[1],
-                f.getNumber(message.content.split(" ")[2]),
-                f.getNumber(message.content.split(" ")[3]),
-                message.content.split(" ")[4])
+                command.split(" ")[1],
+                f.getNumber(command.split(" ")[2]),
+                f.getNumber(command.split(" ")[3]),
+                command.split(" ")[4])
         else:
             msg="ERR: vous ne pouvez pas changer les statistiques de votre colo!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 
 # `!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur.
-async def setVassal(message, player):
+async def setVassal(channel, command, player):
     msg = "ERR: Commande mal formulée - !setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"
-    if await lengthVerificator( message, "!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
+    if await lengthVerificator(command, "!setVassal [joueurVassalisé] <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
         msg = joueurs.setVassal(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4],
-            message.content.split(" ")[5])
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            command.split(" ")[5])
 
-    if await lengthVerificator( message, "!setVassal <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
+    if await lengthVerificator(command, "!setVassal <coloVassalisée> <vassal> <coloVassal> <pillageDuVassal>"):
         if not player is None:
             msg = joueurs.setVassal(
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2],
-                message.content.split(" ")[3],
-                message.content.split(" ")[4])
+                command.split(" ")[1],
+                command.split(" ")[2],
+                command.split(" ")[3],
+                command.split(" ")[4])
         else:
             msg="ERR: vous ne pouvez pas changer le vassal de votre colo!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 
 # `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur.
-async def setStatsPlayer(message, player):
+async def setStatsPlayer(channel, command, player):
     msg = "ERR: Commande mal formulée - !setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"
-    if await lengthVerificator( message, "!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"):
+    if await lengthVerificator(command, "!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"):
         msg = joueurs.setStatsPlayer(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3],
-            message.content.split(" ")[4],
-            message.content.split(" ")[5])
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            command.split(" ")[5])
 
-    if await lengthVerificator( message, "!setStatsPlayer <mandibule> <carapace> <phéromone> <thermique>"):
+    if await lengthVerificator(command, "!setStatsPlayer <mandibule> <carapace> <phéromone> <thermique>"):
         if not player is None:
             msg = joueurs.setStatsPlayer(
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2],
-                message.content.split(" ")[3],
-                message.content.split(" ")[4])
+                command.split(" ")[1],
+                command.split(" ")[2],
+                command.split(" ")[3],
+                command.split(" ")[4])
         else:
             msg="ERR: vous ne pouvez pas changer vos statistiques!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 # `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur.
-async def setHero(message, player):
+async def setHero(channel,command, player):
     msg = "ERR: Commande mal formulée - !setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"
-    if await lengthVerificator(message,"!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
+    if await lengthVerificator(command,"!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
         msg = joueurs.setHero(
-            message.content.split(" ")[1],
-            message.content.split(" ")[2],
-            message.content.split(" ")[3])
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3])
 
-    if await lengthVerificator(message, "!setHero <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
+    if await lengthVerificator(command, "!setHero <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>"):
         if not player is None:
             msg = joueurs.setHero(
                 player,
-                message.content.split(" ")[1],
-                message.content.split(" ")[2])
+                command.split(" ")[1],
+                command.split(" ")[2])
         else:
             msg = "ERR: vous ne pouvez pas changer votre héros!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 
 #`!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
-async def setActivePlayers(message):
+async def setActivePlayers(channel,command):
     newData = []
-    if len(message.content.split(" ")) == 0:
+    if len(command.split(" ")) == 0:
         pass
     else:
-        for p in message.content.split(" ")[1:]:
+        for p in command.split(" ")[1:]:
             newData.append(p.lower())
     f.saveData(newData, S_ACTIVE_PLAYERS)
-    await getActivePlayers(message)
+    await getActivePlayers(channel)
 
 #`!getActivePlayers`: donne les joueurs actifs de la LF;
-async def getActivePlayers(message):
+async def getActivePlayers(channel):
     activeP = f.loadData(S_ACTIVE_PLAYERS)
     msg = "Les joueurs actifs de la LF sont:\n"
     for p in activeP:
         msg+="   "+p+"\n"
     for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 # `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
-async def optiMandi(message, player):
+async def optiMandi(channel,command, player):
     msg = "ERR: Commande mal formulée - !optiMandi [joueur]"
-    if await lengthVerificator( message, "!optiMandi [joueur]"):
-        j_obj= joueurs.Joueur(message.content.split(" ")[1])
+    if await lengthVerificator( channel, "!optiMandi [joueur]"):
+        j_obj= joueurs.Joueur(command.split(" ")[1])
         msg = j_obj.optiMandi()
 
-    if await lengthVerificator( message, "!optiMandi"):
+    if await lengthVerificator( channel, "!optiMandi"):
         if not player is None:
             j_obj = joueurs.Joueur(player)
             msg = j_obj.optiMandi()
         else:
             msg="ERR: vous ne pouvez pas calculer la rentabilité de vos mandibules!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 # `!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
-async def optiCara(message, player):
+async def optiCara(channel,command, player):
     msg = "ERR: Commande mal formulée - !optiCara [joueur]"
-    if await lengthVerificator( message, "!optiCara [joueur]"):
-        j_obj= joueurs.Joueur(message.content.split(" ")[1])
+    if await lengthVerificator( channel, "!optiCara [joueur]"):
+        j_obj= joueurs.Joueur(command.split(" ")[1])
         msg = j_obj.optiCara()
 
-    if await lengthVerificator( message, "!optiCara"):
+    if await lengthVerificator( channel, "!optiCara"):
         if not player is None:
             j_obj = joueurs.Joueur(player)
             msg = j_obj.optiCara()
         else:
             msg="ERR: vous ne pouvez pas calculer la rentabilité de votre carapace!"
     if msg.startswith("ERR:"):
-        await error(message, msg)
+        await error(channel, command, msg)
     else:
-        await message.delete()
+        #await message.delete()
         for m in f.splitMessage(msg):
-            await message.channel.send(m)
+            await channel.send(m)
 
 
 #__________________________________________________#
@@ -974,44 +965,41 @@ async def optiCara(message, player):
 
 
 # `!printPactes`: affiche les pactes;
-async def printPactes(message):
-  if await lengthVerificatorWError(message, "!printPactes"):
+async def printPactes(channel, command):
+  if await lengthVerificatorWerror(command, channel, "!printPactes"):
     msg = pactes.printPactes()
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!endPacte <ally>`: clôt un pacte;
-async def endPacte(message):
-  if await lengthVerificatorWError(message, "!endPacte <ally>"):
-    msg = pactes.endPacte(message.content.split(" ")[1])
+async def endPacte(channel,command):
+  if await lengthVerificatorWerror(command, channel, "!endPacte <ally>"):
+    msg = pactes.endPacte(command.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
 
 
 # `!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> <end> \\n <titre> \\n <description>`: ajoute un nouveau pacte
-async def pacte(message):
-  if len(message.content.split("\n")) > 2:
-    msg = pactes.addPacte(message)
+async def pacte(channel, command):
+  if len(command.split("\n")) > 2:
+    msg = pactes.addPacte(command)
     if msg.startswith("ERR:"):
-      await error(message, msg)
+      await error(channel, command, msg)
     else:
-      await message.delete()
+      #await message.delete()
       for m in f.splitMessage(msg):
-        await message.channel.send(m)
+        await channel.send(m)
   else:
-    await error(
-        message,
-        "Erreur dans la commande: `!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> <end> \\n <titre> \\n <description>`"
-    )
+    await error(channel, command, "Erreur dans la commande: `!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> <end> \\n <titre> \\n <description>`")
 
 
 #__________________________________________________#
@@ -1019,7 +1007,7 @@ async def pacte(message):
 #__________________________________________________#
 
 # `!getDbNames`: donne les noms des bases de données;
-async def getDbNames(message):
+async def getDbNames(channel):
 
   msg = "Available files:\n```"
   print(os.path.dirname(__file__))
@@ -1032,56 +1020,56 @@ async def getDbNames(message):
   for f in os.listdir(os.path.dirname(__file__)+"/JSON/ARCHIVES/"):
       msg+= "    ARCHIVES/" + f + "\n"
   msg+= "```"
-  await message.delete()
-  await message.channel.send(msg)
+  #await message.delete()
+  await channel.send(msg)
 
 
 # `!getDB <path//filename>`: donne la base de données;
-async def getDB(message):
+async def getDB(channel, command):
     # Rewrite
-    filename = message.content.split(" ")[1]
+    filename = command.split(" ")[1]
     dirname = os.path.dirname(__file__)
-    if await lengthVerificatorWError(message, "!getDB <path//filename>"):
+    if await lengthVerificatorWerror(command, channel, "!getDB <path//filename>"):
         if os.path.exists(dirname+"/JSON/"+filename):
             if len(filename.split("//")) == 1 or len(filename.split("/")) == 1:
                 file = discord.File(dirname+"/JSON/"+filename)  # an image in the same folder as the main bot file
                 embed = discord.Embed()  # any kwargs you want here
                 embed.set_image(url="attachment://" + filename.split("//")[-1])
                 # filename and extension have to match (ex. "thisname.jpg" has to be "attachment://thisname.jpg")
-                await message.delete()
-                await message.channel.send(embed=embed, file=file)
+                #await message.delete()
+                await channel.send(embed=embed, file=file)
             else:
                 msg = "```!getDB <path//filename>```"
                 msg += "\nNo authorised access to: `" + filename + "`"
-                await message.channel.send(msg)
+                await channel.send(msg)
         else:
             msg = "```!getDB <path//filename>```"
             msg += "\nNo file with this path: `" + filename + "`"
-            await message.channel.send(msg)
+            await channel.send(msg)
 
 # !printDB <DB>
 # affiche les données d'une base de données
-async def printDB(message):
-  await message.delete()
-  if lengthVerificatorWError(message, "!printDB <DB>"):
-    await dbg.printDB(message.channel, message.content.split(" ")[1])
+async def printDB(channel, command):
+  #await message.delete()
+  if lengthVerificatorWerror(command, channel, "!printDB <DB>"):
+    await dbg.printDB(channel, command.split(" ")[1])
 
 # `!getLog [date:aaaa-mm-jj]`: donne les logs [par défaut, du jour en cours];
-async def getLog(message):
+async def getLog(channel, command):
     # Rewrite
     filename = os.path.dirname(__file__)+"/LOGS/"+date.today().strftime("%Y-%m-%d")
-    if len(message.content.split(" ")) > 1:
-        filename = os.path.dirname(__file__) + "/LOGS/" + datetime.strptime(message.content.split(" ")[1],"%Y-%m-%d")
+    if len(command.split(" ")) > 1:
+        filename = os.path.dirname(__file__) + "/LOGS/" + datetime.strptime(command.split(" ")[1],"%Y-%m-%d")
     if os.path.exists(filename):
         file = discord.File(filename)
         embed = discord.Embed()
         embed.set_image(url="attachment://log.txt")
-        await message.delete()
-        await message.channel.send(embed=embed, file=file)
+        #await message.delete()
+        await channel.send(embed=embed, file=file)
     else:
         msg = "```!getLog [date:aaaa-mm-jj]```"
         msg += "\nNo file with this path: `" + filename + "`"
-        await message.channel.send(msg)
+        await channel.send(msg)
 
 
 #__________________________________________________#
@@ -1101,6 +1089,9 @@ async def on_message(message):
   user = message.author
 
   if message.content.upper().startswith("!"):
+    command= f.parseCMD(message.content)
+    channel= message.channel
+    
     player = getPlayerFromRoles(user)
 
     admin = user.get_role(rolesIDs["bot admin access"]) is not None
@@ -1123,7 +1114,7 @@ async def on_message(message):
     lf_members = f.loadData(S_ACTIVE_PLAYERS)
     for m in lf_members:
         if m in rolesIDs:
-          if user.get_role(rolesIDs[m]) is not None and m in message.content.lower():
+          if user.get_role(rolesIDs[m]) is not None and m in command.lower():
             is_concerned = True
 
 
@@ -1136,74 +1127,74 @@ async def on_message(message):
     
     #`!help`
     # affiche les commandes;
-    if message.content.upper().startswith("!HELP AIDE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    if command.upper().startswith("!HELP AIDE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 0)
-    elif message.content.upper().startswith("!HELP ALLIANCE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP ALLIANCE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 1)
-    elif message.content.upper().startswith("!HELP CHASSE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP CHASSE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 2)
-    elif message.content.upper().startswith("!HELP CONVOI"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP CONVOI"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 3)
-    elif message.content.upper().startswith("!HELP FLOOD"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP FLOOD"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 4)
-    elif message.content.upper().startswith("!HELP JOUEUR"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP JOUEUR"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 5)
-    elif message.content.upper().startswith("!HELP PACTE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP PACTE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 6)
-    elif message.content.upper().startswith("!HELP DEV"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP DEV"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message, 7)
-    elif message.content.upper().startswith("!HELP"): 
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!HELP"): 
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await help(message)
 
       #`!templatePlayer`
       # donne la fiche à remplir pour enregistrer un joueur;
-    elif message.content.upper().startswith("!TEMPLATEPLAYER"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!TEMPLATEPLAYER"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
         await templatePlayer(message)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
     # `!templatePacte`
     # donne la commande à remplir pour enregistrer un pacte;
-    elif message.content.upper().startswith("!TEMPLATEPACTE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!TEMPLATEPACTE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, diplo]):
         await templatePacte(message)
       else:
-        await errorRole(message,["bot admin access", "diplo"])
+        await errorRole(channel,["bot admin access", "diplo"])
 
     # `!getDbNames`: donne les noms des bases de données;
-    elif message.content.upper().startswith("!GETDBNAMES"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!GETDBNAMES"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
         await getDbNames(message)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
     # `!getDB <path//filename>`: donne la base de données;
-    elif message.content.upper().startswith("!GETDB"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!GETDB"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await getDB(message)
+        await getDB(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
-    elif message.content.upper().startswith("!GETLOG"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!GETLOG"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await getLog(message)
+        await getLog(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
     
     ### -------- ###
     ### Alliance ###
@@ -1212,48 +1203,48 @@ async def on_message(message):
     
     # `!printAlliance`
     # affiche les données de l'alliance;
-    elif message.content.upper().startswith("!PRINTALLIANCE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTALLIANCE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, superReader, membre]):
-        await printAlliance(message)
+        await printAlliance(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot super-reader acces", "membre"])
+        await errorRole(channel,["bot admin access", "bot super-reader acces", "membre"])
 
     # `!setTDC <tdc>`
     # modifie la quantité de TDC de l'alliance;
-    elif message.content.upper().startswith("!SETTDCALLY"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETTDCALLY"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await setTDCAlly(message)
+        await setTDCAlly(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     # `!setNbMember <quantité>`
     # modifie le nombre de joueurs de l'alliance;
-    elif message.content.upper().startswith("!SETNBMEMBRE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETNBMEMBRE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await setNBMembre(message)
+        await setNBMembre(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     # `!setBonusAlly <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`
     # modifie le bonus d'alliance;
-    elif message.content.upper().startswith("!SETBONUSALLY"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETBONUSALLY"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await setBonusAlly(message)
+        await setBonusAlly(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     # `!setAlly <tdc> <nbMembres> <niveauVie> <niveauConvois> <niveauTDP> <niveauMembres>`
     # modifie les stats de l'alliance;
-    elif message.content.upper().startswith("!SETALLY"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETALLY"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await setAlly(message)
+        await setAlly(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     
     ### ------- ###
@@ -1263,31 +1254,31 @@ async def on_message(message):
     
     # `!printChasses <joueur>`
     # affiche les chasses d'un joueur
-    elif message.content.upper().startswith("!PRINTCHASSES"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
-      await printChasses(message)
+    elif command.upper().startswith("!PRINTCHASSES"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await setAlly(message)
+        await printChasses(channel,command)
+        #await setAlly(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     # `!chasse [joueur] <quantité>`
     # enregistre une chasse;
-    elif message.content.upper().startswith("!CHASSE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!CHASSE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await chasse(message, player)
+        await chasse(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
     # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`:
     # donne la simulation de chasse pour le joueur
-    elif message.content.upper().startswith("!SIMUCHASSE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SIMUCHASSE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, superReader, is_concerned]):
-        await simuChasse(message, player)
+        await simuChasse(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot super-reader access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
 
       ### ------- ###
       ### Convois ###
@@ -1296,67 +1287,67 @@ async def on_message(message):
   
     # `!convoisEnCours`
     # affiche les convois en cours;
-    elif message.content.upper().startswith("!CONVOISENCOURS"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!CONVOISENCOURS"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, superReader, membre]):
-        await printConvoisEnCours(message)
+        await printConvoisEnCours(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
+        await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
 
       # `!convoi <convoyé> <C1/C2> <pomme> <bois> <eau> <convoyeur> <C1/C2>`
       # ajoute un convoi;
-    elif message.content.upper().startswith("!CONVOI"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!CONVOI"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await convoi(message, player)
+        await convoi(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!autoProd [joueur] <pomme> <bois> <eau>`
       # met à jour un convoi avec l'autoprod d'un joueur;
-    elif message.content.upper().startswith("!AUTOPROD"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!AUTOPROD"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await autoProd(message, player)
+        await autoProd(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!demandeConvoi <joueur> <C1/C2> <pomme> <bois> <eau>`
       # ajoute un convoi à la liste des convois en cours;
-    elif message.content.upper().startswith("!DEMANDECONVOI"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!DEMANDECONVOI"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, membre]):
-        await demandeConvoi(message, player)
+        await demandeConvoi(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "membre"])
+        await errorRole(channel,["bot admin access", "bot writer access", "membre"])
 
         # `!recapRessources [yyyy-mm-dd]`
         # calcul le récapitulatif des ressources récoltées de la journée;
-    elif message.content.upper().startswith("!RECAPRESSOURCES"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!RECAPRESSOURCES"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await recapRSS(message)
+        await recapRSS(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
 
         # `!printRecapRessources`
         # affiche le récapitulatif des ressources récoltées de la journée;
-    elif message.content.upper().startswith("!PRINTRECAPRESSOURCES"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTRECAPRESSOURCES"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await printRecapRSS(message)
+        await printRecapRSS(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
         # `!printConvoisJour [date:aaaa-mm-jj]`
         # affiche les convois effectués sur cette date
-    elif message.content.upper().startswith("!PRINTCONVOISJOUR"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTCONVOISJOUR"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, superReader]):
-          await printConvoisJour(message)
+          await printConvoisJour(channel,command)
       else:
-          await errorRole(message, ["bot admin access", "bot super-reader access"])
+          await errorRole(channel, ["bot admin access", "bot super-reader access"])
 
       ### --------------- ###
       ### Floods externes ###
@@ -1365,48 +1356,48 @@ async def on_message(message):
     
       # `!floodExtR [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe reçu;
-    elif message.content.upper().startswith("!FLOODEXTR"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!FLOODEXTR"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await floodExtR(message, player)
+        await floodExtR(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!floodExtD [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`
       # enregistre un flood externe donné;
-    elif message.content.upper().startswith("!FLOODEXTD"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!FLOODEXTD"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await floodExtD(message, player)
+        await floodExtD(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!futursfloods`
       # affiche les floods à faire;
-    elif message.content.upper().startswith("!FUTURSFLOODS"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!FUTURSFLOODS"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, superReader, membre]):
-        await printFloodsFuturs(message)
+        await printFloodsFuturs(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
+        await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
 
       # `!printFloodsExt`
       # affiche les floods externes;
-    elif message.content.upper().startswith("!PRINTFLOODSEXT"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTFLOODSEXT"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, superReader]):
-        await printFloodsExt(message)
+        await printFloodsExt(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access"])
+        await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access"])
 
       # `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`
       # enregistre un don de tdc (butin de guerre par exemple)
-    elif message.content.upper().startswith("!DONTDC"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!DONTDC"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer]):
-        await donTDC(message)
+        await donTDC(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access"])
+        await errorRole(channel,["bot admin access", "bot writer access"])
 
     
       ### ------- ###
@@ -1416,138 +1407,138 @@ async def on_message(message):
     
       # `!printPlayer <joueur>`
       # affiche les données d'un joueur.
-    elif message.content.upper().startswith("!PRINTPLAYER"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTPLAYER"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await printPlayer(message)
+        await printPlayer(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!player \\n <templatePlayer>`
       # ajoute un nouveau pacte
-    elif message.content.upper().startswith("!PLAYER"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PLAYER"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await addPlayer(message)
+        await addPlayer(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
         # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`
         # modifie le nom de la colo d'un joueur d'un joueur.
-    elif message.content.upper().startswith("!RENAMECOLO"):
-        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!RENAMECOLO"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
         if checkRoles(message, [admin, writer, is_concerned]):
-            await renameColo(message, player)
+            await renameColo(channel,command, player)
         else:
-            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
+            await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`
       # modifie l'armée d'un joueur.
-    elif message.content.upper().startswith("!SETARMY"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETARMY"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setArmy(message, player)
+        await setArmy(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setRace <joueur> <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`
       # modifie la race d'un joueur.
-    elif message.content.upper().startswith("!SETRACE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETRACE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setRace(message, player)
+        await setRace(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
         # `!setTDCExploité <joueur> <C1/C2> <tdcExploté>`:
         # modifie le tdc exploité d'un joueur;
-    elif message.content.upper().startswith("!SETTDCEXPLOITÉ"):
-        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETTDCEXPLOITÉ"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
         if checkRoles(message, [admin, writer, is_concerned]):
-            await setTDCExploit(message,player)
+            await setTDCExploit(channel,command,player)
         else:
-            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
+            await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
         # `!setTDC <joueur> <C1/C2> <tdcExploté>`:
         # modifie le tdc d'un joueur;
-    elif message.content.upper().startswith("!SETTDC "):
-        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETTDC "):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
         if checkRoles(message, [admin, writer, is_concerned]):
-            await setTDC(message, player)
+            await setTDC(channel,command, player)
         else:
-            await errorRole(message, ["bot admin access", "bot writer access", "joueur concerné"])
+            await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsColo <joueur> <colo> <oe> <ov> <tdp>`
       # modifie les stats d'une colonie d'un joueur.
-    elif message.content.upper().startswith("!SETSTATSCOLO"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETSTATSCOLO"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setStatsColo(message, player)
+        await setStatsColo(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setVassal <joueurVassalisé> <coloVassalisée> <vassal> <coloVassal> <pillage>`
       # modifie le vassal d'une colonie d'un joueur.
-    elif message.content.upper().startswith("!SETVASSAL"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETVASSAL"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setVassal(message, player)
+        await setVassal(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>`
       # modifie les statistiques générales d'un joueur.
-    elif message.content.upper().startswith("!SETSTATSPLAYER"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETSTATSPLAYER"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setStatsPlayer(message, player)
+        await setStatsPlayer(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setHero <joueur> <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`
       # modifie le héros d'un joueur.
-    elif message.content.upper().startswith("!SETHERO"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETHERO"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, is_concerned]):
-        await setHero(message, player)
+        await setHero(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
     #`!setActivePlayers <joueur1> ... <joueurN>`
     # définit les joueurs actifs de la LF;
-    elif message.content.upper().startswith("!SETACTIVEPLAYERS"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!SETACTIVEPLAYERS"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
-        await setActivePlayers(message)
+        await setActivePlayers(channel,command)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
     #`!getActivePlayers`
     # donne les joueurs actifs de la LF;
-    elif message.content.upper().startswith("!GETACTIVEPLAYERS"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!GETACTIVEPLAYERS"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin]):
         await getActivePlayers(message)
       else:
-        await errorRole(message,["bot admin access"])
+        await errorRole(channel,["bot admin access"])
 
     #`!optiMandi [joueur]`
     # dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
-    elif message.content.upper().startswith("!OPTIMANDI"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!OPTIMANDI"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, superReader, is_concerned]):
-        await optiMandi(message, player)
+        await optiMandi(channel,command, player)
       else:
-        await errorRole(message,["bot admin access", "bot super-reader access", "joueur concerné"])
+        await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
 
     # `!optiCara [joueur]`
     # dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
-    elif message.content.upper().startswith("!OPTICARA"):
-        f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!OPTICARA"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
         if checkRoles(message, [admin, superReader, is_concerned]):
-            await optiCara(message, player)
+            await optiCara(channel,command, player)
         else:
-            await errorRole(message, ["bot admin access", "bot super-reader access", "joueur concerné"])
+            await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
 
     
       ### ------ ###
@@ -1557,30 +1548,30 @@ async def on_message(message):
     
       # `!printPactes`
       # affiche les pactes;
-    elif message.content.upper().startswith("!PRINTPACTES"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PRINTPACTES"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, writer, superReader]):
-        await printPactes(message)
+        await printPactes(channel,command)
       else:
-        await errorRole(message,["bot admin access", "bot writer access", "bot super-reader access"])
+        await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access"])
 
       # `!endPacte <ally>`
       # clôt un pacte;
-    elif message.content.upper().startswith("!ENDPACTE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!ENDPACTE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, diplo]):
-        await endPacte(message)
+        await endPacte(channel,command)
       else:
-        await errorRole(message,["bot admin access", "diplo"])
+        await errorRole(channel,["bot admin access", "diplo"])
 
       # `!pacte <ally> <type-guerre> <type-commerce> <start> <end> \\n <titre> \\n <description>`
       # ajoute un nouveau pacte
-    elif message.content.upper().startswith("!PACTE"):
-      f.log(rank=0, prefixe="[CMD]", message=message.content, suffixe="")
+    elif command.upper().startswith("!PACTE"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles(message, [admin, diplo]):
-        await pacte(message)
+        await pacte(channel,command)
       else:
-        await errorRole(message,["bot admin access", "diplo"])
+        await errorRole(channel,["bot admin access", "diplo"])
 
     
       ### ------ ###
@@ -1588,10 +1579,10 @@ async def on_message(message):
       ### ------ ###
 
     
-    elif message.content.startswith("!"):
-      f.log(rank=0, prefixe="[ERROR]", message="Unknown error - " + message.content, suffixe="")
+    elif command.startswith("!"):
+      f.log(rank=0, prefixe="[ERROR]", message="Unknown error - " + command, suffixe="")
       await error(
-          message,
+          channel,command,
           "Commande inconnue. `!help` pour voir la liste des commandes disponibles."
       )  #error
 

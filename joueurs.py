@@ -208,55 +208,55 @@ def printPlayer(joueur:str) -> str:
   msg += "```"
   return msg
 
-def addPlayer(message):
+def addPlayer(command):
   newData = {
-    "name": message.content.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),
-    "mandibule": int(message.content.split("\n")[3].split(":")[1].split(",")[0].replace(" ", "")),
-    "bouclier": int(message.content.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
-    "pheromones": int(message.content.split("\n")[5].split(":")[1].split(",")[0].replace(" ", "")),
-    "race": int(message.content.split("\n")[6].split(":")[1].split(",")[0].replace(" ", "")),
-    "thermique": int(message.content.split("\n")[7].split(":")[1].split(",")[0].replace(" ", "")),
+    "name": command.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),
+    "mandibule": int(command.split("\n")[3].split(":")[1].split(",")[0].replace(" ", "")),
+    "bouclier": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
+    "pheromones": int(command.split("\n")[5].split(":")[1].split(",")[0].replace(" ", "")),
+    "race": int(command.split("\n")[6].split(":")[1].split(",")[0].replace(" ", "")),
+    "thermique": int(command.split("\n")[7].split(":")[1].split(",")[0].replace(" ", "")),
     "hero":{
-      "bonus": int(message.content.split("\n")[9].split(":")[1].split(",")[0].replace(" ", "")),
-      "level": int(message.content.split("\n")[10].split(":")[1].split(",")[0].replace(" ", ""))
+      "bonus": int(command.split("\n")[9].split(":")[1].split(",")[0].replace(" ", "")),
+      "level": int(command.split("\n")[10].split(":")[1].split(",")[0].replace(" ", ""))
     },
     "colo1": {
-      "name": message.content.split("\n")[13].split(":")[1].split(",")[0],
+      "name": command.split("\n")[13].split(":")[1].split(",")[0],
       "army": {
 
       },
-      "oe": int(message.content.split("\n")[17].split(":")[1].split(",")[0].replace(" ", "")),
-      "ov": int(message.content.split("\n")[18].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdc": int(message.content.split("\n")[19].split(":")[1].split(",")[0].replace(" ", "")),
-      "exploitation": int(message.content.split("\n")[20].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdp": int(message.content.split("\n")[21].split(":")[1].split(",")[0].replace(" ", "")),
+      "oe": int(command.split("\n")[17].split(":")[1].split(",")[0].replace(" ", "")),
+      "ov": int(command.split("\n")[18].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(command.split("\n")[19].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(command.split("\n")[20].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(command.split("\n")[21].split(":")[1].split(",")[0].replace(" ", "")),
       "vassal": {
-        "name": message.content.split("\n")[23].split(":")[1].split(",")[0].replace(" ", ""),
-        "colony": int(message.content.split("\n")[24].split(":")[1].split(",")[0].replace(" ", "")),
-        "pillage": int(message.content.split("\n")[25].split(":")[1].split(",")[0].replace(" ", ""))
+        "name": command.split("\n")[23].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(command.split("\n")[24].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(command.split("\n")[25].split(":")[1].split(",")[0].replace(" ", ""))
       }
    },
     "colo2": {
-      "name": message.content.split("\n")[29].split(":")[1].split(",")[0],
+      "name": command.split("\n")[29].split(":")[1].split(",")[0],
       "army": {
 
       },
-      "oe": int(message.content.split("\n")[33].split(":")[1].split(",")[0].replace(" ", "")),
-      "ov": int(message.content.split("\n")[34].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdc": int(message.content.split("\n")[35].split(":")[1].split(",")[0].replace(" ", "")),
-      "exploitation": int(message.content.split("\n")[36].split(":")[1].split(",")[0].replace(" ", "")),
-      "tdp": int(message.content.split("\n")[37].split(":")[1].split(",")[0].replace(" ", "")),
+      "oe": int(command.split("\n")[33].split(":")[1].split(",")[0].replace(" ", "")),
+      "ov": int(command.split("\n")[34].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(command.split("\n")[35].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(command.split("\n")[36].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(command.split("\n")[37].split(":")[1].split(",")[0].replace(" ", "")),
       "vassal": {
-        "name": message.content.split("\n")[39].split(":")[1].split(",")[0].replace(" ", ""),
-        "colony": int(message.content.split("\n")[40].split(":")[1].split(",")[0].replace(" ", "")),
-        "pillage": int(message.content.split("\n")[41].split(":")[1].split(",")[0].replace(" ", ""))
+        "name": command.split("\n")[39].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(command.split("\n")[40].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(command.split("\n")[41].split(":")[1].split(",")[0].replace(" ", ""))
       }
     }
   }
 
-  for unite in message.content.split("\n")[15].split(","):
+  for unite in command.split("\n")[15].split(","):
     newData["colo1"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
-  for unite in message.content.split("\n")[31].split(","):
+  for unite in command.split("\n")[31].split(","):
     newData["colo2"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
 
   data = f.loadData(S_JOUEUR_FILENAME)
@@ -414,11 +414,11 @@ def setTDC(player, colo:str, tdc:str) -> str:
     msg = "ERR: setTDC() - " + str(e) + "\n" + msg
   return msg
 
-def setActivePlayers(messsage):
+def setActivePlayers(command):
   res = []
   msg = "Joueur(s) enregistré(s): "
   try:
-    for player in messsage.content.split(" ")[1:]:
+    for player in command.split(" ")[1:]:
       res.append(player.lower())
       msg+= player.lower()+", "
     msg = msg[:-2]+"\n"

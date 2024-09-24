@@ -32,6 +32,27 @@ NUMBERS = [str(i) for i in range(0,10)]
 
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
 
+#__________________________________________________#
+## CMD ##
+#__________________________________________________#
+
+def parseCMD(msgContent:str) -> str:
+  res= msgContent.replace("  "," ")[:]
+  keepFiltering= True
+  while keepFiltering:
+    if len(res.split(" \n"))>1:
+      res= res.replace(" \n","\n")[:]
+    else:
+      keepFiltering= False
+  keepFiltering= True
+  while keepFiltering:
+    if res[-1] == " ":
+      res= res[:-1]
+    else:
+      keepFiltering= False
+  return res
+
+
 
 #__________________________________________________#
 ## DATA ##
