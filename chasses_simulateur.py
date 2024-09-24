@@ -121,15 +121,15 @@ def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, tdc_chasse:int, 
     i= 0
     keepGoing= True
     while i < nbr_chasses_max and keepGoing:
-        fdf_ch = approx_fdf(tdc_init + i * tdc_chasse, 1)
-        vie_ch = approx_vie(tdc_init + i * tdc_chasse, 1)
+        fdf_ch = approx_fdf(tdc_init + i * tdc_chasse, tdc_chasse)
+        vie_ch = approx_vie(tdc_init + i * tdc_chasse, tdc_chasse)
 
         if fdf_ch<fdf_tot_ab and vie_ch<vie_tot_ab:
             fdf_tot_ab-= fdf_ch
             vie_tot_ab-= vie_ch
 
             temp_army = {"JS":int(vie_ch/(16*bonus_vie)),"JTK":int(fdf_ch/(80*bonus_fdf))}
-            res.append({"quantity": 1, "init": tdc_init + i * tdc_chasse, "army": temp_army})
+            res.append({"quantity": tdc_chasse, "init": tdc_init + i * tdc_chasse, "army": temp_army})
         else:
             keepGoing= False
         i+= 1
