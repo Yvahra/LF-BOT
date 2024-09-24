@@ -97,8 +97,14 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
         return res
 
 
-def tempsChasse(tdcInit:int, tdcChasse:int, vt:int) -> str:
-    tps_chasse = (60 + tdcInit / 10 + tdcChasse / 2) / (1 + vt / 10)
-    tps_chasse_conv = timedelta(seconds=tps_chasse)
-    return (datetime.fromtimestamp(tps_chasse) - timedelta(hours=1)).strftime("%m mois %d jours %Ih %Mmin %Ss") #"{}".format(tps_chasse)
+def tempsChasse(tdcInit: int, tdcChasse: int, vt: int) -> str:
+    seconds = (60 + tdcInit / 10 + tdcChasse / 2) / (1 + vt / 10)
+    # tps_chasse_conv = timedelta(seconds=tps_chasse)
+    days = seconds // (24 * 3600)  # Number of days
+    seconds %= (24 * 3600)
+    hours = seconds // 3600  # Number of hours
+    seconds %= 3600
+    minutes = seconds // 60  # Number of minutes
+    seconds %= 60  # Remaining seconds
+    return str(int(days)) + "j " + str(int(hours)) + "h " + str(int(minutes)) + "min " + str(int(seconds)) + "s"
 
