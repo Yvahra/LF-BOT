@@ -26,6 +26,9 @@ DATA_ARMY = {
 def approx_fdf(tdc_arrivee, tdc_chasse):
     return (156 + 4.685644*(tdc_chasse**1.105944) + 0.466*tdc_arrivee*(tdc_chasse**0.1066647)) * 0.85
 
+def approx_vie(tdc_arrivee, tdc_chasse):
+    return approx_fdf(tdc_arrivee, tdc_chasse) / 12.3
+
 def approx_tdc_chasse(tdc_arrivee:int, fdf:int) -> int:
     keep_going= True
     delta= 5
@@ -96,6 +99,40 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
             res.append({"quantity": tdc_chasse, "init": tdc_init+i*tdc_chasse, "army":temp_army})
         return res
 
+
+def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, nbr_chasses_max:int):
+    army= joueur.colo1["army"] if colo.upper() == "C1" else joueur.colo2["army"]
+    vie_tot_hb= army["JS"]*16 if "JS" in army else 0
+    fdf_tot_hb= army["JTK"]*80 if "JTK" in army else 0
+
+    bonus = 0
+    if not joueur.hero is None:
+        bonus = 0 if joueur.hero["bonus"] != 0 else joueur.hero["level"]
+    bonus_vie= (1 + joueur.carapace * 0.05 + bonus / 100)
+    vie_tot_ab= vie_tot_hb * bonus_vie
+
+    bonus = 0
+    if not joueur.hero is None:
+        bonus = 0 if joueur.hero["bonus"] != 2 else joueur.hero["level"]
+    bonus_fdf= (1 + joueur.mandibule * 0.05 + bonus / 100)
+    fdf_tot_ab= fdf_tot_hb * bonus_fdf
+
+    res= []
+    i= 0
+    keepGoing= True
+    while i < nbr_chasses_max and keepGoing:
+        fdf_ch = approx_fdf(tdc_init + i, 1)
+        vie_ch = approx_vie(tdc_init + i, 1)
+
+        if fdf_ch<fdf_tot_ab and vie_ch<vie_tot_ab:
+            fdf_tot_ab-= fdf_ch
+            vie_tot_ab-= vie_ch
+
+            temp_army = {"JS":int(vie_ch/bonus_vie),"JTK":int(fdf_ch/bonus_fdf)}
+            res.append({"quantity": 1, "init": tdc_init + i, "army": temp_army})
+        else:
+            keepGoing= False
+    return res
 
 def tempsChasse(tdcInit: int, tdcChasse: int, vt: int) -> str:
     seconds = (60 + tdcInit / 10 + tdcChasse / 2) / (1 + vt / 10)

@@ -81,7 +81,8 @@ donne:
     """### Commandes Chasses
 `!printChasses <joueur>`: affiche les chasses d'un joueur
 `!chasse [joueur] <quantité>`: enregistre une chasse;
-`!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur""",
+`!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur;
+`!simuChassePex [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`: donne la simulation de chasse pour pex un maximum pour le joueur""",
     """### Commandes Convois
 `!convoisEnCours`: affiche les convois en cours;
 `!autoProd [joueur] <pomme> <bois> <eau>`: met à jour un convoi avec l'autoprod d'un joueur;
@@ -330,6 +331,33 @@ async def simuChasse(channel, command, player):
             msg = "ERR: vous ne pouvez pas chasser!"
         else:
             msg = chasses.simuChasse(
+                player,
+                f.getNumber(command.split(" ")[1]),
+                command.split(" ")[3],
+                command.split(" ")[2],
+                command.split(" ")[4])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+# !simuChassePex [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`: donne la simulation de chasse pour pex un maximum pour le joueur
+async def simuChassePex(channel, command, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
+    if await lengthVerificator(command, "!simuChassePex [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
+        msg = chasses.simuChassePex(
+            command.split(" ")[1],
+            f.getNumber(command.split(" ")[2]),
+            command.split(" ")[4],
+            command.split(" ")[3],
+            command.split(" ")[5])
+    if await lengthVerificator(command, "!simuChassePex <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
+        if player is None:
+            msg = "ERR: vous ne pouvez pas chasser!"
+        else:
+            msg = chasses.simuChassePex(
                 player,
                 f.getNumber(command.split(" ")[1]),
                 command.split(" ")[3],
@@ -1273,12 +1301,21 @@ async def on_message(message):
 
     # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`:
     # donne la simulation de chasse pour le joueur
-    elif command.upper().startswith("!SIMUCHASSE"):
+    elif command.upper().startswith("!SIMUCHASSE "):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin, superReader, is_concerned]):
         await simuChasse(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
+
+      # `!simuChassePex [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`:
+      # donne la simulation de chasse pour le joueur
+    elif command.upper().startswith("!SIMUCHASSEPEX "):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, superReader, is_concerned]):
+          await simuChassePex(channel, command, player)
+      else:
+          await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
 
       ### ------- ###
       ### Convois ###
