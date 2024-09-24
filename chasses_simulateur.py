@@ -84,7 +84,6 @@ def simulator(joueur:joueurs.Joueur, colo:str, tdc_init:int, vt:int, nbr_chasses
             tdc_chasse+= tdc_delta
         else:
             keep_going= False
-        i+=1
 
     if fdf_chasse is None:
         return []
@@ -133,6 +132,7 @@ def simulatorPex(joueur:joueurs.Joueur, colo:str, tdc_init:int, nbr_chasses_max:
             res.append({"quantity": 1, "init": tdc_init + i, "army": temp_army})
         else:
             keepGoing= False
+        i+= 1
     return res
 
 def tempsChasse(tdcInit: int, tdcChasse: int, vt: int) -> str:
