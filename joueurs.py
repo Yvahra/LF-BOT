@@ -496,7 +496,7 @@ def getTDCExploités() -> str:
     data = f.loadData(S_JOUEUR_FILENAME)
     old_tdc = ""
     found= False
-    msg= "## Exploitations de tdc\\n```"
+    msg= "## Exploitations de tdc\n```"
     joueursManquants= []
     for activePlayer in activePlayers:
       found= False
