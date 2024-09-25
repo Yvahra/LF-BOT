@@ -109,6 +109,7 @@ donne:
 `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
 `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
+`!allié \\n <templatePlayer>`: ajoute un nouvel allié;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 `!getActivePlayers`: donne les joueurs actifs de la LF;
 `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
@@ -691,6 +692,21 @@ async def addPlayer(channel, command):
         await channel.send(m)
   else:
     await error(channel, command, "Erreur dans la commande: `!player \n <templatePlayer>`")
+
+
+# `!allié \\n <templatePlayer>`: ajoute un nouvel allié;
+async def addAllie(channel, command):
+  if len(command.split("\n")) > 2:
+    msg = joueurs.addAllie(command)
+    if msg.startswith("ERR:"):
+      await error(channel, command, msg)
+    else:
+      #await message.delete()
+      for m in f.splitMessage(msg):
+        await channel.send(m)
+  else:
+    await error(channel, command, "Erreur dans la commande: `!allié \n <templatePlayer>`")
+
 
 # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`: modifie le nom de la colo d'un joueur d'un joueur
 async def renameColo(channel, command, player):
@@ -1461,6 +1477,15 @@ async def on_message(message):
         await addPlayer(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
+
+        # `!allié \\n <templatePlayer>`
+        # ajoute un nouvel allié;
+    elif command.upper().startswith("!ALLIÉ"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+        if checkRoles([admin]):
+            await addAllie(channel, command)
+        else:
+            await errorRole(channel, ["bot admin access"])
 
         # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`
         # modifie le nom de la colo d'un joueur d'un joueur.

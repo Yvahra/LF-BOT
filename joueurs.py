@@ -14,6 +14,7 @@ from functions import convertNumber
 #__________________________________________________#
 
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
+S_ALLIE_FILENAME = "STATS//Stats_Allies.json"
 S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
 S_ALLIANCE_FILENAME = "STATS//Stats_Alliance.json"
 RACES = ["Abeille", "Araignée", "Fourmi", "Termite"]
@@ -54,50 +55,51 @@ class Joueur:
     self.colo1 =      None
     self.colo2 =      None
 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for i in range(len(data)):
-      if data[i]["name"].upper() == name.upper():
-        self.valide= True
-        if "race" in data[i]:       self.race=        int(data[i]["race"])
-        if "mandibule" in data[i]:  self.mandibule=   int(data[i]["mandibule"])
-        if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
-        if "pheromones" in data[i]: self.pheromones=  int(data[i]["pheromones"])
-        if "thermique" in data[i]:  self.thermique=   int(data[i]["thermique"])
-        if "hero" in data[i]:
-          self.hero= {
-            "bonus": int(data[i]["hero"]["bonus"]),
-            "level": int(data[i]["hero"]["level"])
-          }
-        for colo in ["colo1", "colo2"]:
-          if colo in data[i]:
-            temp = dict()
-            temp["name"]= str(data[i][colo]["name"])
-            temp["army"]= {}
-            fdf_hb = 0
-            vie_hb = 0
-            fdd_hb = 0
-            tdp_hb = 0
-            for unit in data[i][colo]["army"]:
-              temp["army"][unit.upper()]= int(data[i][colo]["army"][unit])
-              fdf_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdf"]
-              vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["vie"]
-              fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdd"]
-              tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["tdp"]
-            temp["stats_army"] =  {"fdf_hb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
-            temp["oe"]=           int(data[i][colo]["oe"])
-            temp["ov"]=           int(data[i][colo]["ov"])
-            temp["tdc"]=          int(data[i][colo]["tdc"])
-            temp["tdc_exploit"]=  int(data[i][colo]["exploitation"])
-            temp["tdp"]=          int(data[i][colo]["tdp"])
-            if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
-              temp["vassal"]=             dict()
-              temp["vassal"]["name"]=     str(data[i][colo]["vassal"]["name"])
-              temp["vassal"]["colo"]=     int(data[i][colo]["vassal"]["colony"])
-              temp["vassal"]["pillage"]=  int(data[i][colo]["vassal"]["pillage"])
-            if colo == "colo1":
-              self.colo1 = temp
-            else:
-              self.colo2 = temp
+    for file in [S_JOUEUR_FILENAME,S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      for i in range(len(data)):
+        if data[i]["name"].upper() == name.upper():
+          self.valide= True
+          if "race" in data[i]:       self.race=        int(data[i]["race"])
+          if "mandibule" in data[i]:  self.mandibule=   int(data[i]["mandibule"])
+          if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
+          if "pheromones" in data[i]: self.pheromones=  int(data[i]["pheromones"])
+          if "thermique" in data[i]:  self.thermique=   int(data[i]["thermique"])
+          if "hero" in data[i]:
+            self.hero= {
+              "bonus": int(data[i]["hero"]["bonus"]),
+              "level": int(data[i]["hero"]["level"])
+            }
+          for colo in ["colo1", "colo2"]:
+            if colo in data[i]:
+              temp = dict()
+              temp["name"]= str(data[i][colo]["name"])
+              temp["army"]= {}
+              fdf_hb = 0
+              vie_hb = 0
+              fdd_hb = 0
+              tdp_hb = 0
+              for unit in data[i][colo]["army"]:
+                temp["army"][unit.upper()]= int(data[i][colo]["army"][unit])
+                fdf_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdf"]
+                vie_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["vie"]
+                fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdd"]
+                tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["tdp"]
+              temp["stats_army"] =  {"fdf_hb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
+              temp["oe"]=           int(data[i][colo]["oe"])
+              temp["ov"]=           int(data[i][colo]["ov"])
+              temp["tdc"]=          int(data[i][colo]["tdc"])
+              temp["tdc_exploit"]=  int(data[i][colo]["exploitation"])
+              temp["tdp"]=          int(data[i][colo]["tdp"])
+              if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
+                temp["vassal"]=             dict()
+                temp["vassal"]["name"]=     str(data[i][colo]["vassal"]["name"])
+                temp["vassal"]["colo"]=     int(data[i][colo]["vassal"]["colony"])
+                temp["vassal"]["pillage"]=  int(data[i][colo]["vassal"]["pillage"])
+              if colo == "colo1":
+                self.colo1 = temp
+              else:
+                self.colo2 = temp
 
   def isValide(self):
     return self.valide
@@ -174,38 +176,39 @@ class Joueur:
 #__________________________________________________#
 
 def printPlayer(joueur:str) -> str:
-  data = f.loadData(S_JOUEUR_FILENAME)
-  msg = ""
-  for i in range(len(data)):
-    if data[i]["name"].upper() == joueur.upper():
-      msg = "**"+ str(data[i]["name"]) + "**:\n```"
-      if "race" in data[i]: msg += "    Race:       "+ RACES[data[i]["race"]]
-      msg += "\n"
-      msg += "    Mandibule:  " + str(data[i]["mandibule"]) + "\n"
-      msg += "    Carapace:   " + str(data[i]["bouclier"]) + "\n"
-      msg += "    Phéromones: " + str(data[i]["pheromones"])+ "\n"
-      msg += "    Thermiques: " + str(data[i]["thermique"])+ "\n"
-      msg += "--------------------\n"
-      if "hero" in data[i]: 
-        msg += "    Héros: +" + str(data[i]["hero"]["level"]) + "% (" + str(BONUS_HEROS[data[i]["hero"]["bonus"]]) +")\n"
-      for colo in ["colo1", "colo2"]:
-        if colo in data[i]: 
-          msg += "--------------------\n"
-          msg += "    Stats " + data[i][colo]["name"] + "\n"
-          msg += "        Armées:\n"
-          for unit in data[i][colo]["army"]:
-            msg += "            " + unit.upper() + ": " + f.convertNumber(str(data[i][colo]["army"][unit]))+"\n"
-          msg += "        Oe:           " + f.convertNumber(str(data[i][colo]["oe"]))+ "\n"
-          msg += "        Ov:           " + f.convertNumber(str(data[i][colo]["ov"]))+ "\n"
-          msg += "        TdC:          " + f.convertNumber(str(data[i][colo]["tdc"]))+ "\n"
-          msg += "        TdC Exploité: " + f.convertNumber(str(data[i][colo]["exploitation"]))+ "\n"
-          msg += "        TdP:          " + str(data[i][colo]["tdp"])+ "\n"
-          if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
-            msg += "        Vassal: " + str(data[i][colo]["vassal"]["name"])+ "("
-            if data[i][colo]["vassal"]["colony"] == 1: msg += "C1)"
-            else: msg += "C2)"
-            msg += "[" + str(data[i][colo]["vassal"]["pillage"]+20)+"%]\n"
-  msg += "```"
+  msg = "ERR: Pas de joueur nommé \""+joueur+"\""
+  for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+    data = f.loadData(file)
+    for i in range(len(data)):
+      if data[i]["name"].upper() == joueur.upper():
+        msg = "**"+ str(data[i]["name"]) + "**:\n```"
+        if "race" in data[i]: msg += "    Race:       "+ RACES[data[i]["race"]]
+        msg += "\n"
+        msg += "    Mandibule:  " + str(data[i]["mandibule"]) + "\n"
+        msg += "    Carapace:   " + str(data[i]["bouclier"]) + "\n"
+        msg += "    Phéromones: " + str(data[i]["pheromones"])+ "\n"
+        msg += "    Thermiques: " + str(data[i]["thermique"])+ "\n"
+        msg += "--------------------\n"
+        if "hero" in data[i]:
+          msg += "    Héros: +" + str(data[i]["hero"]["level"]) + "% (" + str(BONUS_HEROS[data[i]["hero"]["bonus"]]) +")\n"
+        for colo in ["colo1", "colo2"]:
+          if colo in data[i]:
+            msg += "--------------------\n"
+            msg += "    Stats " + data[i][colo]["name"] + "\n"
+            msg += "        Armées:\n"
+            for unit in data[i][colo]["army"]:
+              msg += "            " + unit.upper() + ": " + f.convertNumber(str(data[i][colo]["army"][unit]))+"\n"
+            msg += "        Oe:           " + f.convertNumber(str(data[i][colo]["oe"]))+ "\n"
+            msg += "        Ov:           " + f.convertNumber(str(data[i][colo]["ov"]))+ "\n"
+            msg += "        TdC:          " + f.convertNumber(str(data[i][colo]["tdc"]))+ "\n"
+            msg += "        TdC Exploité: " + f.convertNumber(str(data[i][colo]["exploitation"]))+ "\n"
+            msg += "        TdP:          " + str(data[i][colo]["tdp"])+ "\n"
+            if "vassal" in data[i][colo] and data[i][colo]["vassal"]["name"] != "":
+              msg += "        Vassal: " + str(data[i][colo]["vassal"]["name"])+ "("
+              if data[i][colo]["vassal"]["colony"] == 1: msg += "C1)"
+              else: msg += "C2)"
+              msg += "[" + str(data[i][colo]["vassal"]["pillage"]+20)+"%]\n"
+    msg += "```"
   return msg
 
 def addPlayer(command):
@@ -264,152 +267,245 @@ def addPlayer(command):
   f.saveData(data, S_JOUEUR_FILENAME)
   return "Joueur ajouté avec succès."
 
+def addAllie(command):
+  newData = {
+    "name": command.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),
+    "mandibule": int(command.split("\n")[3].split(":")[1].split(",")[0].replace(" ", "")),
+    "bouclier": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
+    "pheromones": int(command.split("\n")[5].split(":")[1].split(",")[0].replace(" ", "")),
+    "race": int(command.split("\n")[6].split(":")[1].split(",")[0].replace(" ", "")),
+    "thermique": int(command.split("\n")[7].split(":")[1].split(",")[0].replace(" ", "")),
+    "hero":{
+      "bonus": int(command.split("\n")[9].split(":")[1].split(",")[0].replace(" ", "")),
+      "level": int(command.split("\n")[10].split(":")[1].split(",")[0].replace(" ", ""))
+    },
+    "colo1": {
+      "name": command.split("\n")[13].split(":")[1].split(",")[0],
+      "army": {
+
+      },
+      "oe": int(command.split("\n")[17].split(":")[1].split(",")[0].replace(" ", "")),
+      "ov": int(command.split("\n")[18].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(command.split("\n")[19].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(command.split("\n")[20].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(command.split("\n")[21].split(":")[1].split(",")[0].replace(" ", "")),
+      "vassal": {
+        "name": command.split("\n")[23].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(command.split("\n")[24].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(command.split("\n")[25].split(":")[1].split(",")[0].replace(" ", ""))
+      }
+   },
+    "colo2": {
+      "name": command.split("\n")[29].split(":")[1].split(",")[0],
+      "army": {
+
+      },
+      "oe": int(command.split("\n")[33].split(":")[1].split(",")[0].replace(" ", "")),
+      "ov": int(command.split("\n")[34].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdc": int(command.split("\n")[35].split(":")[1].split(",")[0].replace(" ", "")),
+      "exploitation": int(command.split("\n")[36].split(":")[1].split(",")[0].replace(" ", "")),
+      "tdp": int(command.split("\n")[37].split(":")[1].split(",")[0].replace(" ", "")),
+      "vassal": {
+        "name": command.split("\n")[39].split(":")[1].split(",")[0].replace(" ", ""),
+        "colony": int(command.split("\n")[40].split(":")[1].split(",")[0].replace(" ", "")),
+        "pillage": int(command.split("\n")[41].split(":")[1].split(",")[0].replace(" ", ""))
+      }
+    }
+  }
+
+  for unite in command.split("\n")[15].split(","):
+    newData["colo1"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
+  for unite in command.split("\n")[31].split(","):
+    newData["colo2"]["army"][unite.split(":")[0].replace(" ","").replace("\"","").lower()] = int(unite.split(":")[1].replace(" ",""))
+
+  data = f.loadData(S_ALLIE_FILENAME)
+  data.append(newData)
+  f.saveData(data, S_ALLIE_FILENAME)
+  return "Joueur ajouté avec succès."
+
 def renameColo(player:str, colo:str, name:str) -> str:
-  msg = ""
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   old_colo_name = ""
   try:
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo = "colo1" if colo.upper() == "C1" else "colo2"
-        old_colo_name = p[colo]["name"]
-        p[colo]["name"] = name
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Nom de la colonie de "+ player + " a été modifiée avec succès. [" + old_colo_name + " > " + name + "]"
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      found= False
+      data = f.loadData(file)
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo = "colo1" if colo.upper() == "C1" else "colo2"
+          old_colo_name = p[colo]["name"]
+          p[colo]["name"] = name
+      if found:
+        f.saveData(data, file)
+        msg = "Nom de la colonie de "+ player + " a été modifiée avec succès. [" + old_colo_name + " > " + name + "]"
   except Exception as e:
     msg = "ERR: renameColo() - " + str(e) + "\n"+ msg
   return msg
 
 def setArmy(player:str, colo:str, army:str) -> str:
-  msg = ""
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   colo_name = ""
   try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo = "colo1" if colo.upper() == "C1" else "colo2"
-        p[colo]["army"] = f.getArmy(army)
-        colo_name = p[colo]["name"]
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Armée de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
+    for file in [S_JOUEUR_FILENAME,S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo = "colo1" if colo.upper() == "C1" else "colo2"
+          p[colo]["army"] = f.getArmy(army)
+          colo_name = p[colo]["name"]
+      if found:
+        f.saveData(data, file)
+        msg = "Armée de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
   except Exception as e:
     msg = "ERR: setArmy() - " + str(e) + "\n"+ msg
   return msg
 
 def setRace(player:str, race:str) -> str:
-  msg = ""
-  try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        p["race"] = int(race)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Race de "+ player + " modifiée avec succès."
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          p["race"] = int(race)
+      if found:
+        f.saveData(data, file)
+        msg = "Race de "+ player + " modifiée avec succès."
   except Exception as e:
     msg = "ERR: setRace() - " + str(e) + "\n"+ msg
   return msg
 
 
 def setStatsColo(player:str, colo:str, oe:str, ov:str, tdp:str) -> str:
-  msg = ""
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   colo_name = ""
-  try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo = "colo1" if colo.upper() == "C1" else "colo2"
-        p[colo]["oe"] = int(oe)
-        p[colo]["ov"] = int(ov)
-        p[colo]["tdp"] = int(tdp)
-        colo_name = p[colo]["name"]
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Stats de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo = "colo1" if colo.upper() == "C1" else "colo2"
+          p[colo]["oe"] = int(oe)
+          p[colo]["ov"] = int(ov)
+          p[colo]["tdp"] = int(tdp)
+          colo_name = p[colo]["name"]
+      if found:
+        f.saveData(data, file)
+        msg = "Stats de la colonie " + colo_name + " de "+ player + " a été modifiée avec succès."
   except Exception as e:
     msg = "ERR: setStatsColo() - " + str(e) + "\n"+ msg
   return msg
 
 def setVassal(player:str, colo:str, vassal:str, coloVassal:str, pillage:str) -> str:
-  msg = ""
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   colo_name = ""
   try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo = "colo1" if colo.upper() == "C1" else "colo2"
-        p[colo]["vassal"]["name"] = vassal
-        p[colo]["vassal"]["colony"] = 1 if coloVassal == "C2" else 0
-        p[colo]["vassal"]["pillage"] = int(pillage)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    colo_name = p[colo]["name"]
-    msg = "Vassal de la colo " + colo_name + " de "+ player + " a été modifié avec succès."
+    for file in [S_JOUEUR_FILENAME,S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      colo_name= ""
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo = "colo1" if colo.upper() == "C1" else "colo2"
+          p[colo]["vassal"]["name"] = vassal
+          p[colo]["vassal"]["colony"] = 1 if coloVassal == "C2" else 0
+          p[colo]["vassal"]["pillage"] = int(pillage)
+          colo_name = p[colo]["name"]
+      if found:
+        f.saveData(data, file)
+        msg = "Vassal de la colo " + colo_name + " de "+ player + " a été modifié avec succès."
   except Exception as e:
     msg = "ERR: setVassal() - " + str(e) + "\n"+ msg
   return msg
 
 def setStatsPlayer(player:str, mandi:str, cara:str, phero: str, therm:str) -> str:
-  msg = ""
-  try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        p["mandibule"] = int(mandi)
-        p["carapace"] = int(cara)
-        p["pheromones"] = int(phero)
-        p["thermique"] = int(therm)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Stats générales de "+ player + " modifiées avec succès."
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          p["mandibule"] = int(mandi)
+          p["carapace"] = int(cara)
+          p["pheromones"] = int(phero)
+          p["thermique"] = int(therm)
+      if found:
+        f.saveData(data, file)
+        msg = "Stats générales de "+ player + " modifiées avec succès."
   except Exception as e:
     msg = "ERR: setStatsPlayer() - " + str(e) + "\n"+ msg
   return msg
 
 def setHero(player:str, bonus:str, level:str) -> str:
-  msg = ""
-  try: 
-    data = f.loadData(S_JOUEUR_FILENAME)
-    for p in data:
-      if p["name"].upper() == player.upper():
-        p["hero"]["bonus"] = int(bonus)
-        p["hero"]["level"] = int(level)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "Héros de "+ player + " modifié avec succès."
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          p["hero"]["bonus"] = int(bonus)
+          p["hero"]["level"] = int(level)
+      if found:
+        f.saveData(data, file)
+        msg = "Héros de "+ player + " modifié avec succès."
   except Exception as e:
     msg = "ERR: setHero() - " + str(e) + "\n"+ msg
   return msg
 
 
 def setTDCExploité(player:str, colo:str, tdc:str) -> str:
-  msg = ""
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   try:
-    data = f.loadData(S_JOUEUR_FILENAME)
-    old_tdc = ""
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-        if "exploitation" in p[colo_key]:
-          old_tdc = str(p[colo_key]["exploitation"])
-        p[colo_key]["exploitation"] = int(tdc)
-        if int(tdc) > p[colo_key]["tdc"]:
-          p[colo_key]["tdc"] = int(tdc)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      old_tdc = ""
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+          if "exploitation" in p[colo_key]:
+            old_tdc = str(p[colo_key]["exploitation"])
+          p[colo_key]["exploitation"] = int(tdc)
+          if int(tdc) > p[colo_key]["tdc"]:
+            p[colo_key]["tdc"] = int(tdc)
+      if found:
+        f.saveData(data, file)
+        msg = "TdC exploité de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
     msg = "ERR: setTDCExploité() - " + str(e) + "\n" + msg
   return msg
 
 
-def setTDC(player, colo:str, tdc:str) -> str:
-  msg = ""
+def setTDC(player:str, colo:str, tdc:str) -> str:
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
   try:
-    data = f.loadData(S_JOUEUR_FILENAME)
-    old_tdc = ""
-    for p in data:
-      if p["name"].upper() == player.upper():
-        colo_key = "colo1" if colo.upper() == "C1" else "colo2"
-        if "tdc" in p[colo_key]: old_tdc = str(p[colo_key]["tdc"])
-        p[colo_key]["tdc"] = int(tdc)
-        if int(tdc) < p[colo_key]["exploitation"]: p[colo_key]["exploitation"] = int(tdc)
-    f.saveData(data, S_JOUEUR_FILENAME)
-    msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      old_tdc = ""
+      found= False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+          if "tdc" in p[colo_key]: old_tdc = str(p[colo_key]["tdc"])
+          p[colo_key]["tdc"] = int(tdc)
+          if int(tdc) < p[colo_key]["exploitation"]: p[colo_key]["exploitation"] = int(tdc)
+      if found:
+        f.saveData(data, file)
+        msg = "TdC de " + player + "("+colo+") modifiées avec succès. [" + f.convertNumber(old_tdc) + ">"+f.convertNumber(tdc) + "]"
   except Exception as e:
     msg = "ERR: setTDC() - " + str(e) + "\n" + msg
   return msg
