@@ -496,20 +496,21 @@ def getTDCExploités() -> str:
     data = f.loadData(S_JOUEUR_FILENAME)
     old_tdc = ""
     found= False
-    msg= "## Exploitations de tdc"
+    msg= "## Exploitations de tdc\\n```"
     joueursManquants= []
     for activePlayer in activePlayers:
       found= False
       for p in data:
         if p["name"].upper() == activePlayer.upper():
-          found= False
+          found= True
           msg+= "\n" + p["name"]
-          msg+= ": "
-          msg+= f.betterNumber(str(p["colo1"]["exploitation"])) + "(" + p["colo1"]["name"] + ")"
+          msg+= " -- "
+          msg+= f.betterNumber(str(p["colo1"]["exploitation"])) + " avec " + p["colo1"]["name"]
           if "colo2" in p:
-            msg += ", " + f.betterNumber(str(p["colo2"]["exploitation"])) + "(" + p["colo2"]["name"] + ")"
+            msg += " -- " + f.betterNumber(str(p["colo2"]["exploitation"])) + " avec " + p["colo2"]["name"]
       if not found:
         joueursManquants.append(activePlayer)
+    msg+="```"
     if len(joueursManquants)>0:
       msg+="\n## Joueurs manquants"
       for j in joueursManquants:
