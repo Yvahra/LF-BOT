@@ -489,6 +489,37 @@ def setTDCExploité(player:str, colo:str, tdc:str) -> str:
   return msg
 
 
+def getTDCExploités() -> str:
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  try:
+    activePlayers= f.loadData(S_ACTIVE_PLAYERS)
+    data = f.loadData(S_JOUEUR_FILENAME)
+    old_tdc = ""
+    found= False
+    msg= "## Exploitations de tdc"
+    joueursManquants= []
+    for activePlayer in activePlayers:
+      found= False
+      for p in data:
+        if p["name"].upper() == activePlayer.upper():
+          found= False
+          msg+= "\n" + p["name"]
+          msg+= ": "
+          msg+= f.betterNumber(str(p["colo1"]["exploitation"])) + "(" + p["colo1"]["name"] + ")"
+          if "colo2" in p:
+            msg += ", " + f.betterNumber(str(p["colo2"]["exploitation"])) + "(" + p["colo2"]["name"] + ")"
+      if not found:
+        joueursManquants.append(activePlayer)
+    if len(joueursManquants)>0:
+      msg+="\n## Joueurs manquants"
+      for j in joueursManquants:
+        msg+="\n"+j
+  except Exception as e:
+    msg = "ERR: getTDCExploités() - " + str(e) + "\n" + msg
+  return msg
+
+
+
 def setTDC(player:str, colo:str, tdc:str) -> str:
   msg = "ERR: Pas de joueur nommé \""+player+"\""
   try:

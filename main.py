@@ -112,6 +112,7 @@ donne:
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
 `!allié \\n <templatePlayer>`: ajoute un nouvel allié;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
+`!getTDCExploités`: donne les tdc exploités des joueurs actifs de la LF;
 `!getActivePlayers`: donne les joueurs actifs de la LF;
 `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
 `!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;""",
@@ -956,6 +957,19 @@ async def setActivePlayers(channel,command):
     f.saveData(newData, S_ACTIVE_PLAYERS)
     await getActivePlayers(channel)
 
+
+# `!getTDCExploités`: donne les tdc exploités des joueurs actifs de la LF;
+async def getTDCExploites(channel, command, player):
+    msg = "ERR: trop d'arguments pour la commande: `!getTDCExploités`"
+    if await lengthVerificator(command, "!getTDCExploités"):
+        msg = joueurs.getTDCExploités()
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
 #`!getActivePlayers`: donne les joueurs actifs de la LF;
 async def getActivePlayers(channel):
     activeP = f.loadData(S_ACTIVE_PLAYERS)
@@ -1583,6 +1597,15 @@ async def on_message(message):
         await setActivePlayers(channel,command)
       else:
         await errorRole(channel,["bot admin access"])
+
+    #`!getTDCExploités`
+    # donne les tdc exploités des joueurs actifs de la LF;
+    elif command.upper().startswith("!GETTDCEXPLOITÉS"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles( [admin, superReader]):
+        await getTDCExploites(channel)
+      else:
+        await errorRole(channel,["bot admin access", "bot super-reader access"])
 
     #`!getActivePlayers`
     # donne les joueurs actifs de la LF;
