@@ -490,7 +490,7 @@ def setTDCExploité(player:str, colo:str, tdc:str) -> str:
 
 
 def getTDCExploités() -> str:
-  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  msg = "ERR:"
   try:
     activePlayers= f.loadData(S_ACTIVE_PLAYERS)
     data = f.loadData(S_JOUEUR_FILENAME)
