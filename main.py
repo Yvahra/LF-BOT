@@ -959,7 +959,7 @@ async def setActivePlayers(channel,command):
 
 
 # `!getTDCExploités`: donne les tdc exploités des joueurs actifs de la LF;
-async def getTDCExploites(channel, command, player):
+async def getTDCExploites(channel, command):
     msg = "ERR: trop d'arguments pour la commande: `!getTDCExploités`"
     if await lengthVerificator(command, "!getTDCExploités"):
         msg = joueurs.getTDCExploités()
@@ -1603,7 +1603,7 @@ async def on_message(message):
     elif command.upper().startswith("!GETTDCEXPLOITÉS"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin, superReader]):
-        await getTDCExploites(channel)
+        await getTDCExploites(channel, command)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader access"])
 
