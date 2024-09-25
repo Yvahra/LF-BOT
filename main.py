@@ -1164,7 +1164,9 @@ async def on_message(message):
                 is_concerned = True
 
     allies= f.loadData(S_ACTIVE_PLAYERS)
+    if not is_concerned: print(rolesIDs)
     for m in allies:
+        print(allies)
         if m in rolesIDs:
             if user.get_role(rolesIDs[m]) is not None and m in command.lower():
                 is_concerned = True
