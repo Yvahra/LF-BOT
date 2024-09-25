@@ -1160,8 +1160,14 @@ async def on_message(message):
     lf_members = f.loadData(S_ACTIVE_PLAYERS)
     for m in lf_members:
         if m in rolesIDs:
-          if user.get_role(rolesIDs[m]) is not None and m in command.lower():
-            is_concerned = True
+            if user.get_role(rolesIDs[m]) is not None and m in command.lower():
+                is_concerned = True
+
+    allies= f.loadData(S_ACTIVE_PLAYERS)
+    for m in allies:
+        if m in rolesIDs:
+            if user.get_role(rolesIDs[m]) is not None and m in command.lower():
+                is_concerned = True
 
 
 
