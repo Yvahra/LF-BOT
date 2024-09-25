@@ -713,12 +713,11 @@ async def addAllie(channel, command):
 # `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`: modifie le nom de la colo d'un joueur d'un joueur
 async def renameColo(channel, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`"
-    print(command.split("/n")[0])
-    if len(command.split("/n")[0].split(" ")) == 3: #"!renameColo [joueur] <C1/C2>"
+    if len(command.split("\n")[0].split(" ")) == 3: #"!renameColo [joueur] <C1/C2>"
         msg = joueurs.renameColo(command.split("\n")[0].split(" ")[1],
                                  command.split("\n")[0].split(" ")[2],
                                  command.split("\n")[1])
-    if len(command.split("/n")[0].split(" ")) == 2: #"!renameColo <C1/C2>"
+    if len(command.split("\n")[0].split(" ")) == 2: #"!renameColo <C1/C2>"
         if player is None:
             msg = "ERR: vous ne pouvez pas renommer vos colonies!"
         else:
