@@ -36,6 +36,7 @@ S_CONVOIS_FILENAME = "STATS//Stats_ConvoisEnCours.json"
 S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
 S_FLOODS_FILENAME = "STATS//Stats_FloodsFuturs.json"
 S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
+S_ALLIES_PLAYERS = "STATS//Stats_AlliesNames.json"
 
 CONST_TEMPLATES = "CONST//CONST_Templates.json"
 CONST_DISCORD = "CONST//CONST_Discord.json"
@@ -1163,10 +1164,8 @@ async def on_message(message):
             if user.get_role(rolesIDs[m]) is not None and m in command.lower():
                 is_concerned = True
 
-    allies= f.loadData(S_ACTIVE_PLAYERS)
-    if not is_concerned: print(rolesIDs)
+    allies= f.loadData(S_ALLIES_PLAYERS)
     for m in allies:
-        print(allies)
         if m in rolesIDs:
             if user.get_role(rolesIDs[m]) is not None and m in command.lower():
                 is_concerned = True
