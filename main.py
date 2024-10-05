@@ -348,7 +348,7 @@ async def simuChasse(channel, command, player):
 
 # !simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour pex un maximum pour le joueur
 async def simuChassePex(channel, command, player):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"
     if await lengthVerificator(command, "!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>"):
         msg = chasses.simuChassePex(
             command.split(" ")[1],
