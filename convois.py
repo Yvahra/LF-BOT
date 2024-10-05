@@ -180,22 +180,23 @@ def repartitionRessources(dateRecap:str):
     for player in players:
       vass1 = False
       vass2 = False
-      if not player["name"].lower() in ressources_detail:
-        ressources_detail[player["name"].lower()] = {"convois": [0,0], #reçu, donné
-                                                     "exploit": 0,
-                                                     "pillage": 0}
-      if player["colo1"]["vassal"]["name"].lower() in active_players:
-          vass1 = True
-          if not player["colo1"]["vassal"]["name"].lower() in ressources_detail:
-            ressources_detail[player["colo1"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                                             "exploit": 0,
-                                                                             "pillage": 0}
-      if player["colo2"]["vassal"]["name"].lower() in active_players:
-          vass2 = True
-          if not player["colo2"]["vassal"]["name"].lower() in ressources_detail:
-            ressources_detail[player["colo2"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
-                                                                             "exploit": 0,
-                                                                             "pillage": 0}
+      if player["name"].lower() in active_players:
+        if not player["name"].lower() in ressources_detail:
+          ressources_detail[player["name"].lower()] = {"convois": [0,0], #reçu, donné
+                                                       "exploit": 0,
+                                                       "pillage": 0}
+        if player["colo1"]["vassal"]["name"].lower() in active_players:
+            vass1 = True
+            if not player["colo1"]["vassal"]["name"].lower() in ressources_detail:
+              ressources_detail[player["colo1"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                                               "exploit": 0,
+                                                                               "pillage": 0}
+        if player["colo2"]["vassal"]["name"].lower() in active_players:
+            vass2 = True
+            if not player["colo2"]["vassal"]["name"].lower() in ressources_detail:
+              ressources_detail[player["colo2"]["vassal"]["name"].lower()] = { "convois": [0,0], #reçu, donné
+                                                                               "exploit": 0,
+                                                                               "pillage": 0}
 
       prodC1 = player["colo1"]["exploitation"] * 24
       prodC2 = player["colo2"]["exploitation"] * 24
