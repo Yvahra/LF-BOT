@@ -676,15 +676,15 @@ async def donTDC(channel, command):
 
 
 # `!printPlayer <joueur>`: affiche les données d'un joueur.
-async def printPlayer(channel, command):
-  if await lengthVerificatorWerror(command, channel, "!printPlayer <joueur>"):
+async def printPlayer(playerObj, command):
+  if await lengthVerificatorWerror(command, playerObj, "!printPlayer <joueur>"):
     msg = joueurs.printPlayer(command.split(" ")[1])
     if msg.startswith("ERR:"):
-      await error(channel, command, msg)
+      await error(playerObj, command, msg)
     else:
       #await message.delete()
       for m in f.splitMessage(msg):
-        await channel.send(m)
+        await playerObj.send(m)
 
 
 # `!player \n <templatePlayer>`: ajoute un nouveau pacte
@@ -1499,9 +1499,11 @@ async def on_message(message):
     elif command.upper().startswith("!PRINTPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin, writer, is_concerned]):
-        await printPlayer(channel,command)
+        await printPlayer(message.author,command)
+        await reactMSG(message,False)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
+        await reactMSG(message,True)
 
       # `!player \\n <templatePlayer>`
       # ajoute un nouveau pacte
