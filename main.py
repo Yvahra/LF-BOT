@@ -204,17 +204,17 @@ async def help(playerObj, page=None):
 
 
 # `!templatePlayer`: donne la fiche à remplir pour enregistrer un joueur;
-async def templatePlayer(channel):
+async def templatePlayer(playerObj):
   msg = f.loadData(CONST_TEMPLATES)["player"]
   #await message.delete()
-  await channel.send(msg)
+  await playerObj.send(msg)
 
 
 # `!templatePacte`: donne la commande à remplir pour enregistrer un pacte;
-async def templatePacte(channel):
+async def templatePacte(playerObj):
   msg = f.loadData(CONST_TEMPLATES)["pacte"]
   #await message.delete()
-  await channel.send(msg)
+  await playerObj.send(msg)
 
 
 #__________________________________________________#
@@ -325,7 +325,7 @@ async def chasse(channel, command, player):
             await channel.send(m)
 
 # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
-async def simuChasse(channel, command, player):
+async def simuChasse(playerObj, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
     if await lengthVerificator(command, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         msg = chasses.simuChasse(
@@ -345,14 +345,14 @@ async def simuChasse(channel, command, player):
                 command.split(" ")[2],
                 command.split(" ")[4])
     if msg.startswith("ERR:"):
-        await error(channel, command, msg)
+        await error(playerObj, command, msg)
     else:
         #await message.delete()
         for m in f.splitMessage(msg):
-            await channel.send(m)
+            await playerObj.send(m)
 
 # !simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour pex un maximum pour le joueur
-async def simuChassePex(channel, command, player):
+async def simuChassePex(playerObj, command, player):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"
     if await lengthVerificator(command, "!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>"):
         msg = chasses.simuChassePex(
@@ -374,11 +374,11 @@ async def simuChassePex(channel, command, player):
                 command.split(" ")[3],
                 command.split(" ")[5])
     if msg.startswith("ERR:"):
-        await error(channel, command, msg)
+        await error(playerObj, command, msg)
     else:
         #await message.delete()
         for m in f.splitMessage(msg):
-            await channel.send(m)
+            await playerObj.send(m)
 
 #__________________________________________________#
 ## CONVOIS ##
@@ -785,7 +785,7 @@ async def setTDC(channel, command, player):
 
 
 # `!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
-async def setArmy(channel, command, player):
+async def setArmy(playerObj, command, player):
     if len(command.split("\n")) > 1:
         msg = "ERR: Commande mal formulée - !setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>"
         if len(command.split("\n")[0].split(" ")) == 3:
@@ -802,13 +802,13 @@ async def setArmy(channel, command, player):
             else:
                 msg="ERR: vous ne pouvez pas changer votre armée!"
         if msg.startswith("ERR:"):
-            await error(channel, command, msg)
+            await error(playerObj, command, msg)
         else:
             #await message.delete()
             for m in f.splitMessage(msg):
-                await channel.send(m)
+                await playerObj.send(m)
     else:
-        await error(channel, command, "Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
+        await error(playerObj, command, "Erreur dans la commande: `!setArmy <joueur> <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`")
 
 
 # `!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur.
@@ -1233,7 +1233,8 @@ async def on_message(message):
     elif command.upper().startswith("!TEMPLATEPLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin]):
-        await templatePlayer(channel)
+        await templatePlayer(message.author)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access"])
 
@@ -1242,7 +1243,8 @@ async def on_message(message):
     elif command.upper().startswith("!TEMPLATEPACTE"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin, diplo]):
-        await templatePacte(channel)
+        await templatePacte(message.author)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access", "diplo"])
 
@@ -1250,7 +1252,8 @@ async def on_message(message):
     elif command.upper().startswith("!GETDBNAMES"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin]):
-        await getDbNames(channel)
+        await getDbNames(message.author)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access"])
 
@@ -1258,14 +1261,16 @@ async def on_message(message):
     elif command.upper().startswith("!GETDB"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin]):
-        await getDB(channel,command)
+        await getDB(message.author,command)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access"])
 
     elif command.upper().startswith("!GETLOG"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin]):
-        await getLog(channel,command)
+        await getLog(message.author,command)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access"])
     
@@ -1349,7 +1354,8 @@ async def on_message(message):
     elif command.upper().startswith("!SIMUCHASSE "):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin, superReader, is_concerned]):
-        await simuChasse(channel,command, player)
+        await simuChasse(message.author,command, player)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access", "bot super-reader access", "joueur concerné"])
 
@@ -1358,7 +1364,8 @@ async def on_message(message):
     elif command.upper().startswith("!SIMUCHASSEPEX "):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles([admin, superReader, is_concerned]):
-          await simuChassePex(channel, command, player)
+          await simuChassePex(message.author, command, player)
+          await reactMSG(message, False)
       else:
           await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
 
@@ -1527,8 +1534,10 @@ async def on_message(message):
       # modifie l'armée d'un joueur.
     elif command.upper().startswith("!SETARMY"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      await message.delete()
       if checkRoles( [admin, writer, is_concerned]):
-        await setArmy(channel,command, player)
+        await setArmy(message.author,command, player)
+        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
