@@ -59,47 +59,49 @@ def convertTPSChasse(tdc_init:int, tdc_chasse:int, vt:int) -> str:
 
 
   # !simuChasse <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
-def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> str:
-  msg= "Chasse impossible."
+def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> list[str]:
+  msg= ["Chasse impossible."]
   chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt),int(nb_chasses))
   # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
-    msg_temp= ""
+    msg_temp= []
     tdc_chasse= 0
     init= chasses[0]["init"]
     for chasse in chasses:
-      msg_temp+= " - Quantité chassée: "+f.betterNumber(str(chasse["quantity"]))
-      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"])) +")"
-      msg_temp+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
-      msg_temp+= "```"
+      msg_temp.append(" - Quantité chassée: "+f.betterNumber(str(chasse["quantity"])))
+      msg_temp[-1]+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"])) +")"
+      msg_temp[-1]+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
+      msg_temp.append("```")
       for unit in chasse["army"]:
-        msg_temp+=unit + ": " + str(chasse["army"][unit])+"\n"
-      msg_temp+= "```\n"
+        msg_temp[-1]+=unit + ": " + str(chasse["army"][unit])+"\n"
+      msg_temp[-1]+= "```"
       tdc_chasse+= chasse["quantity"]
-    msg= "# Résultats du simulateur de chasses\n"
-    msg+="**Joueur**:     " + joueur + " (" + colo + ")\n"
-    msg+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasse(s)\n" + msg_temp
+    msg= ["# Résultats du simulateur de chasses\n"]
+    msg[-1]+="**Joueur**:     " + joueur + " (" + colo + ")\n"
+    msg[-1]+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasse(s)\n"
+    msg= msg+msg_temp
   return msg
 
   # !simuChassePex <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
-def simuChassePex(joueur:str, tdc_init:str, tdc_chasse:str, colo:str, vt:str, nb_chasses:str) -> str:
-  msg= "Chasse impossible."
+def simuChassePex(joueur:str, tdc_init:str, tdc_chasse:str, colo:str, vt:str, nb_chasses:str) -> list[str]:
+  msg= ["Chasse impossible."]
   chasses= simu.simulatorPex(joueurs.Joueur(joueur),colo,int(tdc_init),int(tdc_chasse),int(nb_chasses))
   # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
-    msg_temp= ""
+    msg_temp= []
     tdc_chasse= 0
     init= chasses[0]["init"]
     for chasse in chasses:
-      msg_temp+= " - Quantité chassée: "+f.betterNumber(str(chasse["quantity"]))
-      msg_temp+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"])) +")"
-      msg_temp+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
-      msg_temp+= "```"
+      msg_temp.append(" - Quantité chassée: "+f.betterNumber(str(chasse["quantity"])))
+      msg_temp[-1]+= " ("+f.betterNumber(str(chasse["init"])) + " -> " + f.betterNumber(str(chasse["init"]+chasse["quantity"])) +")"
+      msg_temp[-1]+=  " en " + simu.tempsChasse(init, chasse["quantity"], int(vt)) + "\n"
+      msg_temp.append("```")
       for unit in chasse["army"]:
-        msg_temp+=unit + ": " + str(chasse["army"][unit])+"\n"
-      msg_temp+= "```\n"
+        msg_temp[-1]+=unit + ": " + str(chasse["army"][unit])+"\n"
+      msg_temp[-1]+= "```"
       tdc_chasse+= chasse["quantity"]
-    msg= "# Résultats du simulateur de chasses\n"
-    msg+="**Joueur**:     " + joueur + " (" + colo + ")\n"
-    msg+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasse(s)\n" + msg_temp
+    msg= ["# Résultats du simulateur de chasses\n"]
+    msg[-1]+="**Joueur**:     " + joueur + " (" + colo + ")\n"
+    msg[-1]+="**TdC Chassé**: " + f.betterNumber(str(tdc_chasse)) + " en " + str(len(chasses)) + " chasse(s)\n"
+    msg= msg + msg_temp
   return msg

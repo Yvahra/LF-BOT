@@ -326,7 +326,7 @@ async def chasse(channel, command, player):
 
 # `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour le joueur
 async def simuChasse(playerObj, command, player):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"
+    msg = ["ERR: trop ou pas assez d'arguments dans la commande: `!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>`"]
     if await lengthVerificator(command, "!simuChasse [joueur] <tdc_initial> <vitesse_de_traque> <C1/C2> <nombre_de_chasses>"):
         msg = chasses.simuChasse(
             command.split(" ")[1],
@@ -344,16 +344,16 @@ async def simuChasse(playerObj, command, player):
                 command.split(" ")[3],
                 command.split(" ")[2],
                 command.split(" ")[4])
-    if msg.startswith("ERR:"):
-        await error(playerObj, command, msg)
+    if msg[0].startswith("ERR:"):
+        await error(playerObj, command, msg[0])
     else:
         #await message.delete()
-        for m in f.splitMessage(msg):
+        for m in msg:
             await playerObj.send(m)
 
 # !simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`: donne la simulation de chasse pour pex un maximum pour le joueur
 async def simuChassePex(playerObj, command, player):
-    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"
+    msg = ["ERR: trop ou pas assez d'arguments dans la commande: `!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>`"]
     if await lengthVerificator(command, "!simuChassePex [joueur] <tdc_initial> <tdc_chasse:entre_1_et_1000_cm> <vitesse_de_traque> <colonie_de_chasse> <nombre_de_chasses>"):
         msg = chasses.simuChassePex(
             command.split(" ")[1],
@@ -373,11 +373,11 @@ async def simuChassePex(playerObj, command, player):
                 command.split(" ")[4],
                 command.split(" ")[3],
                 command.split(" ")[5])
-    if msg.startswith("ERR:"):
-        await error(playerObj, command, msg)
+    if msg[0].startswith("ERR:"):
+        await error(playerObj, command, msg[0])
     else:
-        #await message.delete()
-        for m in f.splitMessage(msg):
+        # await message.delete()
+        for m in msg:
             await playerObj.send(m)
 
 #__________________________________________________#
