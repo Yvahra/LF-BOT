@@ -185,9 +185,9 @@ def getPlayerFromRoles(user) -> str:
      return res
 
 async def reactMSG(message, error: bool):
-    message.add_reaction('🤖')
-    if error: message.add_reaction('👎')
-    else: message.add_reaction('👍')
+    await message.add_reaction('🤖')
+    if error: await message.add_reaction('👎')
+    else: await message.add_reaction('👍')
 
 #__________________________________________________#
 ## AIDE ##
