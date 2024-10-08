@@ -184,18 +184,23 @@ def getPlayerFromRoles(user) -> str:
             res = player
      return res
 
+async def reactMSG(message, error: bool):
+    message.add_reaction('🤖')
+    if error: message.add_reaction('👎')
+    else: message.add_reaction('👍')
+
 #__________________________________________________#
 ## AIDE ##
 #__________________________________________________#
 
 
 # `!help`: affiche les commandes;
-async def help(channel, page=None):
+async def help(playerObj, page=None):
   global helpMSG
   #await message.delete()
   for i in range(len(helpMSG)):
     if page == None or page+1 == i:
-      await channel.send(helpMSG[i])
+      await playerObj.send(helpMSG[i])
 
 
 # `!templatePlayer`: donne la fiche à remplir pour enregistrer un joueur;
@@ -1220,7 +1225,8 @@ async def on_message(message):
       await help(channel, 7)
     elif command.upper().startswith("!HELP"): 
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
-      await help(channel)
+      await help(message.author)
+      await reactMSG(message, False)
 
       #`!templatePlayer`
       # donne la fiche à remplir pour enregistrer un joueur;
