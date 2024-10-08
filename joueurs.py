@@ -208,7 +208,7 @@ def printPlayer(joueur:str) -> str:
               if data[i][colo]["vassal"]["colony"] == 1: msg += "C1)"
               else: msg += "C2)"
               msg += "[" + str(data[i][colo]["vassal"]["pillage"]+20)+"%]\n"
-    msg += "```"
+  msg += "```"
   return msg
 
 def addPlayer(command):
