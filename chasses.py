@@ -61,7 +61,7 @@ def convertTPSChasse(tdc_init:int, tdc_chasse:int, vt:int) -> str:
   # !simuChasse <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
 def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> list[str]:
   msg= ["Chasse impossible."]
-  chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt),int(nb_chasses))
+  chasses= simu.simulator(joueurs.Joueur(joueur),colo,int(tdc_init),int(vt),min(int(nb_chasses),int(vt)+1))
   # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
     msg_temp= []
@@ -85,7 +85,7 @@ def simuChasse(joueur:str, tdc_init:str, colo:str, vt:str, nb_chasses:str) -> li
   # !simuChassePex <tdc_initial> <tdc_total_chassé> <colonie_de_chasse>
 def simuChassePex(joueur:str, tdc_init:str, tdc_chasse:str, colo:str, vt:str, nb_chasses:str) -> list[str]:
   msg= ["Chasse impossible."]
-  chasses= simu.simulatorPex(joueurs.Joueur(joueur),colo,int(tdc_init),int(tdc_chasse),int(nb_chasses))
+  chasses= simu.simulatorPex(joueurs.Joueur(joueur),colo,int(tdc_init),int(tdc_chasse),min(int(nb_chasses),int(vt)+1))
   # res = [ {"quantity": int, "init": int, "army":{"E": int, etc.}} ]
   if len(chasses) > 0:
     msg_temp= []
