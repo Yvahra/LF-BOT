@@ -786,7 +786,7 @@ async def setTDC(channel, command, player):
 
 # `!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
 async def setArmy(playerObj, command, player):
-    await playerObj.send("Commande effectuée:\n"+command)
+    await playerObj.send("Commande effectuée:\n```"+command+"```")
     if len(command.split("\n")) > 1:
         msg = "ERR: Commande mal formulée - !setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>"
         if len(command.split("\n")[0].split(" ")) == 3:
