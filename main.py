@@ -786,6 +786,7 @@ async def setTDC(channel, command, player):
 
 # `!setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>`: modifie l'armée d'un joueur.
 async def setArmy(playerObj, command, player):
+    await playerObj.send("Commande effectuée:\n"+command)
     if len(command.split("\n")) > 1:
         msg = "ERR: Commande mal formulée - !setArmy [joueur] <C1/C2> \\n <copie_du_simulateur_de_chasse_de_NaW>"
         if len(command.split("\n")[0].split(" ")) == 3:
@@ -1539,7 +1540,6 @@ async def on_message(message):
       await message.delete()
       if checkRoles( [admin, writer, is_concerned]):
         await setArmy(message.author,command, player)
-        await reactMSG(message, False)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
 
