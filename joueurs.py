@@ -426,6 +426,29 @@ def setVassal(player:str, colo:str, vassal:str, coloVassal:str, pillage:str) -> 
     msg = "ERR: setVassal() - " + str(e) + "\n"+ msg
   return msg
 
+def clearVassal(player:str, colo:str) -> str:
+  msg = "ERR: Pas de joueur nommé \""+player+"\""
+  colo_name = ""
+  try:
+    for file in [S_JOUEUR_FILENAME,S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      found= False
+      colo_name= ""
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found= True
+          colo = "colo1" if colo.upper() == "C1" else "colo2"
+          p[colo]["vassal"]["name"] = ""
+          p[colo]["vassal"]["colony"] = 0
+          p[colo]["vassal"]["pillage"] = 0
+          colo_name = p[colo]["name"]
+      if found:
+        f.saveData(data, file)
+        msg = "Vassal de la colo " + colo_name + " de "+ player + " a été modifié avec succès."
+  except Exception as e:
+    msg = "ERR: setVassal() - " + str(e) + "\n"+ msg
+  return msg
+
 def setStatsPlayer(player:str, mandi:str, cara:str, phero: str, therm:str) -> str:
   msg = "ERR: Pas de joueur nommé \""+player+"\""
   try:

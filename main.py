@@ -107,6 +107,7 @@ donne:
 `!setRace [joueur] <0:Abeille,1:Araignée,2:Fourmi,3:Termite>`: modifie la race d'un joueur;
 `!setStatsColo [joueur] <C1/C2> <oe> <ov> <tdp>`: modifie les stats d'une colonie d'un joueur;
 `!setVassal [joueurVassalisé] <coloVassalisée:C1/C2> <vassal> <coloVassal:C1/C2> <pillageDuVassal>`: modifie le vassal d'une colonie d'un joueur;
+`!clearVassal [joueurVassalisé] <coloVassalisée>`: retire le vassal d'une colonie d'un joueur;
 `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
 `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
@@ -896,6 +897,29 @@ async def setVassal(channel, command, player):
             await channel.send(m)
 
 
+# `!clearVassal [joueurVassalisé] <coloVassalisée>`: retire le vassal d'une colonie d'un joueur.
+async def clearVassal(channel, command, player):
+    msg = "ERR: Commande mal formulée - !clearVassal [joueurVassalisé] <coloVassalisée>"
+    if await lengthVerificator(command, "!clearVassal [joueurVassalisé] <coloVassalisée>"):
+        msg = joueurs.setVassal(
+            command.split(" ")[1],
+            command.split(" ")[2])
+
+    if await lengthVerificator(command, "!clearVassal <coloVassalisée>"):
+        if not player is None:
+            msg = joueurs.setVassal(
+                player,
+                command.split(" ")[1])
+        else:
+            msg="ERR: vous ne pouvez pas changer le vassal de votre colo!"
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+
 
 # `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur.
 async def setStatsPlayer(channel, command, player):
@@ -1587,6 +1611,15 @@ async def on_message(message):
         await setVassal(channel,command, player)
       else:
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
+
+      # `!clearVassal [joueurVassalisé] <coloVassalisée>`
+      # retire le vassal d'une colonie d'un joueur.
+    elif command.upper().startswith("!CLEARVASSAL"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, writer, is_concerned]):
+          await clearVassal(channel, command, player)
+      else:
+          await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
       # `!setStatsPlayer <joueur> <mandibule> <carapace> <phéromone> <thermique>`
       # modifie les statistiques générales d'un joueur.
