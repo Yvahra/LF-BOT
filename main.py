@@ -901,13 +901,13 @@ async def setVassal(channel, command, player):
 async def clearVassal(channel, command, player):
     msg = "ERR: Commande mal formulée - !clearVassal [joueurVassalisé] <coloVassalisée>"
     if await lengthVerificator(command, "!clearVassal [joueurVassalisé] <coloVassalisée>"):
-        msg = joueurs.setVassal(
+        msg = joueurs.clearVassal(
             command.split(" ")[1],
             command.split(" ")[2])
 
     if await lengthVerificator(command, "!clearVassal <coloVassalisée>"):
         if not player is None:
-            msg = joueurs.setVassal(
+            msg = joueurs.clearVassal(
                 player,
                 command.split(" ")[1])
         else:
