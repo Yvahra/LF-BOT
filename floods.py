@@ -352,9 +352,9 @@ def attacks_on_LF(x: str, y: str, va: str) -> str:
           found = True
           obj_joueur = joueurs.Joueur(activePlayer)
           msg += "\n|  " + activePlayer + "  |  "
-          msg += format(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"])) + "  |  "
+          msg += formatTPS(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"])) + "  |  "
           if "colo2" in p:
-            msg += format(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"]))
+            msg += formatTPS(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"]))
           else:
             msg += "x"
           msg += "  |  "
