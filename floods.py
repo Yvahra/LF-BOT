@@ -370,13 +370,15 @@ def attacks_on_LF(x: str, y: str, va: str) -> str:
   return msg
 
 
-def attacks_on_LF_arrivee(x: str, y: str, va: str, date: str) -> str:
+def attacks_on_LF_arrivee(x: str, y: str, va: str, dateSTR: str) -> str:
   msg = "ERR:"
   try:
-    date = datetime.datetime.strptime(date, '%Y-%m-%d-%H-%M-%S')
+    date = datetime.datetime.strptime(dateSTR, '%Y-%m-%d-%H-%M-%S')
     activePlayers = f.loadData(S_ACTIVE_PLAYERS)
     data = f.loadData(S_JOUEUR_FILENAME)
-    msg = "## Durée d'attaques depuis [" + x + ":" + y + "] avec VA" + va + "\n```"
+    heure= dateSTR.split("-")[3] + ":" + dateSTR.split("-")[4] + ":" + dateSTR.split("-")[5]
+    jour= dateSTR.split("-")[2] + "/" + dateSTR.split("-")[1] + "/" + dateSTR.split("-")[0]
+    msg = "## Heure et date d'attaques depuis [" + x + ":" + y + "] avec VA" + va + " si le joueur a lancé à "+ heure +" le " + jour + "\n```"
     msg += "|  Joueur  |  sur Colo1  |  sur Colo2  |"
     joueursManquants = []
     for activePlayer in activePlayers:
