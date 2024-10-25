@@ -8,6 +8,7 @@
 
 import functions as f
 import datetime
+import joueurs
 
 #__________________________________________________#
 ## GLOBAL VAR ##
@@ -18,6 +19,9 @@ H_PACTE_FILENAME = "HIST//Historique_Pactes.json"
 H_CONVOIS_EXTERNES_FILENAME = "HIST//Historique_ConvoisExternes.json"
 H_DONSTDC_FILENAME = "HIST//Historique_DonsTDC.json"
 S_FLOODS_FILENAME = "STATS//Stats_FloodsFuturs.json"
+S_JOUEUR_FILENAME = "STATS//Stats_Joueurs.json"
+S_ACTIVE_PLAYERS = "STATS//Stats_JoueursActifs.json"
+
 PACTES = f.loadData("CONST//CONST_Pactes.json")
 
 #__________________________________________________#
@@ -297,4 +301,107 @@ def donTDC(allyD:str, allyR:str, quantity:str, reason:str) -> str:
     msg = "Don enregistré avec succès."
   except Exception as e:
     msg = "ERR: donTDC() - " + str(e) + "\n" + msg
+  return msg
+
+def tps_de_flood(x: int, y: int, va: int, x_target: int, y_target: int) -> int:
+    coeffs = [-2E-15, 7E-12, -0.00000001, 0.00002, -0.0748, 211.8041, 3031.733]
+    distance = int(((x_target - x) ** 2 + (y_target - y) ** 2) ** (1 / 2))
+    seconds = 0
+    for c in coeffs:
+      seconds *= distance
+      seconds += c
+    seconds /= (1 + va / 10)
+    return int(seconds)
+
+
+def formatTPS(seconds: int) -> str:
+  days = seconds // (24 * 3600)  # Number of days
+  seconds %= (24 * 3600)
+  hours = seconds // 3600  # Number of hours
+  seconds %= 3600
+  minutes = seconds // 60  # Number of minutes
+  seconds %= 60  # Remaining seconds
+  return str(int(days)) + "j " + str(int(hours)) + "h " + str(int(minutes)) + "min " + str(int(seconds)) + "s"
+
+
+def LF_attack(joueur: str, colo: str, x: str, y: str) -> str:
+  obj_joueur = joueurs.Joueur(joueur)
+  colo_joueur = obj_joueur.colo1 if colo.upper() == "C1" else obj_joueur.colo2
+  return "Le temps de flood est de: " + formatTPS(
+    tps_de_flood(colo_joueur["x"], colo_joueur["y"], obj_joueur.va, int(x), int(y))) + " [VA: " + str(
+    obj_joueur.va) + "]"
+
+
+def simple_attack(x: str, y: str, x_target: str, y_target: str, va: str) -> str:
+  return "Le temps de flood est de: " + formatTPS(
+    tps_de_flood(int(x), int(y), int(va), int(x_target), int(y_target))) + " [VA: " + va + "]"
+
+
+def attacks_on_LF(x: str, y: str, va: str) -> str:
+  msg = "ERR:"
+  try:
+    activePlayers = f.loadData(S_ACTIVE_PLAYERS)
+    data = f.loadData(S_JOUEUR_FILENAME)
+    msg = "## Durée d'attaques depuis [" + x + ":" + y + "] avec VA" + va + "\n```"
+    msg += "|  Joueur  |  sur Colo1  |  sur Colo2  |"
+    joueursManquants = []
+    for activePlayer in activePlayers:
+      found = False
+      for p in data:
+        if p["name"].upper() == activePlayer.upper():
+          found = True
+          obj_joueur = joueurs.Joueur(activePlayer)
+          msg += "\n|  " + activePlayer + "  |  "
+          msg += format(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"])) + "  |  "
+          if "colo2" in p:
+            msg += format(tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"], obj_joueur.colo1["y"]))
+          else:
+            msg += "x"
+          msg += "  |  "
+      if not found:
+        joueursManquants.append(activePlayer)
+    msg += "```"
+    if len(joueursManquants) > 0:
+      msg += "\n## Joueurs manquants"
+      for j in joueursManquants:
+        msg += "\n" + j
+  except Exception as e:
+    msg = "ERR: attacks_on_LF() - " + str(e) + "\n" + msg
+  return msg
+
+
+def attacks_on_LF_arrivee(x: str, y: str, va: str, date: str) -> str:
+  msg = "ERR:"
+  try:
+    date = datetime.datetime.strptime(date, '%Y-%m-%d-%H-%M-%S')
+    activePlayers = f.loadData(S_ACTIVE_PLAYERS)
+    data = f.loadData(S_JOUEUR_FILENAME)
+    msg = "## Durée d'attaques depuis [" + x + ":" + y + "] avec VA" + va + "\n```"
+    msg += "|  Joueur  |  sur Colo1  |  sur Colo2  |"
+    joueursManquants = []
+    for activePlayer in activePlayers:
+      found = False
+      for p in data:
+        if p["name"].upper() == activePlayer.upper():
+          found = True
+          obj_joueur = joueurs.Joueur(activePlayer)
+          msg += "\n|  " + activePlayer + "  |  "
+          msg += (date + datetime.timedelta(0, tps_de_flood(int(x), int(y), int(va), obj_joueur.colo1["x"],
+                                                            obj_joueur.colo1["y"]))).strftime(
+            "%Hh%Mm%Ss %d/%m/%y") + "  |  "
+          if "colo2" in p:
+            msg += (date + datetime.timedelta(0, tps_de_flood(int(x), int(y), int(va), obj_joueur.colo2["x"],
+                                                              obj_joueur.colo2["y"]))).strftime("%Hh%Mm%Ss %d/%m/%y")
+          else:
+            msg += "x"
+          msg += "  |  "
+      if not found:
+        joueursManquants.append(activePlayer)
+    msg += "```"
+    if len(joueursManquants) > 0:
+      msg += "\n## Joueurs manquants"
+      for j in joueursManquants:
+        msg += "\n" + j
+  except Exception as e:
+    msg = "ERR: attacks_on_LF() - " + str(e) + "\n" + msg
   return msg

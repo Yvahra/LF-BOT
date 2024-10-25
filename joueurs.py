@@ -65,6 +65,7 @@ class Joueur:
           if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
           if "pheromones" in data[i]: self.pheromones=  int(data[i]["pheromones"])
           if "thermique" in data[i]:  self.thermique=   int(data[i]["thermique"])
+          if "va" in data[i]:         self.va=          int(data[i]["va"])
           if "hero" in data[i]:
             self.hero= {
               "bonus": int(data[i]["hero"]["bonus"]),
@@ -86,6 +87,8 @@ class Joueur:
                 fdd_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["fdd"]
                 tdp_hb += data[i][colo]["army"][unit] * DATA_ARMY[unit.upper()]["tdp"]
               temp["stats_army"] =  {"fdf_hb":fdf_hb,"vie_hb":vie_hb,"fdd_hb":fdd_hb,"tdp_hb":tdp_hb}
+              if "x" in data[i][colo]: temp["x"]=  int(data[i][colo]["x"])
+              if "y" in data[i][colo]: temp["y"]=  int(data[i][colo]["y"])
               temp["oe"]=           int(data[i][colo]["oe"])
               temp["ov"]=           int(data[i][colo]["ov"])
               temp["tdc"]=          int(data[i][colo]["tdc"])
@@ -565,6 +568,7 @@ def setTDC(player:str, colo:str, tdc:str) -> str:
     msg = "ERR: setTDC() - " + str(e) + "\n" + msg
   return msg
 
+
 def setActivePlayers(command):
   res = []
   msg = "Joueur(s) enregistré(s): "
@@ -576,4 +580,44 @@ def setActivePlayers(command):
     f.saveData(res,S_ACTIVE_PLAYERS)
   except Exception as e:
     msg = "ERR: setActivePlayers() - " + str(e) + "\n" + msg
+  return msg
+
+
+def setCoord(player:str, colo:str, x:str, y:str):
+  msg = "ERR: Pas de joueur nommé \"" + player + "\""
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      old_tdc = ""
+      found = False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          colo_key = "colo1" if colo.upper() == "C1" else "colo2"
+          if colo_key in p:
+            found = True
+            p[colo_key]["x"]= int(x)
+            p[colo_key]["y"]= int(y)
+      if found:
+        f.saveData(data, file)
+        msg = "Coordonnées de " + player + "(" + colo + ") modifiées avec succès. [" + x + ", "+ y + "]"
+  except Exception as e:
+    msg = "ERR: setCoord() - " + str(e) + "\n" + msg
+  return msg
+
+def setVA(player:str, va:str):
+  msg = "ERR: Pas de joueur nommé \"" + player + "\""
+  try:
+    for file in [S_JOUEUR_FILENAME, S_ALLIE_FILENAME]:
+      data = f.loadData(file)
+      old_tdc = ""
+      found = False
+      for p in data:
+        if p["name"].upper() == player.upper():
+          found = True
+          p["va"]= int(va)
+      if found:
+        f.saveData(data, file)
+        msg = "VA de " + player + " modifiée avec succès."
+  except Exception as e:
+    msg = "ERR: setVA() - " + str(e) + "\n" + msg
   return msg

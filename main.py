@@ -97,7 +97,11 @@ donne:
 `!floodExtD [date:aaaa-mm-jj] [joueurLF] <joueurExtérieur> <ally> <quantité>`: enregistre un flood externe donné;
 `!futursfloods`: affiche les floods à faire; 
 `!printFloodsExt [alliance]`: affiche les floods externes;
-`!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple);""",
+`!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple);
+`!tpsFloodLF [joueur] <C1/C2> <x_cible> <y_cible>`: affiche le temps de flood d'un joueur;
+`!tpsFloodExt <x_floodeur> <y_floodeur> <x_cible> <y_cible> <va>`: affiche le temps de flood;
+`!listeFloodLF <x_floodeur> <y_floodeur> <va>`: affiche les durées de flood d'un joueur sur la LF;
+`!listeDateFloodLF <x_floodeur> <y_floodeur> <va> <date_de_lancement>`: affiche les dates de flood d'un joueur sur la LF -- <date_de_lancement> au format année-mois-jour-heure-minute-seconde, ex: 2024-10-25-15-36-24 pour le 25/10/2024 à 15h 36min 24s;""",
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
 `!renameColo [joueur] <C1/C2> \\n <nom avec espaces>`: modifie le nom de la colo d'un joueur d'un joueur;
@@ -116,11 +120,13 @@ donne:
 `!getTDCExploités`: donne les tdc exploités des joueurs actifs de la LF;
 `!getActivePlayers`: donne les joueurs actifs de la LF;
 `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
-`!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;""",
+`!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
+`!setCoord [joueur] <C1/C2> <x> <y>`: modifie les coordonnées d'une des colonies d'un joueur;
+`!setVA [joueur] <va>`: modifie la vitesse d'attaque d'un joueur;""",
     """### Commandes Pactes
 `!printPactes`: affiche les pactes;
 `!endPacte`: clôt un pacte;
-`!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> [end] \\n <titre> \\n <description>`: ajoute un nouveau pacte;""",
+`!pacte <ally> <type-guerre> <type-commerce> <sueilCommerce> <start> [end] \\n <titre> \\n <description>`: ajoute un nouveau pacte; """,
     """### Commandes Dev
 `!getDbNames`: donne les noms des bases de données;
 `!getDB <path//filename>`: donne la base de données;
@@ -671,6 +677,84 @@ async def donTDC(channel, command):
         await channel.send(m)
 
 
+# `!tpsFloodLF [joueur] <C1/C2> <x_cible> <y_cible>`
+# affiche le temps de flood d'un joueur; LF_attack(joueur:str, colo:str, x:str, y:str)
+
+async def tpsFloodLF(channel, command, player):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!tpsFloodLF [joueur] <C1/C2> <x_cible> <y_cible>`"
+    if await lengthVerificator(command, "!tpsFloodLF [joueur] <C1/C2> <x_cible> <y_cible>"):
+        msg = floods.LF_attack(
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4])
+    if await lengthVerificator(command, "!tpsFloodLF <C1/C2> <x_cible> <y_cible>"):
+            if player is None:
+                msg = "ERR: vous ne pouvez pas tester de floods!"
+            else:
+                msg = floods.LF_attack(
+                    player,
+                    command.split(" ")[1],
+                    command.split(" ")[2],
+                    command.split(" ")[3])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+#`!tpsFloodExt <x_floodeur> <y_floodeur> <x_cible> <y_cible> <va>`
+# affiche le temps de flood; simple_attack(x:str, y:str, x_target:str, y_target:str, va:str)
+async def tpsFloodExt(channel, command):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!tpsFloodExt <x_floodeur> <y_floodeur> <x_cible> <y_cible> <va>`"
+    if await lengthVerificator(command, "!tpsFloodExt <x_floodeur> <y_floodeur> <x_cible> <y_cible> <va>"):
+        msg = floods.simple_attack(
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4],
+            command.split(" ")[5])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+#`!listeFloodLF <x_floodeur> <y_floodeur> <va>`:
+# affiche les durées de flood d'un joueur sur la LF; attacks_on_LF(x:str, y:str, va:str)
+async def listeFloodLF(channel, command):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!listeFloodLF <x_floodeur> <y_floodeur> <va>`"
+    if await lengthVerificator(command, "!listeFloodLF <x_floodeur> <y_floodeur> <va>"):
+        msg = floods.attacks_on_LF(
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+# `!listeDateFloodLF <x_floodeur> <y_floodeur> <va> <date_de_lancement>`
+# affiche les dates de flood d'un joueur sur la LF -- <date_de_lancement> au format année-mois-jour-heure-minute-seconde, ex: 2024-10-25-15-36-24 pour le 25/10/2024 à 15h 36min 24s; attacks_on_LF_arrivee(x:str, y:str, va:str, date:str)""",
+async def listeDateFloodLF(channel, command):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!listeDateFloodLF <x_floodeur> <y_floodeur> <va> <date_de_lancement>`"
+    if await lengthVerificator(command, "!listeDateFloodLF <x_floodeur> <y_floodeur> <va> <date_de_lancement>"):
+        msg = floods.attacks_on_LF_arrivee(
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
 #__________________________________________________#
 ## PLAYERS ##
 #__________________________________________________#
@@ -1046,6 +1130,87 @@ async def optiCara(channel,command, player):
         await error(channel, command, msg)
     else:
         #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+        # `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur.
+        async def setStatsPlayer(channel, command, player):
+            msg = "ERR: Commande mal formulée - !setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"
+            if await lengthVerificator(command,
+                                       "!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>"):
+                msg = joueurs.setStatsPlayer(
+                    command.split(" ")[1],
+                    command.split(" ")[2],
+                    command.split(" ")[3],
+                    command.split(" ")[4],
+                    command.split(" ")[5])
+
+            if await lengthVerificator(command, "!setStatsPlayer <mandibule> <carapace> <phéromone> <thermique>"):
+                if not player is None:
+                    msg = joueurs.setStatsPlayer(
+                        player,
+                        command.split(" ")[1],
+                        command.split(" ")[2],
+                        command.split(" ")[3],
+                        command.split(" ")[4])
+                else:
+                    msg = "ERR: vous ne pouvez pas changer vos statistiques!"
+            if msg.startswith("ERR:"):
+                await error(channel, command, msg)
+            else:
+                # await message.delete()
+                for m in f.splitMessage(msg):
+                    await channel.send(m)
+
+# `!setCoord [joueur] <C1/C2> <x> <y>`
+# modifie les coordonnées d'une des colonies d'un joueur
+async def setCoord(channel, command, player):
+    msg = "ERR: Commande mal formulée - `!setCoord [joueur] <C1/C2> <x> <y>`"
+    if await lengthVerificator(command,
+                               "!setCoord [joueur] <C1/C2> <x> <y>"):
+        msg = joueurs.setCoord(
+            command.split(" ")[1],
+            command.split(" ")[2],
+            command.split(" ")[3],
+            command.split(" ")[4])
+
+    if await lengthVerificator(command, "!!setCoord <C1/C2> <x> <y>"):
+        if not player is None:
+            msg = joueurs.setCoord(
+                player,
+                command.split(" ")[1],
+                command.split(" ")[2],
+                command.split(" ")[3])
+        else:
+            msg = "ERR: vous ne pouvez pas changer vos coordonnées!"
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        # await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+# `!setVA [joueur] <va>`
+# modifie la vitesse d'attaque d'un joueur
+async def setVA(channel, command, player):
+    msg = "ERR: Commande mal formulée - `!setVA [joueur] <va>`"
+    if await lengthVerificator(command,
+                               "!setVA [joueur] <va>"):
+        msg = joueurs.setVA(
+            command.split(" ")[1],
+            command.split(" ")[2])
+
+    if await lengthVerificator(command, "!setVA <va>"):
+        if not player is None:
+            msg = joueurs.setVA(
+                player,
+                command.split(" ")[1])
+        else:
+            msg = "ERR: vous ne pouvez pas changer votre VA!"
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        # await message.delete()
         for m in f.splitMessage(msg):
             await channel.send(m)
 
@@ -1513,6 +1678,31 @@ async def on_message(message):
       else:
         await errorRole(channel,["bot admin access", "bot writer access"])
 
+    elif command.upper().startswith("!TPSFLOODLF"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, writer]):
+          await tpsFloodLF(channel, command, player)
+      else:
+          await errorRole(channel, ["bot admin access", "bot super-reader"])
+
+    elif command.upper().startswith("!TPSFLOODEXT"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      await tpsFloodExt(channel, command)
+
+    elif command.upper().startswith("!LISTEFLOODLF"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, writer]):
+          await listeFloodLF(channel, command)
+      else:
+          await errorRole(channel, ["bot admin access", "bot super-reader"])
+
+    elif command.upper().startswith("!LISTEDATEFLOODLF"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, writer]):
+          await listeDateFloodLF(channel, command)
+      else:
+          await errorRole(channel, ["bot admin access", "bot super-reader"])
+
     
       ### ------- ###
       ### Joueurs ###
@@ -1683,6 +1873,21 @@ async def on_message(message):
             await optiCara(channel,command, player)
         else:
             await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
+
+    elif command.upper().startswith("!SETVA"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+        if checkRoles([admin, superReader, is_concerned]):
+            await setVA(channel, command, player)
+        else:
+            await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
+
+    elif command.upper().startswith("!SETCOORD"):
+        f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+        if checkRoles([admin, superReader, is_concerned]):
+            await setCoord(channel, command, player)
+        else:
+            await errorRole(channel, ["bot admin access", "bot super-reader access", "joueur concerné"])
+
 
     
       ### ------ ###
