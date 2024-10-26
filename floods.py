@@ -375,7 +375,7 @@ def attacks_from_LF(x: str, y: str) -> str:
     activePlayers = f.loadData(S_ACTIVE_PLAYERS)
     data = f.loadData(S_JOUEUR_FILENAME)
     msg = "## Durée d'attaques sur [" + x + ":" + y + "] avec VA\n```"
-    msg += "|  Joueur  |  sur Colo1  |  sur Colo2  |"
+    msg += "|  Joueur  |  depuis Colo1  |  depuis Colo2  |"
     joueursManquants = []
     for activePlayer in activePlayers:
       found = False
