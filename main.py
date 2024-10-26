@@ -100,7 +100,8 @@ donne:
 `!donTDC <allianceDonneuse> <allianceReceveuse> <quantité> <raison>`: enregistre un don de tdc (butin de guerre par exemple);
 `!tpsFloodLF [joueur] <C1/C2> <x_cible> <y_cible>`: affiche le temps de flood d'un joueur;
 `!tpsFloodExt <x_floodeur> <y_floodeur> <x_cible> <y_cible> <va>`: affiche le temps de flood;
-`!listeFloodLF <x_floodeur> <y_floodeur> <va>`: affiche les durées de flood d'un joueur sur la LF;
+`!listeFloodExtR <x_floodeur> <y_floodeur> <va>`: affiche les durées de flood d'un joueur sur la LF;
+`!listeFloodExtD <x_floodé> <y_floodé>`: affiche les durées de flood de la LF sur un joueur;
 `!listeDateFloodLF <x_floodeur> <y_floodeur> <va> <date_de_lancement>`: affiche les dates de flood d'un joueur sur la LF -- <date_de_lancement> au format année-mois-jour-heure-minute-seconde, ex: 2024-10-25-15-36-24 pour le 25/10/2024 à 15h 36min 24s;""",
     """### Commandes Joueurs
 `!printPlayer <joueur>`: affiche les données d'un joueur.
@@ -722,15 +723,30 @@ async def tpsFloodExt(channel, command):
         for m in f.splitMessage(msg):
             await channel.send(m)
 
-#`!listeFloodLF <x_floodeur> <y_floodeur> <va>`:
+#`!listeFloodExtR <x_floodeur> <y_floodeur> <va>`:
 # affiche les durées de flood d'un joueur sur la LF; attacks_on_LF(x:str, y:str, va:str)
-async def listeFloodLF(channel, command):
+async def listeFloodExtR(channel, command):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!listeFloodLF <x_floodeur> <y_floodeur> <va>`"
     if await lengthVerificator(command, "!listeFloodLF <x_floodeur> <y_floodeur> <va>"):
         msg = floods.attacks_on_LF(
             command.split(" ")[1],
             command.split(" ")[2],
             command.split(" ")[3])
+    if msg.startswith("ERR:"):
+        await error(channel, command, msg)
+    else:
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
+
+#`!listeFloodExtD <x_floodé> <y_floodé>`:
+# affiche les durées de flood de la LF sur un joueur; attacks_from_LF(x:str, y:str, va:str)
+async def listeFloodExtD(channel, command):
+    msg = "ERR: trop ou pas assez d'arguments dans la commande: `!listeFloodExtD <x_floodeur> <y_floodeur>`"
+    if await lengthVerificator(command, "!listeFloodExtD <x_floodeur> <y_floodeur>"):
+        msg = floods.attacks_from_LF(
+            command.split(" ")[1],
+            command.split(" ")[2])
     if msg.startswith("ERR:"):
         await error(channel, command, msg)
     else:
@@ -1689,10 +1705,17 @@ async def on_message(message):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       await tpsFloodExt(channel, command)
 
-    elif command.upper().startswith("!LISTEFLOODLF"):
+    elif command.upper().startswith("!LISTEFLOODEXTR"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles([admin, writer]):
-          await listeFloodLF(channel, command)
+          await listeFloodExtR(channel, command)
+      else:
+          await errorRole(channel, ["bot admin access", "bot super-reader"])
+
+    elif command.upper().startswith("!LISTEFLOODEXTD"):
+      f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
+      if checkRoles([admin, writer]):
+          await listeFloodExtD(channel, command)
       else:
           await errorRole(channel, ["bot admin access", "bot super-reader"])
 

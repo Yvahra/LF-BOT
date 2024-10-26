@@ -369,6 +369,37 @@ def attacks_on_LF(x: str, y: str, va: str) -> str:
     msg = "ERR: attacks_on_LF() - " + str(e) + "\n" + msg
   return msg
 
+def attacks_from_LF(x: str, y: str) -> str:
+  msg = "ERR:"
+  try:
+    activePlayers = f.loadData(S_ACTIVE_PLAYERS)
+    data = f.loadData(S_JOUEUR_FILENAME)
+    msg = "## Durée d'attaques sur [" + x + ":" + y + "] avec VA\n```"
+    msg += "|  Joueur  |  sur Colo1  |  sur Colo2  |"
+    joueursManquants = []
+    for activePlayer in activePlayers:
+      found = False
+      for p in data:
+        if p["name"].upper() == activePlayer.upper():
+          found = True
+          obj_joueur = joueurs.Joueur(activePlayer)
+          msg += "\n|  " + activePlayer + "  |  "
+          msg += formatTPS(tps_de_flood(int(x), int(y), obj_joueur.va, obj_joueur.colo1["x"], obj_joueur.colo1["y"])) + "  |  "
+          if "colo2" in p:
+            msg += formatTPS(tps_de_flood(int(x), int(y), obj_joueur.va, obj_joueur.colo2["x"], obj_joueur.colo2["y"]))
+          else:
+            msg += "x"
+          msg += "  |  "
+      if not found:
+        joueursManquants.append(activePlayer)
+    msg += "```"
+    if len(joueursManquants) > 0:
+      msg += "\n## Joueurs manquants"
+      for j in joueursManquants:
+        msg += "\n" + j
+  except Exception as e:
+    msg = "ERR: attacks_on_LF() - " + str(e) + "\n" + msg
+  return msg
 
 def attacks_on_LF_arrivee(x: str, y: str, va: str, dateSTR: str) -> str:
   msg = "ERR:"
