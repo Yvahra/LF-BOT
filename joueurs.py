@@ -214,6 +214,57 @@ def printPlayer(joueur:str) -> str:
   msg += "```"
   return msg
 
+def addDefaultUser(name:str) -> str:
+  newData = {
+    "name": name,
+    "mandibule": 0,
+    "bouclier": 0,
+    "pheromones": 0,
+    "race": 0,
+    "thermique": 0,
+    "va": 0,
+    "hero": {
+      "bonus": 0,
+      "level": 0
+    },
+    "colo1": {
+      "name": "Not set",
+      "x":0,
+      "y":0,
+      "army": {},
+      "oe": 0,
+      "ov": 0,
+      "tdc": 0,
+      "exploitation": 0,
+      "tdp": 0,
+      "vassal": {
+        "name": "",
+        "colony": 0,
+        "pillage": 0
+      }
+    },
+    "colo2": {
+      "name": "Not set",
+      "x":0,
+      "y":0,
+      "army": {},
+      "oe": 0,
+      "ov": 0,
+      "tdc": 0,
+      "exploitation": 0,
+      "tdp": 0,
+      "vassal": {
+        "name": "",
+        "colony": 0,
+        "pillage": 0
+      }
+    }
+  }
+  data = f.loadData(S_JOUEUR_FILENAME)
+  data.append(newData)
+  f.saveData(data, S_JOUEUR_FILENAME)
+  return "Joueur ajouté avec succès."
+
 def addPlayer(command):
   newData = {
     "name": command.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),

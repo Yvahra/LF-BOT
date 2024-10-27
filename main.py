@@ -116,6 +116,7 @@ donne:
 `!setStatsPlayer [joueur] <mandibule> <carapace> <phéromone> <thermique>`: modifie les statistiques générales d'un joueur;
 `!setHero [joueur] <0:Vie|1:FdF-Combat|2:FdF-Chasse> <niveauDuBonus>`: modifie le héros d'un joueur;
 `!player \\n <templatePlayer>`: ajoute un nouveau joueur;
+`!player <nom>`: ajoute un joueur avec des valeurs par défaut;
 `!allié \\n <templatePlayer>`: ajoute un nouvel allié;
 `!setActivePlayers <joueur1> ... <joueurN>`: définit les joueurs actifs de la LF;
 `!getTDCExploités`: donne les tdc exploités des joueurs actifs de la LF;
@@ -790,16 +791,24 @@ async def printPlayer(playerObj, command):
 
 # `!player \n <templatePlayer>`: ajoute un nouveau pacte
 async def addPlayer(channel, command):
-  if len(command.split("\n")) > 2:
-    msg = joueurs.addPlayer(command)
-    if msg.startswith("ERR:"):
-      await error(channel, command, msg)
+    if len(command.split("\n")) > 2:
+        msg = joueurs.addPlayer(command)
+        if msg.startswith("ERR:"):
+            await error(channel, command, msg)
+        else:
+            #await message.delete()
+            for m in f.splitMessage(msg):
+                await channel.send(m)
+    elif len(command.split(" ")) == 2:
+        msg = joueurs.addDefaultUser(command.split(" ")[1])
+        if msg.startswith("ERR:"):
+            await error(channel, command, msg)
+        else:
+            #await message.delete()
+            for m in f.splitMessage(msg):
+                await channel.send(m)
     else:
-      #await message.delete()
-      for m in f.splitMessage(msg):
-        await channel.send(m)
-  else:
-    await error(channel, command, "Erreur dans la commande: `!player \n <templatePlayer>`")
+        await error(channel, command, "Erreur dans la commande: `!player \n <templatePlayer>` ou `!player <nom>`")
 
 
 # `!allié \\n <templatePlayer>`: ajoute un nouvel allié;
@@ -1743,8 +1752,8 @@ async def on_message(message):
         await errorRole(channel,["bot admin access", "bot writer access", "joueur concerné"])
         await reactMSG(message,True)
 
-      # `!player \\n <templatePlayer>`
-      # ajoute un nouveau pacte
+      # `!player \\n <templatePlayer>` // `!player <nom>`
+      # ajoute un nouveau joueur
     elif command.upper().startswith("!PLAYER"):
       f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       if checkRoles( [admin]):
