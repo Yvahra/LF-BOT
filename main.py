@@ -2190,7 +2190,7 @@ async def on_message(message):
     elif command.upper().startswith("!GETTDCEXPLOITÉS"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       # if checkRoles( [admin, superReader]):
-        await getTDCExploites(channel, user, command)
+        await getTDCExploites(channel, command, user)
       # else:
       #   await errorRole(channel,["bot admin access", "bot super-reader access"])
 
