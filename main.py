@@ -638,12 +638,13 @@ async def recapRSS(channel, command):
         msg = convois.repartitionRessources(command.split(" ")[1])
     else:
         msg = convois.repartitionRessources(date.today().strftime("%Y-%m-%d"))
+        msg+= "\n||from cmd||"
     if msg.startswith("ERR:"):
-      await error(channel, command, msg)
+        await error(channel, command, msg)
     else:
-      #await message.delete()
-      for m in f.splitMessage(msg):
-        await channel.send(m)
+        #await message.delete()
+        for m in f.splitMessage(msg):
+            await channel.send(m)
 
 # `!printRecapRessources`: affiche le récapitulatif des ressources récoltées de la journée;
 async def printRecapRSS(channel, command):
@@ -653,7 +654,7 @@ async def printRecapRSS(channel, command):
         msg = convois.printRessourcesPartagees(command.split(" ")[1])
     else:
         msg = convois.printRessourcesPartagees(date.today().strftime("%Y-%m-%d"))
-
+        msg+= "\n||from cmd||"
     if msg.startswith("ERR:"):
       await error(channel, command, msg)
     else:
@@ -668,7 +669,7 @@ async def printConvoisJour(channel, command):
         msg = convois.convoisDuJour(command.split(" ")[1])
     else:
         msg = convois.convoisDuJour(date.today().strftime("%Y-%m-%d"))
-
+        msg+= "\n||from cmd||"
     if msg.startswith("ERR:"):
         await error(channel, command, msg)
     else:
@@ -1908,7 +1909,7 @@ async def on_message(message):
     elif command.upper().startswith("!CONVOISENCOURS"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       # if checkRoles( [admin, writer, superReader, membre]):
-        await printConvoisEnCours(channel, user,command)
+        await printConvoisEnCours(channel,command,user)
       # else:
       #   await errorRole(channel,["bot admin access", "bot writer access", "bot super-reader access", "membre"])
 

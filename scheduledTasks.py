@@ -40,6 +40,7 @@ async def error(channel, errorMsg: str):
 async def recapRSS():
     channel = bot.get_channel(1276232505116196894)
     msg = convois.repartitionRessources((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
+    msg+= "\n||from cron||"
     if msg.startswith("ERR:"):
         f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
     else:
@@ -49,6 +50,7 @@ async def recapRSS():
 async def recapConvois():
     channel = bot.get_channel(1278074306391183452)
     msg = convois.convoisDuJour((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
+    msg+= "\n||from cron||"
     if msg.startswith("ERR:"):
         f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
     else:
@@ -58,6 +60,7 @@ async def recapConvois():
 async def recapFlood():
     channel = bot.get_channel(1276451985352294440)
     msg = floods.printFloodsFuturs()
+    msg+= "\n||from cron||"
     if msg.startswith("ERR:"):
         f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
     else:
