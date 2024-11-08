@@ -1402,14 +1402,14 @@ async def getActivePlayers(channel, user):
 # `!optiMandi [joueur]`: dit s'il faut augmenter les mandibules ou pondre des JTk pour un joueur;
 async def optiMandi(channel,command, user, player):
     msg = "ERR: Commande mal formulée - !optiMandi [joueur]"
-    if await lengthVerificator( channel, "!optiMandi [joueur]"):
+    if await lengthVerificator( command, "!optiMandi [joueur]"):
         if isAuthorized(user=user, level_needed=PERMISSION_ONLY_SELF_CMD, rw="R", self_command=player.upper() in command.upper()):
             j_obj= joueurs.Joueur(command.split(" ")[1])
             msg = j_obj.optiMandi()
         else:
             await error(channel, command, "Permissions insuffisantes")
 
-    if await lengthVerificator( channel, "!optiMandi"):
+    if await lengthVerificator( command, "!optiMandi"):
         if isAuthorized(user=user, level_needed=PERMISSION_ONLY_SELF_CMD, rw="R", self_command=True):
             if not player is None:
                 j_obj = joueurs.Joueur(player)
@@ -1428,14 +1428,14 @@ async def optiMandi(channel,command, user, player):
 # `!optiCara [joueur]`: dit s'il faut augmenter la carapace ou pondre des JS pour un joueur;
 async def optiCara(channel,command, user, player):
     msg = "ERR: Commande mal formulée - !optiCara [joueur]"
-    if await lengthVerificator( channel, "!optiCara [joueur]"):
+    if await lengthVerificator( command, "!optiCara [joueur]"):
         if isAuthorized(user=user, level_needed=PERMISSION_ONLY_SELF_CMD, rw="R", self_command=player.upper() in command.upper()):
             j_obj= joueurs.Joueur(command.split(" ")[1])
             msg = j_obj.optiCara()
         else:
             await error(channel, command, "Permissions insuffisantes")
 
-    if await lengthVerificator( channel, "!optiCara"):
+    if await lengthVerificator( command, "!optiCara"):
         if isAuthorized(user=user, level_needed=PERMISSION_ONLY_SELF_CMD, rw="R", self_command=True):
             if not player is None:
                 j_obj = joueurs.Joueur(player)
