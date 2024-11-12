@@ -210,7 +210,7 @@ def printPlayer(joueur:str) -> str:
               msg += "        Vassal: " + str(data[i][colo]["vassal"]["name"])+ "("
               if data[i][colo]["vassal"]["colony"] == 1: msg += "C1)"
               else: msg += "C2)"
-              msg += "[" + str(data[i][colo]["vassal"]["pillage"]+20)+"%]\n"
+              msg += "[" + str(data[i][colo]["vassal"]["pillage"])+"%]\n"
   msg += "```"
   return msg
 
