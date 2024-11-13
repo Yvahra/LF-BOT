@@ -2091,7 +2091,7 @@ async def on_message(message):
     elif command.upper().startswith("!RENAMECOLO"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
         # if checkRoles( [admin, writer, is_concerned]):
-        await renameColo(channel,command, player, user)
+        await renameColo(channel,command, user, player)
         # else:
         #     await errorRole(channel, ["bot admin access", "bot writer access", "joueur concerné"])
 
