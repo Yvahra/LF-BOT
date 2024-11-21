@@ -2182,7 +2182,7 @@ async def on_message(message):
     elif command.upper().startswith("!SETACTIVEPLAYERS"):
         f.log(rank=0, prefixe="[CMD]", message=command, suffixe="")
       # if checkRoles( [admin]):
-        await setActivePlayers(channel, user,command)
+        await setActivePlayers(channel, command, user)
       # else:
       #   await errorRole(channel,["bot admin access"])
 
