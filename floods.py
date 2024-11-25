@@ -180,19 +180,24 @@ def printFloodsExt() -> str:
   return msg
 
 def printFloodsExtAlly(ally:str) -> str:
-  print("here")
+  #print(ally)
   data = f.loadData(H_FLOODS_FILENAME)
   msg = "## Floods extérieurs:\n"
   MSG = ["",""]
-  i = 0
+  i = -1
   for flood in data:
+    i = -1
+    #print("Flooded:",flood["flooded"]["ally"].upper())
+    #print("Flooder:",flood["flooder"]["ally"].upper())
     if flood["flooded"]["ally"].upper() == "LF" and flood["flooder"]["ally"].upper() == ally.upper(): 
       i = 0
     elif flood["flooder"]["ally"].upper() == "LF" and flood["flooded"]["ally"].upper() == ally.upper():
       i = 1
-    MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]
-    MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]
-    MSG[i] += "["+flood["flooded"]["ally"]+"]: "+f.convertNumber(str(flood["quantity"]))+ "\n"
+    #print(i)
+    if i > -1:
+      MSG[i] += "["+ flood["day"]+"] " + flood["flooder"]["player"]
+      MSG[i] += "["+flood["flooder"]["ally"]+"] -> " + flood["flooded"]["player"]
+      MSG[i] += "["+flood["flooded"]["ally"]+"]: "+f.convertNumber(str(flood["quantity"]))+ "\n"
 
   if MSG[0] == "": MSG[0] = "Aucun flood extérieur."
   if MSG[1] == "": MSG[1] = "Aucun flood extérieur."
@@ -203,11 +208,13 @@ def printFloodsExtAlly(ally:str) -> str:
   MSG = ["",""]
   i = 0
   for don in data:
+    i = -1
     if don["donnor"].upper() == "LF" and don["receiver"].upper() == ally.upper(): 
       i = 0
     elif don["receiver"].upper() == "LF" and don["donnor"].upper() == ally.upper(): 
       i = 1
-    MSG[i] += "["+ don["date"]+"] " + don["donnor"] +" -> " + don["receiver"] +": "+f.convertNumber(str(don["quantity"]))+ "\n"
+    if i > -1:
+      MSG[i] += "["+ don["date"]+"] " + don["donnor"] +" -> " + don["receiver"] +": "+f.convertNumber(str(don["quantity"]))+ "\n"
 
   if MSG[0] == "": MSG[0] = "Aucun don extérieur."
   if MSG[1] == "": MSG[1] = "Aucun don extérieur."
