@@ -183,15 +183,18 @@ def printFloodsExtAlly(ally:str) -> str:
   #print(ally)
   data = f.loadData(H_FLOODS_FILENAME)
   msg = "## Floods extérieurs:\n"
+  sum = [0, 0, 0, 0] # flood LF>EXT, flood EXT>LF, don LF>EXT, don EXT>LF
   MSG = ["",""]
   i = -1
   for flood in data:
     i = -1
     #print("Flooded:",flood["flooded"]["ally"].upper())
     #print("Flooder:",flood["flooder"]["ally"].upper())
-    if flood["flooded"]["ally"].upper() == "LF" and flood["flooder"]["ally"].upper() == ally.upper(): 
+    if flood["flooded"]["ally"].upper() == "LF" and flood["flooder"]["ally"].upper() == ally.upper():
+      sum[1] += flood["quantity"]
       i = 0
     elif flood["flooder"]["ally"].upper() == "LF" and flood["flooded"]["ally"].upper() == ally.upper():
+      sum[0] += flood["quantity"]
       i = 1
     #print(i)
     if i > -1:
@@ -209,9 +212,11 @@ def printFloodsExtAlly(ally:str) -> str:
   i = 0
   for don in data:
     i = -1
-    if don["donnor"].upper() == "LF" and don["receiver"].upper() == ally.upper(): 
+    if don["donnor"].upper() == "LF" and don["receiver"].upper() == ally.upper():
+      sum[2] += flood["quantity"]
       i = 0
-    elif don["receiver"].upper() == "LF" and don["donnor"].upper() == ally.upper(): 
+    elif don["receiver"].upper() == "LF" and don["donnor"].upper() == ally.upper():
+      sum[3] += flood["quantity"]
       i = 1
     if i > -1:
       MSG[i] += "["+ don["date"]+"] " + don["donnor"] +" -> " + don["receiver"] +": "+f.convertNumber(str(don["quantity"]))+ "\n"
@@ -220,6 +225,15 @@ def printFloodsExtAlly(ally:str) -> str:
   if MSG[1] == "": MSG[1] = "Aucun don extérieur."
   msg+= "### Don de la LF:\n```" + MSG[0] + "```\n### Don pour la LF:\n```" + MSG[1] + "```"
 
+  # sum = [0, 0, 0, 0] # flood LF>EXT, flood EXT>LF, don LF>EXT, don EXT>LF
+  msg += "## Résumé:\n"
+  msg += " - Floods de la LF: "+f.convertNumber(str(sum[0]))+" cm²\n"
+  msg += " - Floods sur la LF: "+f.convertNumber(str(sum[1]))+" cm²\n"
+  msg += " - **Total**: "+f.convertNumber(str(sum[0]-sum[1]))+" cm²\n"
+  msg += " - Don pour la LF: "+f.convertNumber(str(sum[3]))+" cm²\n"
+  msg += " - Don par la LF: "+f.convertNumber(str(sum[2]))+" cm²\n"
+  msg += " - **Total**: "+f.convertNumber(str(sum[3]-sum[2]))+" cm²\n"
+  msg += "### **Total**: "+f.convertNumber(str(sum[0]-sum[1]+sum[3]-sum[2]))+" cm²\n"
   return msg
 
 
