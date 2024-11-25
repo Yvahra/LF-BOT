@@ -180,6 +180,7 @@ def printFloodsExt() -> str:
   return msg
 
 def printFloodsExtAlly(ally:str) -> str:
+  print("here")
   data = f.loadData(H_FLOODS_FILENAME)
   msg = "## Floods extérieurs:\n"
   MSG = ["",""]
