@@ -226,13 +226,13 @@ def printFloodsExtAlly(ally:str) -> str:
   msg+= "### Don de la LF:\n```" + MSG[0] + "```\n### Don pour la LF:\n```" + MSG[1] + "```"
 
   # sum = [0, 0, 0, 0] # flood LF>EXT, flood EXT>LF, don LF>EXT, don EXT>LF
-  msg += "## Résumé:\n"
+  msg += "\n## Résumé:\n"
   msg += " - Floods de la LF: "+f.convertNumber(str(sum[0]))+" cm²\n"
   msg += " - Floods sur la LF: "+f.convertNumber(str(sum[1]))+" cm²\n"
-  msg += " - **Total**: "+f.convertNumber(str(sum[0]-sum[1]))+" cm²\n"
+  msg += " - **Total**: "+f.convertNumber(str(sum[0]-sum[1]))+" cm²\n\n"
   msg += " - Don pour la LF: "+f.convertNumber(str(sum[3]))+" cm²\n"
   msg += " - Don par la LF: "+f.convertNumber(str(sum[2]))+" cm²\n"
-  msg += " - **Total**: "+f.convertNumber(str(sum[3]-sum[2]))+" cm²\n"
+  msg += " - **Total**: "+f.convertNumber(str(sum[3]-sum[2]))+" cm²\n\n"
   msg += "### **Total**: "+f.convertNumber(str(sum[0]-sum[1]+sum[3]-sum[2]))+" cm²\n"
   return msg
 
