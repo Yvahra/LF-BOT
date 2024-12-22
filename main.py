@@ -937,7 +937,7 @@ async def listeFloodExtR(channel, command, user):
 async def listeFloodExtD(channel, command, user):
     msg = "ERR: trop ou pas assez d'arguments dans la commande: `!listeFloodExtD <x_floodeur> <y_floodeur>`"
     if await lengthVerificator(command, "!listeFloodExtD <x_floodeur> <y_floodeur>"):
-        if isAuthorized(user=user, level_needed=PERMISSION_PRIVILEGED, rw="R", self_command=False in command.upper()):
+        if isAuthorized(user=user, level_needed=PERMISSION_PRIVILEGED, rw="R", self_command=False):
             msg = floods.attacks_from_LF(
                 command.split(" ")[1],
                 command.split(" ")[2])
