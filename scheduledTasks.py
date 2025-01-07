@@ -47,7 +47,7 @@ async def recapRSS():
     #   for m in f.splitMessage(msg):
     #     await channel.send(m)
 
-    msg = convois.repartitionRessources((date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
+    msg = convois.repartitionRessourcesRECAP((date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
 
     channel= bot.get_channel(1326174754272710737)
     msgDiscord= await channel.fetch_message(1326179817506340945)
@@ -76,7 +76,7 @@ async def recapFlood():
     # else:
     #     for m in f.splitMessage(msg):
     #         await channel.send(m)
-    msg = floods.printFloodsFuturs()
+    msg = floods.printFloodsFutursRECAP()
 
     channel = bot.get_channel(1326174677231603713)
     msgDiscord = await channel.fetch_message(1326179787844227175)
@@ -127,16 +127,17 @@ def supprimer_anciens_fichiers(destination_dir, age_jours=30):
 # Login Section
 @bot.event
 async def on_ready():
-  await recapRSS()  # le bot est prêt
-  # await recapConvois()
-  await recapFlood()
+    await recapRSS()  # le bot est prêt
+    # await recapConvois()
+    await recapFlood()
 
-  source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
-  destination_dir = '/home/yavhra/Archives/LF-BOT'
+    source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
+    destination_dir = '/home/yavhra/Archives/LF-BOT'
 
-  sauvegarder_fichiers(source_dir, destination_dir)
-  supprimer_anciens_fichiers(destination_dir, age_jours=30)
+    sauvegarder_fichiers(source_dir, destination_dir)
+    supprimer_anciens_fichiers(destination_dir, age_jours=30)
 
-  exit()
+    client.logout()
+    client.close()
 
 bot.run(token)

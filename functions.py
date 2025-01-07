@@ -216,3 +216,43 @@ def getArmy(army:str) -> dict:# 300 000 Esclaves, 10 Maîtres esclaves, 10 Jeune
       i+=1
     res[ARMY_CONV[unite[i:].upper()]] = int(unite[:i])
   return res
+
+
+
+
+
+def merge_sort(arr):
+    if len(arr) <= 1:
+      return arr
+
+    # Find the middle point of the array
+    mid = len(arr) // 2
+
+    # Recursively sort the first and second halves
+    left_half = merge_sort(arr[:mid])
+    right_half = merge_sort(arr[mid:])
+
+    # Merge the sorted halves
+    return merge(left_half, right_half)
+
+
+
+
+def merge(left, right):
+  result = []
+  i = j = 0
+
+  # Merge the two sorted arrays
+  while i < len(left) and j < len(right):
+    if left[i][1] < right[j][1]:
+      result.append(left[i])
+      i += 1
+    else:
+      result.append(right[j])
+      j += 1
+
+  # Append remaining elements of left or right
+  result.extend(left[i:])
+  result.extend(right[j:])
+
+  return result

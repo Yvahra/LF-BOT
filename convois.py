@@ -153,6 +153,8 @@ def demandeConvoi(joueur:str, colo:str, constr:str, level:str, apple:str, wood:s
     msg = "ERR: demandeConvoi() - " + str(e) + "\n" + msg
   return msg
 
+
+
 def repartitionRessources(dateRecap:str):
   msg = ""
   try:
@@ -246,33 +248,55 @@ def repartitionRessources(dateRecap:str):
     ress_parta[dateRecap] = recap
     f.saveData(ress_parta, H_RSS_PARTAGEES_FILENAME)
 
-    msg = printRessourcesPartagees(dateRecap)
+    msg = printRessourcesPartagees(dateRecap, detail=False)
 
   except Exception as e:
     msg = "ERR: repartitionRessources() - " + str(e) + "\n" + msg
   return msg
 
-def printRessourcesPartagees(dateRecap:str) -> str:
+def printRessourcesPartagees(dateRecap:str, detail=False) -> str:
   msg = ""
   try:
     ress = f.loadData(H_RSS_PARTAGEES_FILENAME)[dateRecap]
-    msg = "# Récapitulatif des ressources partagées du "+dateRecap+"\n\n"
-    msg+= "Salaire: " + f.betterNumber(str(int(ress["salaire"]))) +  " ressources\n"
-    for player in ress["ressources_detail"]:
-      msg+= "``` * "+ player.upper() + ":\n"
-      msg+= "Ressources exploitées :           "+ f.betterNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
-      msg+= "Ressources livrées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
-      msg+= "Ressources livrées au joueur:     "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
-      msg+= "Ressources pillées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
-      msg+= "```\n"
+    msg = "# Récapitulatif des ressources partagées du "+dateRecap+"\n"
+    msg+= datetime.datetime.now().strftime("édité le %d/%m/%Y à %H:%M\n\n")
+    msg+= "Salaire: " + f.betterNumber(str(int(ress["salaire"]))) +  " ressources\n\n"
+
+    if detail:
+      for player in ress["ressources_detail"]:
+        msg+= "``` * "+ player.upper() + ":\n"
+        msg+= "Ressources exploitées :           "+ f.betterNumber(str(int(ress["ressources_detail"][player]["exploit"]))) + "\n"
+        msg+= "Ressources livrées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][1]))) + "\n"
+        msg+= "Ressources livrées au joueur:     "+ f.betterNumber(str(int(ress["ressources_detail"][player]["convois"][0]))) + "\n"
+        msg+= "Ressources pillées par le joueur: "+ f.betterNumber(str(int(ress["ressources_detail"][player]["pillage"]))) + "\n"
+        msg+= "```\n"
+
     msg+= "```\n"
-    MSG = ["",""]
+    maxSize_player= len("Joueur")
+    maxsize_ress= len("Ressources")
+    MSG = [[],[]]
+
     for player in ress["cumul"]:
+      maxSize_player = max(maxSize_player, len(player))
+      maxsize_ress = max(maxsize_ress, len(f.betterNumber(str(int(ress["cumul"][player])))))
       if ress["cumul"][player] < 0:
-        MSG[0]+= player + " doit percevoir " + f.betterNumber(str(int(-ress["cumul"][player]))) + " ressources\n"
+        MSG[0].append([player, int(-ress["cumul"][player])])
       else:
-        MSG[1]+= player + " doit rendre " + f.betterNumber(str(int(ress["cumul"][player]))) + " ressources\n"
-    msg+= MSG[0]+"\n"+MSG[1]
+        MSG[1].append([player, int(ress["cumul"][player])])
+
+    MSG = [f.merge_sort(MSG[0]), f.merge_sort(MSG[1])]
+
+    msg+= "| Joueur" + (maxSize_player-len("Joueur"))*" " + " | +/- | Ressources" + (maxsize_ress-len("Ressources"))*" " + " |"
+    msg+= "| " + (maxSize_player)*"-" + " | --- | " + (maxsize_ress)*"-" + " |"
+
+    for data in MSG[1]:
+      msg += "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  +  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |"
+
+    msgtemp = ""
+    for data in MSG[0]:
+      msgtemp = "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  -  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |" + msgtemp
+
+    msg+= msgtemp
     msg+= "```"
 
   except Exception as e:
