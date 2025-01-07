@@ -38,34 +38,49 @@ async def error(channel, errorMsg: str):
   await channel.send(errorMsg)
 
 async def recapRSS():
-    channel = bot.get_channel(1276232505116196894)
-    msg = convois.repartitionRessources((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
-    msg+= "\n||from cron||"
-    if msg.startswith("ERR:"):
-        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
-    else:
-      for m in f.splitMessage(msg):
-        await channel.send(m)
+    # channel = bot.get_channel(1276232505116196894)
+    # msg = convois.repartitionRessources((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
+    # msg+= "\n||from cron||"
+    # if msg.startswith("ERR:"):
+    #     f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
+    # else:
+    #   for m in f.splitMessage(msg):
+    #     await channel.send(m)
+
+    msg = convois.repartitionRessources((date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
+
+    channel= bot.get_channel(1326174754272710737)
+    msgDiscord= await channel.fetch_message(1326175407019528242)
+    await msgDiscord.edit(content=msg)
+
+
 
 async def recapConvois():
-    channel = bot.get_channel(1278074306391183452)
-    msg = convois.convoisDuJour((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
-    msg+= "\n||from cron||"
-    if msg.startswith("ERR:"):
-        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
-    else:
-        for m in f.splitMessage(msg):
-            await channel.send(m)
+    # channel = bot.get_channel(1278074306391183452)
+    # msg = convois.convoisDuJour((date.today()- timedelta(days=1)).strftime("%Y-%m-%d"))
+    # msg+= "\n||from cron||"
+    # if msg.startswith("ERR:"):
+    #     f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
+    # else:
+    #     for m in f.splitMessage(msg):
+    #         await channel.send(m)
+
+    pass
 
 async def recapFlood():
-    channel = bot.get_channel(1276451985352294440)
+    # channel = bot.get_channel(1276451985352294440)
+    # msg = floods.printFloodsFuturs()
+    # msg+= "\n||from cron||"
+    # if msg.startswith("ERR:"):
+    #     f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
+    # else:
+    #     for m in f.splitMessage(msg):
+    #         await channel.send(m)
     msg = floods.printFloodsFuturs()
-    msg+= "\n||from cron||"
-    if msg.startswith("ERR:"):
-        f.log(rank=1, prefixe="[ERROR]", message=msg, suffixe="")
-    else:
-        for m in f.splitMessage(msg):
-            await channel.send(m)
+
+    channel = bot.get_channel(1326174677231603713)
+    msgDiscord = await channel.fetch_message(1326175662557499475)
+    await msgDiscord.edit(content=msg)
 
 
 import os
@@ -113,7 +128,7 @@ def supprimer_anciens_fichiers(destination_dir, age_jours=30):
 @bot.event
 async def on_ready():
   await recapRSS()  # le bot est prêt
-  await recapConvois()
+  # await recapConvois()
   await recapFlood()
 
   source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
