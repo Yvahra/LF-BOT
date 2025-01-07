@@ -143,4 +143,3 @@ async def on_ready():
     exit(0)
 
 bot.run(token)
-exit(1)
