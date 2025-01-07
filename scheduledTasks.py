@@ -131,11 +131,14 @@ async def on_ready():
     # await recapConvois()
     await recapFlood()
 
-    source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
-    destination_dir = '/home/yavhra/Archives/LF-BOT'
+    try:
+        source_dir = '/home/yavhra/GIT/LF-BOT/JSON'
+        destination_dir = '/home/yavhra/Archives/LF-BOT'
 
-    sauvegarder_fichiers(source_dir, destination_dir)
-    supprimer_anciens_fichiers(destination_dir, age_jours=30)
+        sauvegarder_fichiers(source_dir, destination_dir)
+        supprimer_anciens_fichiers(destination_dir, age_jours=30)
+    except:
+        pass
 
     client.logout()
     client.close()

@@ -286,15 +286,16 @@ def printRessourcesPartagees(dateRecap:str, detail=False) -> str:
 
     MSG = [f.merge_sort(MSG[0]), f.merge_sort(MSG[1])]
 
-    msg+= "| Joueur" + (maxSize_player-len("Joueur"))*" " + " | +/- | Ressources" + (maxsize_ress-len("Ressources"))*" " + " |"
-    msg+= "| " + (maxSize_player)*"-" + " | --- | " + (maxsize_ress)*"-" + " |"
-
-    for data in MSG[1]:
-      msg += "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  +  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |"
+    msg+= "| Joueur" + (maxSize_player-len("Joueur"))*" " + " | +/- | Ressources" + (maxsize_ress-len("Ressources"))*" " + " |\n"
+    msg+= "| " + (maxSize_player)*"-" + " | --- | " + (maxsize_ress)*"-" + " |\n"
 
     msgtemp = ""
+    for data in MSG[1]:
+      msgtemp = "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  +  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |\n" + msgtemp
+
+
     for data in MSG[0]:
-      msgtemp = "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  -  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |" + msgtemp
+      msg += "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  -  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |\n"
 
     msg+= msgtemp
     msg+= "```"
