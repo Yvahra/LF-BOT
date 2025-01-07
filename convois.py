@@ -291,13 +291,13 @@ def printRessourcesPartagees(dateRecap:str, detail=False) -> str:
 
     msgtemp = ""
     for data in MSG[1]:
-      msgtemp = "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  +  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |\n" + msgtemp
-
-
-    for data in MSG[0]:
-      msg += "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  -  | " + f.betterNumber(str(int(data[1]))) + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + " |\n"
+      msgtemp = "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  +  | " + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + f.betterNumber(str(int(data[1]))) + " |\n" + msgtemp
 
     msg+= msgtemp
+
+    for data in MSG[0]:
+      msg += "| "+data[0] + (maxSize_player - len(data[0])) * " " + " |  -  | " + ( maxsize_ress - len(f.betterNumber(str(int(data[1]))))) * " " + f.betterNumber(str(int(data[1]))) + " |\n"
+
     msg+= "```"
 
   except Exception as e:
