@@ -140,6 +140,6 @@ async def on_ready():
     except:
         pass
 
-    client.close()
+    await client.close()
 
 bot.run(token)
