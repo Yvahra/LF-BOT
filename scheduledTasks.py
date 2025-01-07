@@ -50,7 +50,7 @@ async def recapRSS():
     msg = convois.repartitionRessources((date.today() - timedelta(days=1)).strftime("%Y-%m-%d"))
 
     channel= bot.get_channel(1326174754272710737)
-    msgDiscord= await channel.fetch_message(1326175407019528242)
+    msgDiscord= await channel.fetch_message(1326179817506340945)
     await msgDiscord.edit(content=msg)
 
 
@@ -79,7 +79,7 @@ async def recapFlood():
     msg = floods.printFloodsFuturs()
 
     channel = bot.get_channel(1326174677231603713)
-    msgDiscord = await channel.fetch_message(1326175662557499475)
+    msgDiscord = await channel.fetch_message(1326179787844227175)
     await msgDiscord.edit(content=msg)
 
 
