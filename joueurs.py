@@ -62,7 +62,7 @@ class Joueur:
           self.valide= True
           if "race" in data[i]:       self.race=        int(data[i]["race"])
           if "mandibule" in data[i]:  self.mandibule=   int(data[i]["mandibule"])
-          if "bouclier" in data[i]:   self.carapace=    int(data[i]["bouclier"])
+          if "carapace" in data[i]:   self.carapace=    int(data[i]["carapace"])
           if "pheromones" in data[i]: self.pheromones=  int(data[i]["pheromones"])
           if "thermique" in data[i]:  self.thermique=   int(data[i]["thermique"])
           if "va" in data[i]:         self.va=          int(data[i]["va"])
@@ -188,7 +188,7 @@ def printPlayer(joueur:str) -> str:
         if "race" in data[i]: msg += "    Race:       "+ RACES[data[i]["race"]]
         msg += "\n"
         msg += "    Mandibule:  " + str(data[i]["mandibule"]) + "\n"
-        msg += "    Carapace:   " + str(data[i]["bouclier"]) + "\n"
+        msg += "    Carapace:   " + str(data[i]["carapace"]) + "\n"
         msg += "    Phéromones: " + str(data[i]["pheromones"])+ "\n"
         msg += "    Thermiques: " + str(data[i]["thermique"])+ "\n"
         msg += "--------------------\n"
@@ -218,7 +218,7 @@ def addDefaultUser(name:str) -> str:
   newData = {
     "name": name,
     "mandibule": 0,
-    "bouclier": 0,
+    "carapace": 0,
     "pheromones": 0,
     "race": 0,
     "thermique": 0,
@@ -269,7 +269,7 @@ def addPlayer(command):
   newData = {
     "name": command.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),
     "mandibule": int(command.split("\n")[3].split(":")[1].split(",")[0].replace(" ", "")),
-    "bouclier": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
+    "carapace": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
     "pheromones": int(command.split("\n")[5].split(":")[1].split(",")[0].replace(" ", "")),
     "race": int(command.split("\n")[6].split(":")[1].split(",")[0].replace(" ", "")),
     "thermique": int(command.split("\n")[7].split(":")[1].split(",")[0].replace(" ", "")),
@@ -325,7 +325,7 @@ def addAllie(command):
   newData = {
     "name": command.split("\n")[2].split(":")[1].split(",")[0].replace(" ", ""),
     "mandibule": int(command.split("\n")[3].split(":")[1].split(",")[0].replace(" ", "")),
-    "bouclier": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
+    "carapace": int(command.split("\n")[4].split(":")[1].split(",")[0].replace(" ", "")),
     "pheromones": int(command.split("\n")[5].split(":")[1].split(",")[0].replace(" ", "")),
     "race": int(command.split("\n")[6].split(":")[1].split(",")[0].replace(" ", "")),
     "thermique": int(command.split("\n")[7].split(":")[1].split(",")[0].replace(" ", "")),
